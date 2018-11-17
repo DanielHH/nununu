@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import { createDrawerNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import {View, Text, Button} from 'react-native';
+import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
@@ -35,15 +35,42 @@ const OrderTabNav = createMaterialTopTabNavigator({
   swipeEnabled: false,
 });
 
+const OrderStackNav = createStackNavigator({
+   OrderTab: {
+     screen: OrderTabNav,
+     navigationOptions: ({ navigation }) => ({
+      headerTitle: "Ordrar",
+      headerLeft: (
+        <Button onPress = {() => navigation.toggleDrawer()} title="drawer"/>
+      ),
+    }),
+  }
+})
+
+const EditMenuStackNav = createStackNavigator({
+   OrderTab: {
+     screen: EditMenuScreen,
+     navigationOptions: ({ navigation }) => ({
+      headerTitle: "Redigera meny",
+      headerLeft: (
+        <Button onPress = {() => navigation.toggleDrawer()} title="drawer"/>
+      ),
+    }),
+  }
+})
+
 const Drawer = createDrawerNavigator({
-  Order: {
-    screen: OrderTabNav,
+  OrderStack: {
+    screen: OrderStackNav,
     navigationOptions: {
       drawerLabel: "Ordrar",
     },
   },
   EditMenu: {
-    screen: EditMenuScreen,
+    screen: EditMenuStackNav,
+    navigationOptions: {
+      drawerLabel: "Redigera meny",
+    },
   },
 });
 

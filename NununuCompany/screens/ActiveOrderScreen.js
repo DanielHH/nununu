@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
-import { createDrawerNavigator } from 'react-navigation';
 
 export default class ActiveOrderScreen extends React.Component {
 
@@ -8,7 +7,7 @@ export default class ActiveOrderScreen extends React.Component {
     return (
       <View>
         <Text>
-          Ordrar
+          Lista Aktiva Ordrar
         </Text>
       </View>
     );
