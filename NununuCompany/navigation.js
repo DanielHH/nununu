@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text} from 'react-native';
 import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
@@ -42,7 +43,7 @@ const OrderStackNav = createStackNavigator({
      navigationOptions: ({ navigation }) => ({
       headerTitle: "Ordrar",
       headerLeft: (
-        <Button onPress = {() => navigation.toggleDrawer()} title="drawer"/>
+        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   }
@@ -54,7 +55,7 @@ const EditMenuStackNav = createStackNavigator({
      navigationOptions: ({ navigation }) => ({
       headerTitle: "Redigera meny",
       headerLeft: (
-        <Button onPress = {() => navigation.toggleDrawer()} title="drawer"/>
+        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
