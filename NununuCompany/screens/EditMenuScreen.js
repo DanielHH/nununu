@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import React from 'react'
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 
@@ -7,10 +7,30 @@ export default class EditMenuScreen extends React.Component {
   state = {
     data: [...Array(20)].map((d, index) => ({
       key: `item-${index}`,
-      name: "Hamburgare",
-      price: index + 10,
+      name: 'Hamburgare',
+      price: String(index + 10),
       backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
-    }))
+    })),
+  }
+
+  addArticle = (name, price) => {
+    let data_copy = [...this.state.data]
+    data_copy.push({key: 34, name: name, price: price, backgroundColor: 'red'})
+    this.setState({data: data_copy})
+    this.props.navigation.goBack(null)
+  }
+
+  editArticle = (key, name, price) => {
+    let data_copy = [...this.state.data]
+    for (let i = 0; i < data_copy.length; i++) {
+      if (data_copy[i].key === key) {
+        data_copy[i].name = name
+        data_copy[i].price = price
+        this.setState({data: data_copy})
+        break
+      }
+    }
+    this.props.navigation.goBack(null)
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
@@ -25,7 +45,7 @@ export default class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditArticle')}
+        onPress={() => this.props.navigation.navigate('EditArticle', {editArticle: this.editArticle, item: item})}
       >
         <Text style={{
           fontWeight: 'bold',
@@ -51,6 +71,7 @@ export default class EditMenuScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <DraggableFlatList
           data={this.state.data}
+          extraData={this.state}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => `draggable-item-${item.key}`}
           scrollPercent={5}
@@ -60,7 +81,7 @@ export default class EditMenuScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddArticle')}
+          onPress={() => this.props.navigation.navigate('AddArticle', {addArticle: this.addArticle})}
         />
       </View>
     )
@@ -73,4 +94,4 @@ const styles = StyleSheet.create({
     height: 22,
     color: 'white',
   },
-});
+})

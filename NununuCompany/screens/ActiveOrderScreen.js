@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import React from 'react'
+import {View, Text} from 'react-native'
 
 export default class ActiveOrderScreen extends React.Component {
 
@@ -10,6 +10,6 @@ export default class ActiveOrderScreen extends React.Component {
           Lista Aktiva Ordrar
         </Text>
       </View>
-    );
+    )
   }
 }

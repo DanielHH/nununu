@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
+import React from 'react'
+import {View, Text} from 'react-native'
+import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
@@ -35,40 +35,40 @@ const OrderTabNav = createMaterialTopTabNavigator({
 }, {
   initialRouteName: 'Active',
   swipeEnabled: false,
-});
+})
 
 const OrderStackNav = createStackNavigator({
-   OrderTab: {
-     screen: OrderTabNav,
-     navigationOptions: ({ navigation }) => ({
-      headerTitle: "Ordrar",
+  OrderTab: {
+    screen: OrderTabNav,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Ordrar',
       headerLeft: (
         <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
-  }
+  },
 })
 
 const EditMenuStackNav = createStackNavigator({
   EditMenu: {
-     screen: EditMenuScreen,
-     navigationOptions: ({ navigation }) => ({
-      headerTitle: "Redigera meny",
+    screen: EditMenuScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Redigera meny',
       headerLeft: (
         <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
   EditArticle: {
-     screen: ArticleScreen,
-     navigationOptions: ({ navigation }) => ({
-      headerTitle: "Redigera artikel",
+    screen: ArticleScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Redigera artikel',
     }),
   },
   AddArticle: {
-     screen: ArticleScreen,
-     navigationOptions: ({ navigation }) => ({
-      headerTitle: "Lägg till artikel",
+    screen: ArticleScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Lägg till artikel',
     }),
   },
 })
@@ -77,15 +77,15 @@ const Drawer = createDrawerNavigator({
   OrderStack: {
     screen: OrderStackNav,
     navigationOptions: {
-      drawerLabel: "Ordrar",
+      drawerLabel: 'Ordrar',
     },
   },
   EditMenu: {
     screen: EditMenuStackNav,
     navigationOptions: {
-      drawerLabel: "Redigera meny",
+      drawerLabel: 'Redigera meny',
     },
   },
-});
+})
 
 export default Drawer
