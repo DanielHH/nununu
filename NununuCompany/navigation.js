@@ -4,6 +4,7 @@ import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNaviga
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
+import ArticleScreen from './screens/ArticleScreen'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
@@ -48,7 +49,7 @@ const OrderStackNav = createStackNavigator({
 })
 
 const EditMenuStackNav = createStackNavigator({
-   OrderTab: {
+  EditMenu: {
      screen: EditMenuScreen,
      navigationOptions: ({ navigation }) => ({
       headerTitle: "Redigera meny",
@@ -56,7 +57,19 @@ const EditMenuStackNav = createStackNavigator({
         <Button onPress = {() => navigation.toggleDrawer()} title="drawer"/>
       ),
     }),
-  }
+  },
+  EditArticle: {
+     screen: ArticleScreen,
+     navigationOptions: ({ navigation }) => ({
+      headerTitle: "Redigera artikel",
+    }),
+  },
+  AddArticle: {
+     screen: ArticleScreen,
+     navigationOptions: ({ navigation }) => ({
+      headerTitle: "Lägg till artikel",
+    }),
+  },
 })
 
 const Drawer = createDrawerNavigator({

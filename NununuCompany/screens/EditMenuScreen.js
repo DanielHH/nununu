@@ -26,6 +26,7 @@ export default class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
+        onPress={() => this.props.navigation.navigate('EditArticle')}
       >
         <Text style={{
           fontWeight: 'bold',
@@ -60,7 +61,7 @@ export default class EditMenuScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => { console.log("hi")}}
+          onPress={() => this.props.navigation.navigate('AddArticle')}
         />
       </View>
     )
