@@ -10,7 +10,9 @@ export default class HomeScreen extends React.Component {
       data: [
         {name: 'La Mejicana', price: '79kr'},
         {name: 'Sukaldari', price: '95kr'},
-        {name: 'BBQ Cheese', price: '89kr'}],
+        {name: 'BBQ Cheese', price: '89kr'},
+        {name: 'The Original', price: '89kr'},
+        {name: 'Angus', price: '89kr'}],
     },
   }
 
@@ -47,6 +49,7 @@ export default class HomeScreen extends React.Component {
                     style={{
                     borderLeftWidth: 1,
                     marginRight: 15,
+                    marginLeft: 5,
                     borderLeftColor: 'gray',
                     }}
                   />
@@ -83,7 +86,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    margin: 10,
+    margin: 5,
   },
   cardContentContainer: {
     marginTop: 10,
