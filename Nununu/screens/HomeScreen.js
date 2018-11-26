@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, FlatList, SectionList, StyleSheet} from 'react-native'
-import { Appbar, Button, Card, Title, Paragraph} from 'react-native-paper'
+import { View, Text, SectionList, StyleSheet} from 'react-native'
+import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default class HomeScreen extends React.Component {
@@ -8,9 +8,9 @@ export default class HomeScreen extends React.Component {
     sections: {
       title: 'Hamburgare',
       data: [
-        {name: 'La Mejicana', price: '10kr'},
-        {name: 'Sukaldari', price: '10kr'},
-        {name: 'BBQ Cheese', price: '10kr'}],
+        {name: 'La Mejicana', price: '79kr'},
+        {name: 'Sukaldari', price: '95kr'},
+        {name: 'BBQ Cheese', price: '89kr'}],
     },
   }
 
@@ -32,18 +32,34 @@ export default class HomeScreen extends React.Component {
         <SectionList
           sections={[this.state.sections]}
           renderItem={({item}) => (
-          <Card
-              style={styles.item}>
-              <Card.Content>
-                <View styles={styles.cardContentContainer}>
-                    <Title>{item.name}</Title>
-                    <Paragraph>{item.price}</Paragraph>
+
+            <Card
+              style={styles.item}
+              flexDirection='row'>
+              <Card.Content style={styles.cardContentContainer}>
+                <View style={{flex:1, flexDirection: 'row'}}>
+                  <View style={styles.foodInfo}>
+                    <Title>{item.name + ' ' + item.price}</Title>
+                    <Paragraph>Sallad, tomat, picklad rödlök, cheddarost & tuggdressing.</Paragraph>
+                  </View>
+
+                  <View
+                    style={{
+                    borderLeftWidth: 1,
+                    marginRight: 15,
+                    borderLeftColor: 'gray',
+                    }}
+                  />
+
+                  <View style={styles.quantity}>
+                    <IconButton icon="add" size={24} onPress={() => console.log('Pressed')}/>
+                    <Text>2</Text>
+                    <IconButton icon="remove" size={24} onPress={() => console.log('Pressed')}/>
+                  </View>
                 </View>
               </Card.Content>
-              <Card.Actions>
-                <Button onPress={() => this.props.navigation.navigate('Details')}>Lägg till</Button>
-              </Card.Actions>
             </Card>
+
           )}
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
@@ -70,17 +86,15 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   cardContentContainer: {
+    marginTop: 10,
+  },
+  foodInfo: {
+    flex: 3,
+  },
+  quantity: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  testCont: {
-    flex: 1,
-  },
-  half1: {
-    flex: 2,
-    backgroundColor: 'blue',
-  },
-  half2: {
-    flex: 1,
-    backgroundColor: 'red',
-  },
+
 })
