@@ -8,12 +8,33 @@ export default class HomeScreen extends React.Component {
     sections: {
       title: 'Hamburgare',
       data: [
-        {name: 'La Mejicana', price: '79kr'},
-        {name: 'Sukaldari', price: '95kr'},
-        {name: 'BBQ Cheese', price: '89kr'},
-        {name: 'The Original', price: '89kr'},
-        {name: 'Angus', price: '89kr'}],
+        {name: 'La Mejicana', price: '79kr', quantity: 0},
+        {name: 'Sukaldari', price: '95kr', quantity: 0},
+        {name: 'BBQ Cheese', price: '89kr', quantity: 0},
+        {name: 'The Original', price: '89kr', quantity: 0},
+        {name: 'Angus', price: '89kr', quantity: 0}],
     },
+  }
+
+  changeQuantity(item, isAdd){
+    let dataCopy = {...this.state.sections}
+    for (var i = 0; i < dataCopy.data.length; i++) {
+      let food = dataCopy.data[i]
+      if (food.name == item.name) {
+        if (isAdd) {
+          dataCopy.data[i].quantity++
+        } else {
+          if (dataCopy.data[i].quantity > 0) {
+            dataCopy.data[i].quantity--
+          }
+        }
+        if (dataCopy.data[i].quantity >= 0) {
+          this.setState({
+            sections : dataCopy,
+          })
+        }
+      }
+    }
   }
 
   static navigationOptions = {
@@ -45,19 +66,12 @@ export default class HomeScreen extends React.Component {
                     <Paragraph>Sallad, tomat, picklad rödlök, cheddarost & tuggdressing.</Paragraph>
                   </View>
 
-                  <View
-                    style={{
-                    borderLeftWidth: 1,
-                    marginRight: 15,
-                    marginLeft: 5,
-                    borderLeftColor: 'gray',
-                    }}
-                  />
+                  <View style={styles.verticalDivider}/>
 
                   <View style={styles.quantity}>
-                    <IconButton icon="add" size={24} onPress={() => console.log('Pressed')}/>
-                    <Text>2</Text>
-                    <IconButton icon="remove" size={24} onPress={() => console.log('Pressed')}/>
+                    <IconButton icon="add" size={24} onPress={() => this.changeQuantity(item, true)}/>
+                    <Text>{item.quantity}</Text>
+                    <IconButton icon="remove" size={24} onPress={() => this.changeQuantity(item, false)}/>
                   </View>
                 </View>
               </Card.Content>
@@ -77,6 +91,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#e9ebee'
   },
   sectionHeader: {
     paddingLeft: 10,
@@ -99,5 +114,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  verticalDivider: {
+    borderLeftWidth: 1,
+    marginRight: 15,
+    marginLeft: 5,
+    borderLeftColor: 'gray',
+  },
 })
