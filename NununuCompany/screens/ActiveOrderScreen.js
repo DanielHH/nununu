@@ -6,9 +6,9 @@ export default class ActiveOrderScreen extends React.Component {
 state = {
   data: [...Array(8)].map((d, index) => ({
     key: `item-${index}`,
-    content: String(index + 1) + ' st Hamburgare, ' + String(Math.max(index-14, 1)) + 'st Coca-cola',
     orderNumber: '#' + String(index + 1),
-    backgroundColor: `rgb(${index * 5}, ${Math.floor(Math.random() * 255)}, ${132})`,
+    content: String(index + 1) + ' st Hamburgare, ' + String(Math.max(index-14, 1)) + 'st Coca-cola',
+    backgroundColor: `rgb(${(index % 2)*70}, ${100}, ${132})`,
   })),
 }
 
@@ -45,7 +45,7 @@ renderItem = ({ item, index, isActive }) => {
 
   render() {
     return (
-      <View style={{flex : 1 }}>
+      <View style={{flex: 1 }}>
       <FlatList
         data={this.state.data}
         extraData={this.state}
