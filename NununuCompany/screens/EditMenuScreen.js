@@ -37,17 +37,23 @@ export default class EditMenuScreen extends React.Component {
     })
   }
 
-  editArticle = (key, name, price) => {
-    let data_copy = [...this.state.data]
-    for (let i = 0; i < data_copy.length; i++) {
-      if (data_copy[i].key === key) {
-        data_copy[i].name = name
-        data_copy[i].price = price
-        this.setState({data: data_copy})
-        break
+  editArticle = (id, name, price) => {
+    connection.productService.patch(id, {
+      name: name,
+      price: price,
+    }).then((product) => {
+      let data_copy = [...this.state.data]
+      for (let i = 0; i < data_copy.length; i++) {
+        if (data_copy[i].id === product.id) {
+          data_copy[i] = product
+        }
       }
-    }
-    this.props.navigation.goBack(null)
+      this.setState({data: data_copy})
+      this.props.navigation.goBack(null)
+    }, (reason) => {
+      // TODO: error handling
+      console.log('error: ', reason)
+    })
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {

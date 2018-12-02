@@ -23,7 +23,7 @@ export default class ArticleScreen extends React.Component {
 
   saveFunc = () => {
     if (this.state.item) { // edit article
-      this.props.navigation.state.params.editArticle(this.state.item.key, this.state.name, this.state.price)
+      this.props.navigation.state.params.editArticle(this.state.item.id, this.state.name, this.state.price)
     } else { // new article
       this.props.navigation.state.params.addArticle(this.state.name, this.state.price)
     }
@@ -48,7 +48,7 @@ export default class ArticleScreen extends React.Component {
           style={{height: 40}}
           placeholder="Skriv pris här"
           onChangeText={(price) => this.setState({price})}
-          value={this.state.price}
+          value={this.state.price.toString()}
         />
         <Button title="Spara" onPress={() => this.saveFunc()}/>
       </View>
