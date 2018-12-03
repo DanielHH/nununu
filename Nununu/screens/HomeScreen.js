@@ -40,12 +40,8 @@ export default class HomeScreen extends React.Component {
   }
 
   navigateTo(screen) {
-    this.prepareOrder().then({
-      console.log(this.state.selectedPurchaseItems)
-      this.props.navigation.navigate(screen)
-    })
-
-
+    console.log(this.state.selectedPurchaseItems)
+    this.props.navigation.navigate(screen)
   }
 
   prepareOrder() {

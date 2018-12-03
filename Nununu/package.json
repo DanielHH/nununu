@@ -1,5 +1,9 @@
 {
-  "rnpm": { "assets": [ "resources/fonts" ] },
+  "rnpm": {
+    "assets": [
+      "resources/fonts"
+    ]
+  },
   "name": "Nununu",
   "version": "0.0.1",
   "private": true,
