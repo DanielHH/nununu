@@ -14,7 +14,6 @@ export default class HomeScreen extends React.Component {
         {name: 'The Original', price: '89kr', quantity: 0},
         {name: 'Angus', price: '89kr', quantity: 0}],
     },
-    selectedPurchaseItems: [],
   }
 
   changeQuantity(item, isAdd) {
@@ -33,28 +32,24 @@ export default class HomeScreen extends React.Component {
           this.setState({
             sections : dataCopy,
           })
-          console.log(this.state.sections)
         }
       }
     }
   }
 
   navigateTo(screen) {
-    console.log(this.state.selectedPurchaseItems)
-    this.props.navigation.navigate(screen)
+    this.props.navigation.navigate(screen, this.prepareOrder())
   }
 
   prepareOrder() {
-    let dataCopy = [...this.state.selectedPurchaseItems]
+    let selectedPurchaseItems = []
     let sections = {...this.state.sections}
     for (var i = 0; i < sections.data.length; i++) {
       if (sections.data[i].quantity > 0) {
-        dataCopy.push(sections.data[i])
+        selectedPurchaseItems.push(sections.data[i])
       }
     }
-    this.setState({
-      selectedPurchaseItems : dataCopy,
-    })
+    return selectedPurchaseItems
   }
 
   static navigationOptions = {

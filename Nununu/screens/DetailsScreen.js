@@ -19,7 +19,7 @@ export default class DetailsScreen extends React.Component {
         <Text>Details Screen</Text>
         <PaperButton
           mode='contained'
-          onPress={() => this.props.navigation.navigate('Home')}>
+          onPress={() => console.log(this.props.navigation.state.params)}>
           Go Homre!
         </PaperButton>
         <Text>
