@@ -14,9 +14,10 @@ export default class HomeScreen extends React.Component {
         {name: 'The Original', price: '89kr', quantity: 0},
         {name: 'Angus', price: '89kr', quantity: 0}],
     },
+    selectedPurchaseItems: [],
   }
 
-  changeQuantity(item, isAdd){
+  changeQuantity(item, isAdd) {
     let dataCopy = {...this.state.sections}
     for (var i = 0; i < dataCopy.data.length; i++) {
       let food = dataCopy.data[i]
@@ -32,9 +33,32 @@ export default class HomeScreen extends React.Component {
           this.setState({
             sections : dataCopy,
           })
+          console.log(this.state.sections)
         }
       }
     }
+  }
+
+  navigateTo(screen) {
+    this.prepareOrder().then({
+      console.log(this.state.selectedPurchaseItems)
+      this.props.navigation.navigate(screen)
+    })
+
+
+  }
+
+  prepareOrder() {
+    let dataCopy = [...this.state.selectedPurchaseItems]
+    let sections = {...this.state.sections}
+    for (var i = 0; i < sections.data.length; i++) {
+      if (sections.data[i].quantity > 0) {
+        dataCopy.push(sections.data[i])
+      }
+    }
+    this.setState({
+      selectedPurchaseItems : dataCopy,
+    })
   }
 
   static navigationOptions = {
@@ -81,7 +105,7 @@ export default class HomeScreen extends React.Component {
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
-        <Button onPress={() => this.props.navigation.navigate('Details')}> Checka ut </Button>
+        <Button onPress={() => this.navigateTo('Details')}> Checka ut </Button>
       </View>
     )
   }

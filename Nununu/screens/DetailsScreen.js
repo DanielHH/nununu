@@ -2,6 +2,10 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { Button as PaperButton} from 'react-native-paper'
 
+import { createIconSetFromFontello } from 'react-native-vector-icons'
+import fontelloConfig from '../config.json'
+const Icon = createIconSetFromFontello(fontelloConfig)
+
 
 export default class DetailsScreen extends React.Component {
 
@@ -16,8 +20,12 @@ export default class DetailsScreen extends React.Component {
         <PaperButton
           mode='contained'
           onPress={() => this.props.navigation.navigate('Home')}>
-          Go Home!
-          </PaperButton>
+          Go Homre!
+        </PaperButton>
+        <Text>
+        <Icon name="ticketblack" size={100} color="#bf1313" />;
+        </Text>
+
       </View>
     )
   }
