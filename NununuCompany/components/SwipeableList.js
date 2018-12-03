@@ -39,7 +39,8 @@ export default class SwipeableList extends Component {
   renderItem(item) {
     return (
       <ListItem
-        text={item.key}
+        content={item.content}
+        orderNumber={item.orderNumber}
         success={this.success}
         setScrollEnabled={enable => this.setScrollEnabled(enable)}
       />

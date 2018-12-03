@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
-    screen: ActiveOrderScreen,
+    screen: ActiveOrderScreen2,
     navigationOptions: {
       tabBarLabel: ({ tintColor, focused }) => (
         <View>

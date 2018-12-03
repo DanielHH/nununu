@@ -58,12 +58,31 @@ export default class ListItem extends React.PureComponent {
       <View style={styles.listItem}>
         <Animated.View style={[this.state.position.getLayout()]} {...this.panResponder.panHandlers}>
           <View style={styles.absoluteCell}>
-            <Text style={styles.absoluteCellText}>DELETE</Text>
+            <Text style={styles.absoluteCellText}>CLEAR</Text>
           </View>
           <View style={styles.innerCell}>
-            <Text>
-              {this.props.text}
-            </Text>
+            <View style={{
+              height: 100,
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+              <Text style={{
+                fontWeight: 'bold',
+                color: 'white',
+                fontSize: 26,
+              }}>
+                {this.props.content}
+              </Text>
+              <Text style={{
+                fontWeight: 'bold',
+                color: 'black',
+                backgroundColor: 'yellow',
+                fontSize: 26,
+              }}>
+                {this.props.orderNumber}
+              </Text>
+            </View>
           </View>
         </Animated.View>
       </View>
@@ -73,7 +92,7 @@ export default class ListItem extends React.PureComponent {
 
 const styles = StyleSheet.create({
   listItem: {
-    height: 80,
+    height: 100,
     marginLeft: -100,
     justifyContent: 'center',
     backgroundColor: 'red',
@@ -94,9 +113,9 @@ const styles = StyleSheet.create({
   },
   innerCell: {
     width: width,
-    height: 80,
+    height: 100,
     marginLeft: 100,
-    backgroundColor: 'yellow',
+    backgroundColor: 'blue',
     justifyContent: 'center',
     alignItems: 'center',
   },

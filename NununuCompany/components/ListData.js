@@ -1,17 +1,7 @@
 const listData = [
-  {key: '1. element'},
-  {key: '2. element'},
-  {key: '3. element'},
-  {key: '4. element'},
-  {key: '5. element'},
-  {key: '6. element'},
-  {key: '7. element'},
-  {key: '8. element'},
-  {key: '9. element'},
-  {key: '10. element'},
-  {key: '11. element'},
-  {key: '12. element'},
-  {key: '13. element'},
+  {key: '1', orderNumber: '#1', content: '1 Sukaldari, 1 cola'},
+  {key: '2', orderNumber: '#2', content: '2 Mejicana, 1 cola, 1 fanta'},
+  {key: '3', orderNumber: '#3', content: '4 Sukaldari, 3 pommes frites'},
 ]
 
 export default listData
