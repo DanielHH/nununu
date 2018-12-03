@@ -35,7 +35,7 @@ export default class ListItem extends React.PureComponent {
             toValue: {x: width, y: 0},
             duration: 300,
           }).start(() => {
-            this.props.success(this.props.text)
+            this.props.success(this.props.id)
             this.setScrollViewEnabled(true)
           })
         }

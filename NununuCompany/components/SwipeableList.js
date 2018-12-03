@@ -39,6 +39,7 @@ export default class SwipeableList extends Component {
   renderItem(item) {
     return (
       <ListItem
+        id={item.key}
         content={item.content}
         orderNumber={item.orderNumber}
         success={this.success}
