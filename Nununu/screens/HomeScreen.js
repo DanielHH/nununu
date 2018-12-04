@@ -49,6 +49,7 @@ export default class HomeScreen extends React.Component {
         selectedPurchaseItems.push(sections.data[i])
       }
     }
+    
     return selectedPurchaseItems
   }
 
