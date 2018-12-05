@@ -27,12 +27,8 @@ export default class DetailsScreen extends React.Component {
           </Card.Content>
         </Card>
 
-
-            <Text style={{fontSize: 30, marginTop: 100}}>{this.props.navigation.state.params[0].quantity}st {this.props.navigation.state.params[0].name}</Text>
-            <Text style={{fontSize: 25}}>Totalt: {this.props.navigation.state.params[0].price}</Text>
-
-
-
+        <Text style={{fontSize: 30, marginTop: 100}}>{this.props.navigation.state.params[0].quantity}st {this.props.navigation.state.params[0].name}</Text>
+        <Text style={{fontSize: 25}}>Totalt: {this.props.navigation.state.params[0].price}</Text>
 
         <Text style={styles.rotate}>
           <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>
