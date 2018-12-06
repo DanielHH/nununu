@@ -2,35 +2,58 @@ import React from 'react'
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
+import { connection } from '../feathersSetup'
 
 export default class EditMenuScreen extends React.Component {
   state = {
-    data: [...Array(20)].map((d, index) => ({
-      key: `item-${index}`,
-      name: 'Hamburgare',
-      price: String(index + 10),
-      backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
-    })),
+    data: [],
+  }
+
+  constructor(props) {
+    super(props)
+    // query that retrieves ALL the prodcts
+    connection.productService.find({
+      query: { },
+    }).then((value) => {
+      this.setState({data: value.data})
+    }, (reason) => {
+      // rejection
+      console.log('error: ', reason)
+    })
   }
 
   addArticle = (name, price) => {
-    let data_copy = [...this.state.data]
-    data_copy.push({key: 34, name: name, price: price, backgroundColor: 'red'})
-    this.setState({data: data_copy})
-    this.props.navigation.goBack(null)
+    connection.productService.create({
+      name: name,
+      price: price,
+    }).then((product) => {
+      let data_copy = [...this.state.data]
+      data_copy.push(product)
+      this.setState({data: data_copy})
+      this.props.navigation.goBack(null)
+    }, (reason) => {
+      // TODO: error handling
+      console.log('error: ', reason)
+    })
   }
 
-  editArticle = (key, name, price) => {
-    let data_copy = [...this.state.data]
-    for (let i = 0; i < data_copy.length; i++) {
-      if (data_copy[i].key === key) {
-        data_copy[i].name = name
-        data_copy[i].price = price
-        this.setState({data: data_copy})
-        break
+  editArticle = (id, name, price) => {
+    connection.productService.patch(id, {
+      name: name,
+      price: price,
+    }).then((product) => {
+      let data_copy = [...this.state.data]
+      for (let i = 0; i < data_copy.length; i++) {
+        if (data_copy[i].id === product.id) {
+          data_copy[i] = product
+        }
       }
-    }
-    this.props.navigation.goBack(null)
+      this.setState({data: data_copy})
+      this.props.navigation.goBack(null)
+    }, (reason) => {
+      // TODO: error handling
+      console.log('error: ', reason)
+    })
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
@@ -73,7 +96,7 @@ export default class EditMenuScreen extends React.Component {
           data={this.state.data}
           extraData={this.state}
           renderItem={this.renderItem}
-          keyExtractor={(item, index) => `draggable-item-${item.key}`}
+          keyExtractor={(item, index) => item.id}
           scrollPercent={5}
           onMoveEnd={({ data }) => this.setState({ data })}
         />
