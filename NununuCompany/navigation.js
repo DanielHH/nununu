@@ -2,7 +2,6 @@ import React from 'react'
 import {View, Text} from 'react-native'
 import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
-import ActiveOrderScreen2 from './screens/ActiveOrderScreen2'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
@@ -10,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
-    screen: ActiveOrderScreen2,
+    screen: ActiveOrderScreen,
     navigationOptions: {
       tabBarLabel: ({ tintColor, focused }) => (
         <View>
