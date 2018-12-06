@@ -1,8 +1,14 @@
 import React, {Component} from 'react'
 import {FlatList, StyleSheet, View} from 'react-native'
 import ListItem from './ListItem'
+import { connect } from 'react-redux'
+import { completeOrder, setActive } from '../redux/actions'
+import PropTypes from 'prop-types'
 
-export default class SwipeableList extends Component {
+class SwipeableList extends Component {
+  static contextTypes = {
+    store: PropTypes.object.isRequired,
+  }
   constructor(props) {
     super(props)
     this.renderSeparator = this.renderSeparator.bind(this)
@@ -13,6 +19,8 @@ export default class SwipeableList extends Component {
       enable: true,
       data: this.props.data,
     }
+    this.context.store.dispatch(setActive(this.state.data))
+    console.log('next state', this.context.store.getState())
   }
 
   renderSeparator() {
@@ -28,6 +36,10 @@ export default class SwipeableList extends Component {
     this.setState({
       data,
     })
+    const action = completeOrder(item => item.key === key)
+    console.log('dispatching', action)
+    this.context.store.dispatch(action)
+    console.log('next state', this.context.store.getState())
   }
 
   setScrollEnabled(enable) {
@@ -60,6 +72,12 @@ export default class SwipeableList extends Component {
     )
   }
 }
+
+export default connect((state) => {
+  return {
+    active: state.order.active,
+  }
+})(SwipeableList)
 
 const styles = StyleSheet.create({
   separatorViewStyle: {
