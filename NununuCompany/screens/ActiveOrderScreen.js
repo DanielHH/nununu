@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {StyleSheet, View} from 'react-native'
 import SwipeableList from '../components/SwipeableList'
-import listData from '../components/ListData'
 
 
 export default class ActiveOrderScreen extends Component {
@@ -13,7 +12,7 @@ export default class ActiveOrderScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <SwipeableList style={styles.list} data={listData} />
+        <SwipeableList style={styles.list}/>
       </View>
     )
   }

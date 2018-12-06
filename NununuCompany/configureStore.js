@@ -13,6 +13,10 @@ const persistedReducer = persistCombineReducers(persistConfig, reducers)
 
 export default function testExport () {
   let store = createStore(persistedReducer)
+  // subscribe to store for debbuging, logs all the changes
+  store.subscribe(() => {
+    console.log(store.getState())
+  })
   let persistor = persistStore(store)
   return { store, persistor }
 }
