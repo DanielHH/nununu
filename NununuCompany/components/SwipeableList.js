@@ -1,17 +1,20 @@
 import React, {Component} from 'react'
 import {FlatList, StyleSheet, View} from 'react-native'
 import ListItem from './ListItem'
+import { connect } from 'react-redux'
+import { completeOrder, setActiveOrders } from '../redux/actions'
+import listData from '../components/ListData'
 
-export default class SwipeableList extends Component {
+class SwipeableList extends Component {
+
   constructor(props) {
     super(props)
     this.renderSeparator = this.renderSeparator.bind(this)
     this.success = this.success.bind(this)
     this.setScrollEnabled = this.setScrollEnabled.bind(this)
-
+    this.props.dispatch(setActiveOrders(listData))
     this.state = {
       enable: true,
-      data: this.props.data,
     }
   }
 
@@ -23,11 +26,8 @@ export default class SwipeableList extends Component {
     )
   }
 
-  success(key) {
-    const data = this.state.data.filter(item => item.key !== key)
-    this.setState({
-      data,
-    })
+  success(id) {
+    this.props.dispatch(completeOrder(id))
   }
 
   setScrollEnabled(enable) {
@@ -39,7 +39,7 @@ export default class SwipeableList extends Component {
   renderItem(item) {
     return (
       <ListItem
-        id={item.key}
+        id={item.id}
         content={item.content}
         orderNumber={item.orderNumber}
         success={this.success}
@@ -52,14 +52,21 @@ export default class SwipeableList extends Component {
     return (
       <FlatList
         style={this.props.style}
-        data={this.state.data}
+        data={this.props.active}
         ItemSeparatorComponent={this.renderSeparator}
         renderItem={({item}) => this.renderItem(item)}
+        keyExtractor={(item, index) => item.id}
         scrollEnabled={this.state.enable}
       />
     )
   }
 }
+
+export default connect((state) => {
+  return {
+    active: state.order.active,
+  }
+})(SwipeableList)
 
 const styles = StyleSheet.create({
   separatorViewStyle: {

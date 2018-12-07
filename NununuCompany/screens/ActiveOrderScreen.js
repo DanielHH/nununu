@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {StyleSheet, View} from 'react-native'
 import SwipeableList from '../components/SwipeableList'
-import { connect } from 'react-redux'
 
-class ActiveOrderScreen extends Component {
+
+export default class ActiveOrderScreen extends Component {
 
   constructor(props) {
     super(props)
@@ -12,17 +12,11 @@ class ActiveOrderScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <SwipeableList style={styles.list} data={this.props.active} />
+        <SwipeableList style={styles.list}/>
       </View>
     )
   }
 }
-
-export default connect((state) => {
-  return {
-    active: state.order.active,
-  }
-})(ActiveOrderScreen)
 
 const styles = StyleSheet.create({
   container: {
