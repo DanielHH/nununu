@@ -18,7 +18,7 @@ function order(state = initialOrderState, action) {
     let new_completed = [...state.completed]
     for (var i = 0; i < new_active.length; i++) {
       if (new_active[i].id === action.orderId) {
-        new_completed.push(new_active[i]) // add order to completed
+        new_completed.unshift(new_active[i]) // add order to beginning of completed
         new_active.splice(i, 1) // remove order from active
       }
     }
