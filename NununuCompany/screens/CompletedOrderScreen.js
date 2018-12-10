@@ -14,28 +14,12 @@ class CompletedOrderScreen extends React.Component {
 
   renderItem(item) {
     return (
-      <View style={{
-        height: 100,
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}>
-        <Text style={{
-          fontWeight: 'bold',
-          color: 'white',
-          fontSize: 26,
-        }}>
-          {item.content}
-        </Text>
-        <Text style={{
-          fontWeight: 'bold',
-          color: 'black',
-          backgroundColor: 'yellow',
-          fontSize: 26,
-        }}>
-          {item.orderNumber}
-        </Text>
-      </View>
+      <Card style={{margin:5, marginBottom:1,}}>
+        <Card.Content>
+          <Title>Order: {item.orderNumber}</Title>
+          <Paragraph>{item.content}</Paragraph>
+        </Card.Content>
+      </Card>
     )
   }
 
