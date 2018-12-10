@@ -1,5 +1,7 @@
 import React from 'react'
 import {View, Text, FlatList} from 'react-native'
+import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 import { setCompletedOrders } from '../redux/actions'
 
