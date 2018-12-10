@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Text, StyleSheet, Animated, Dimensions, PanResponder} from 'react-native'
-import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
-
+import { IconButton, Card, Title, Paragraph} from 'react-native-paper'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width} = Dimensions.get('window')
 
 export default class ListItem extends React.PureComponent {
@@ -57,9 +57,9 @@ export default class ListItem extends React.PureComponent {
   render() {
     return (
       <View style={styles.listItem}>
-      <View style={styles.absoluteCell}>
-        <Text style={styles.absoluteCellText}>CLEAR</Text>
-      </View>
+        <View style={styles.absoluteCell}>
+          <Icon style={{marginLeft: 10,}}name="check" size={42} color="white"/>
+        </View>
         <Animated.View style={[this.state.position.getLayout()]} {...this.panResponder.panHandlers}>
           <View style={styles.innerCell}>
             <Card style={{margin:5, marginBottom:1,}}>
@@ -77,25 +77,26 @@ export default class ListItem extends React.PureComponent {
 
 const styles = StyleSheet.create({
   listItem: {
-    justifyContent: 'center',
-    marginLeft: -100,
+    flex:1,
+
   },
   absoluteCell: {
     position: 'absolute',
+    marginTop:10,
+    marginLeft:10,
+    height: 80,
     top: 0,
     bottom: 0,
     left: 0,
-    width: 100,
+    width: width - 20,
+    backgroundColor: 'green',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
 
   },
   absoluteCellText: {
-    margin: 16,
-    color: '#FFF',
+
   },
-  innerCell: {
-    marginLeft: 100,
-  },
+
 })
