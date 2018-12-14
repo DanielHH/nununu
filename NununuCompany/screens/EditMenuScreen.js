@@ -6,8 +6,14 @@ import { connection } from '../feathersSetup'
 
 export default class EditMenuScreen extends React.Component {
   state = {
-    data: [],
+    data: [...Array(10)].map((d, index) => ({
+      id: index,
+      name: 'Hamburgare',
+      price: String(index + 10),
+      backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
+    })),
   }
+
 
   constructor(props) {
     super(props)
@@ -23,37 +29,23 @@ export default class EditMenuScreen extends React.Component {
   }
 
   addArticle = (name, price) => {
-    connection.productService.create({
-      name: name,
-      price: price,
-    }).then((product) => {
-      let data_copy = [...this.state.data]
-      data_copy.push(product)
-      this.setState({data: data_copy})
-      this.props.navigation.goBack(null)
-    }, (reason) => {
-      // TODO: error handling
-      console.log('error: ', reason)
-    })
+    let data_copy = [...this.state.data]
+    data_copy.push({id: data_copy.length, name: name, price: price, backgroundColor: 'red'})
+    this.setState({data: data_copy})
+    this.props.navigation.goBack(null)
   }
 
   editArticle = (id, name, price) => {
-    connection.productService.patch(id, {
-      name: name,
-      price: price,
-    }).then((product) => {
-      let data_copy = [...this.state.data]
-      for (let i = 0; i < data_copy.length; i++) {
-        if (data_copy[i].id === product.id) {
-          data_copy[i] = product
-        }
+    let data_copy = [...this.state.data]
+    for (let i = 0; i < data_copy.length; i++) {
+      if (data_copy[i].id === id) {
+        data_copy[i].name = name
+        data_copy[i].price = price
+        this.setState({data: data_copy})
+        break
       }
-      this.setState({data: data_copy})
-      this.props.navigation.goBack(null)
-    }, (reason) => {
-      // TODO: error handling
-      console.log('error: ', reason)
-    })
+    }
+    this.props.navigation.goBack(null)
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
