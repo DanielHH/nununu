@@ -2,16 +2,17 @@ import React from 'react'
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
+import { IconButton, Card, Title, Paragraph} from 'react-native-paper'
 import { connection } from '../feathersSetup'
 
 export default class EditMenuScreen extends React.Component {
   state = {
-    data: [...Array(10)].map((d, index) => ({
-      id: index,
-      name: 'Hamburgare',
-      price: String(index + 10),
-      backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
-    })),
+    data: [
+      {id: 0, name: 'La Mejicana', price: '79'},
+      {id: 1, name: 'Sukaldari', price: '95'},
+      {id: 2, name: 'BBQ Cheese', price: '89'},
+      {id: 3, name: 'The Original', price: '89'},
+      {id: 4, name: 'Angus', price: '89'}],
   }
 
 
@@ -30,7 +31,7 @@ export default class EditMenuScreen extends React.Component {
 
   addArticle = (name, price) => {
     let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, price: price, backgroundColor: 'red'})
+    data_copy.push({id: data_copy.length, name: name, price: price})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
@@ -52,31 +53,20 @@ export default class EditMenuScreen extends React.Component {
     return (
       <TouchableOpacity
         style={{
-          height: 100,
-          backgroundColor: isActive ? 'blue' : item.backgroundColor,
+          backgroundColor: isActive ? 'gray' : item.backgroundColor,
           alignItems: 'center',
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditArticle', {editArticle: this.editArticle, item: item})}
-      >
-        <Text style={{
-          fontWeight: 'bold',
-          color: 'white',
-          fontSize: 32,
-        }}>
-          {item.name}
-        </Text>
-        <Text style={{
-          fontWeight: 'bold',
-          color: 'black',
-          fontSize: 32,
-          backgroundColor: 'green',
-        }}>
-          {item.price}
-        </Text>
+        onPress={() => this.props.navigation.navigate('EditArticle', {editArticle: this.editArticle, item: item})}>
+        <Card style={{flex:1 ,margin:5, marginBottom:5}}>
+          <Card.Content>
+            <Title>{item.name}</Title>
+            <Paragraph> {item.price} kr</Paragraph>
+          </Card.Content>
+        </Card>
       </TouchableOpacity>
     )
   }

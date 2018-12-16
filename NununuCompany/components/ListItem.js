@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, Text, StyleSheet, Animated, Dimensions, PanResponder} from 'react-native'
 import { IconButton, Card, Title, Paragraph} from 'react-native-paper'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 const {width} = Dimensions.get('window')
 
 export default class ListItem extends React.PureComponent {

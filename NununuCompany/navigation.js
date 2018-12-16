@@ -43,7 +43,7 @@ const OrderStackNav = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Ordrar',
       headerLeft: (
-        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
+        <Icon style={{marginLeft: 10,}} name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
@@ -55,7 +55,7 @@ const EditMenuStackNav = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Redigera meny',
       headerLeft: (
-        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
+        <Icon style={{marginLeft: 10,}} name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
