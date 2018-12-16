@@ -1,8 +1,8 @@
 import React from 'react'
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'
+import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
-import { IconButton, Card, Title, Paragraph} from 'react-native-paper'
+import { Card, Title, Paragraph} from 'react-native-paper'
 import { connection } from '../feathersSetup'
 
 export default class EditMenuScreen extends React.Component {
