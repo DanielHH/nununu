@@ -8,11 +8,11 @@ import { connection } from '../feathersSetup'
 export default class EditMenuScreen extends React.Component {
   state = {
     data: [
-      {id: 0, name: 'La Mejicana', price: '79'},
-      {id: 1, name: 'Sukaldari', price: '95'},
-      {id: 2, name: 'BBQ Cheese', price: '89'},
-      {id: 3, name: 'The Original', price: '89'},
-      {id: 4, name: 'Angus', price: '89'}],
+      {id: 0, name: 'La Mejicana', price: '79', description: 'bmb'},
+      {id: 1, name: 'Sukaldari', price: '95', description: 'bmb'},
+      {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb'},
+      {id: 3, name: 'The Original', price: '89', description: 'bmb'},
+      {id: 4, name: 'Angus', price: '89', description: 'bmb'}],
   }
 
 
@@ -29,19 +29,20 @@ export default class EditMenuScreen extends React.Component {
     })
   }
 
-  addArticle = (name, price) => {
+  addArticle = (name, price, description) => {
     let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, price: price})
+    data_copy.push({id: data_copy.length, name: name, price: price, description: description})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
 
-  editArticle = (id, name, price) => {
+  editArticle = (id, name, price, description) => {
     let data_copy = [...this.state.data]
     for (let i = 0; i < data_copy.length; i++) {
       if (data_copy[i].id === id) {
         data_copy[i].name = name
         data_copy[i].price = price
+        data_copy[i].description = description
         this.setState({data: data_copy})
         break
       }
@@ -65,6 +66,7 @@ export default class EditMenuScreen extends React.Component {
           <Card.Content>
             <Title>{item.name}</Title>
             <Paragraph> {item.price} kr</Paragraph>
+            <Paragraph> {item.description}</Paragraph>
           </Card.Content>
         </Card>
       </TouchableOpacity>
