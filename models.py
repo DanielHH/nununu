@@ -1,0 +1,96 @@
+from sqlalchemy.orm import validates
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timedelta
+import jwt, logging
+
+SECRET_KEY = 'nununu ar en bra app for den hungrige'
+db = SQLAlchemy()
+
+
+class Company(db.Model):
+    __tablename__ = 'company'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    reg_date = db.Column(db.DateTime)
+
+    def __init__(self, name):
+        self.name = name
+        self.reg_date = datetime.utcnow()
+
+class Product(db.Model):
+    __tablename__ = 'product'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Decimal, nullable=False) # important must be able to store decimals!
+    create_date = db.Column(db.DateTime)
+
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price
+        self.create_date = datetime.utcnow()
+
+class Purchase(db.Model):
+    __tablename__ = 'purchase'
+    id = db.Column(db.Integer, primary_key=True)
+    order_number = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(255), nullable=False)
+    purchase_date = db.Column(db.DateTime)
+
+    def __init__(self, order_number, status):
+        self.order_number = order_number
+        self.status = status
+        self.purchase_date = datetime.utcnow()
+
+class PurchaseItem(db.Model):
+    __tablename__ = 'purchaseitem'
+    id = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.integer, nullable=False)
+    price_per_item = db.Column(db.Decimal, nullable=False) # important must be able to store decimals!
+
+    def __init__(self, quantity, price_per_item):
+        self.quantity = quantity
+        self.price_per_item = price_per_item
+
+
+class User(db.Model):
+    """
+    The User class is used to handle a user of Nununu.
+    """
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    reg_date = db.Column(db.DateTime)
+
+    def __init__(self, email, password):
+        self.validate_password(password)
+        self.email = email
+        self.password = password
+        self.reg_date = datetime.utcnow()
+
+    def generate_token(self):
+        token = jwt.encode({
+            'exp': datetime.utcnow() + timedelta(days=7),
+            'iat': datetime.utcnow(),
+            'email': self.email,
+            }, SECRET_KEY, algorithm='HS256')
+        return token
+
+    def verify_password(self, password):
+        return self.password == password
+
+    def validate_password(self, password):
+        """ used to validate a password """
+        if len(password) <= 2:
+            raise ValueError('password too short')
+
+    @staticmethod
+    def verify_token(token):
+        try:
+            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
+                user = User.query.filter(User.email == decoded_token['email']).first()
+                if user.token == token:
+                    return user
+        except Exception as e:
+            logging.warning("Faulty token: " + repr(e))
