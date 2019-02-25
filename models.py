@@ -15,7 +15,7 @@ class Company(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     owner = db.relationship("User", backref=db.backref("company", uselist=False))
     # a company has many products
-    products = db.relationship("Product", backref="company")
+    products = db.relationship("Product", back_populates="company")
 
     def __init__(self, name):
         self.name = name
@@ -28,6 +28,8 @@ class Product(db.Model):
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
     create_date = db.Column(db.DateTime)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
+    company = db.relationship("Company", back_populates="products")
 
     def __init__(self, name, price, category=None):
         self.name = name
@@ -85,7 +87,7 @@ class User(db.Model):
             'exp': datetime.utcnow() + timedelta(days=7),
             'iat': datetime.utcnow(),
             'email': self.email,
-            }, SECRET_KEY, algorithm='HS256')
+            }, SECRET_KEY, algorithm='HS256').decode('utf-8')
         return token
 
     def verify_password(self, password):
