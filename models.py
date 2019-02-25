@@ -1,4 +1,3 @@
-from sqlalchemy.orm import validates
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import jwt, logging
@@ -12,22 +11,34 @@ class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     reg_date = db.Column(db.DateTime)
+    # for now: a company has ONE owner and the user has A company
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    owner = db.relationship("User", backref=db.backref("company", uselist=False))
+    # a company has many products
+    products = db.relationship("Product", backref="company")
 
     def __init__(self, name):
         self.name = name
         self.reg_date = datetime.utcnow()
 
+
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    price = db.Column(db.Decimal, nullable=False) # important must be able to store decimals!
+    price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
     create_date = db.Column(db.DateTime)
 
-    def __init__(self, name, price):
+    def __init__(self, name, price, category=None):
         self.name = name
         self.price = price
+        if category:
+            self.category = category
         self.create_date = datetime.utcnow()
+
+    def jsonify(self):
+        return {'id': self.id, 'name': self.name, 'price': self.price}
+
 
 class Purchase(db.Model):
     __tablename__ = 'purchase'
@@ -41,11 +52,12 @@ class Purchase(db.Model):
         self.status = status
         self.purchase_date = datetime.utcnow()
 
+
 class PurchaseItem(db.Model):
     __tablename__ = 'purchaseitem'
     id = db.Column(db.Integer, primary_key=True)
-    quantity = db.Column(db.integer, nullable=False)
-    price_per_item = db.Column(db.Decimal, nullable=False) # important must be able to store decimals!
+    quantity = db.Column(db.Integer, nullable=False)
+    price_per_item = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
 
     def __init__(self, quantity, price_per_item):
         self.quantity = quantity
@@ -89,8 +101,6 @@ class User(db.Model):
         try:
             decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
-                user = User.query.filter(User.email == decoded_token['email']).first()
-                if user.token == token:
-                    return user
+                return User.query.filter(User.email == decoded_token['email']).first()
         except Exception as e:
             logging.warning("Faulty token: " + repr(e))

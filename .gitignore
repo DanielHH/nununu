@@ -1,0 +1,13 @@
+.DS_Store
+bin/
+include/
+lib/
+local/
+.Python
+pip-selfcheck.json
+*.pyc
+Scripts/
+tcl/
+share/
+*database.db
+__pycache__/
