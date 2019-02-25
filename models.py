@@ -21,6 +21,9 @@ class Company(db.Model):
         self.name = name
         self.reg_date = datetime.utcnow()
 
+    def serialize(self):
+        return {'id': self.id, 'name': self.name}
+
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -39,8 +42,8 @@ class Product(db.Model):
             self.category = category
         self.create_date = datetime.utcnow()
 
-    def jsonify(self):
-        return {'id': self.id, 'name': self.name, 'price': self.price}
+    def serialize(self):
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'category': self.category}
 
 
 class Purchase(db.Model):

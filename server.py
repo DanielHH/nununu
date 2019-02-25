@@ -77,7 +77,7 @@ def create_company():
         new_company.owner = g.user
         db.session.add(new_company)
         db.session.commit()
-        result = "company created", 200
+        result = json.dumps(new_company.serialize()), 200
     return result
 
 @app.route("/company/<company_id>/products", methods=['GET'])
@@ -85,8 +85,8 @@ def get_products(company_id):
     result = "company not found", 404
     company = Company.query.filter(Company.id == company_id).first()
     if company:
-        product_json = [product.jsonify() for product in company.products]
-        json.dumps({'products': product_json}), 200
+        product_json = [product.serialize() for product in company.products]
+        result = json.dumps({'products': product_json}), 200
     return result
 
 @app.route("/product/create", methods=['POST'])
@@ -103,7 +103,7 @@ def create_product():
         new_product.company = company
         db.session.add(new_product)
         db.session.commit()
-        result = "product created", 200
+        result = json.dumps(new_product.serialize()), 200
     return result
 
 @app.route("/product/edit/<product_id>", methods=['POST'])
@@ -121,7 +121,7 @@ def edit_product(product_id):
                 product.price = json_data['price']
                 db.session.add(product)
                 db.session.commit()
-                result = "product edited", 200
+                result = json.dumps(product.serialize()), 200
     return result
 
 @app.route("/product/delete/<product_id>", methods=['POST'])
@@ -136,5 +136,5 @@ def delete_product(product_id):
             result = "product deleted", 200
     return result
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     app.run()

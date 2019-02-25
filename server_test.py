@@ -1,7 +1,13 @@
 import json, unittest
 import server
+from decimal import Decimal
 
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
+
+company1 = {'companyName': 'Nununu'}
+
+product1 = {'name': 'hamburgare', 'price': 10.99, 'category': 'mat'}
+product2 = {'name': 'falafel', 'price': 5.49}
 
 class ServerTestCases(unittest.TestCase):
 
@@ -18,9 +24,25 @@ class ServerTestCases(unittest.TestCase):
         """
         Sign in a user and returns a valid token
         """
-        token_response = self.tester.post('/user/sign-in', data=json.dumps(user), content_type = 'application/json')
-        token = json.loads(token_response.data.decode(encoding='UTF-8'))['token']
+        response = self.tester.post('/user/sign-in', data=json.dumps(user), content_type = 'application/json')
+        token = json.loads(response.data.decode(encoding='UTF-8'))['token']
         return token
+
+    def create_company(self, company, token):
+        """
+        Creates a company for the user whos token it is
+        """
+        response = self.tester.post('/company/create', data=json.dumps(company), headers={'Authorization': token}, content_type = 'application/json')
+        created_company = json.loads(response.data.decode(encoding='UTF-8'))
+        return created_company
+
+    def create_product(self, product, token):
+        """
+        Creates a product for the company the user whos token it is is owner of
+        """
+        response = self.tester.post('/product/create', data=json.dumps(product), headers={'Authorization': token}, content_type = 'application/json')
+        created_product = json.loads(response.data.decode(encoding='UTF-8'))
+        return created_product
 
     def setUp(self):
         # 'DEBUG' True causes AssertionError: A setup function was called after the first request was handled.
@@ -68,6 +90,58 @@ class ServerTestCases(unittest.TestCase):
         json_data = json.dumps({'oldPassword': user1['password'], 'newPassword': '12'})
         response = self.tester.post('/user/change-password', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_response_create_company(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        json_data = json.dumps(company1)
+        response = self.tester.post('/company/create', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_create_product(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        self.create_company(company1, token)
+        json_data = json.dumps(product1)
+        response = self.tester.post('/product/create', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_edit_product(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        self.create_company(company1, token)
+        prod = self.create_product(product2, token)
+        edited_product = {'name': product2['name'], 'price': 10.9900001, 'category': 'varmmat'}
+        json_data = json.dumps(edited_product)
+        response = self.tester.post('/product/edit/' + str(prod['id']), data=json_data, headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+        retrieved_edited_product = json.loads(response.data.decode(encoding='UTF-8'))
+        self.assertNotEqual(Decimal(edited_product['price']), Decimal(retrieved_edited_product['price']))
+        self.assertEqual(edited_product['name'], retrieved_edited_product['name'])
+        self.assertEqual(edited_product['category'], retrieved_edited_product['category'])
+
+    def test_response_delete_product(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        self.create_company(company1, token)
+        prod1 = self.create_product(product1, token)
+        response = self.tester.post('/product/delete/' + str(prod1['id']), headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_response_get_a_companys_products(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        company = self.create_company(company1, token)
+        prod1 = self.create_product(product1, token)
+        prod2 = self.create_product(product2, token)
+        response = self.tester.get('/company/' + str(company['id']) + '/products', headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+        products = json.loads(response.data.decode(encoding='UTF-8'))['products']
+        self.assertEqual(len(products), 2)
+        product_ids = [prod['id'] for prod in products]
+        self.assertNotEqual(prod1['id'], prod2['id'])
+        self.assertTrue(prod1['id'] in product_ids)
+        self.assertTrue(prod2['id'] in product_ids)
 
 
 if __name__ == '__main__':
