@@ -11,3 +11,5 @@ tcl/
 share/
 *database.db
 __pycache__/
+.coverage
+htmlcov/
