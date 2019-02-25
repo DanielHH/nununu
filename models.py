@@ -27,6 +27,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
+    category = db.Column(db.String(255), nullable=True)
     create_date = db.Column(db.DateTime)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="products")
@@ -72,7 +73,7 @@ class User(db.Model):
     """
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     reg_date = db.Column(db.DateTime)
 

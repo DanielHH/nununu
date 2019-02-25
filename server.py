@@ -80,10 +80,10 @@ def create_company():
         result = "company created", 200
     return result
 
-@app.route("/company/<id>/products", methods=['GET'])
-def get_products(id):
+@app.route("/company/<company_id>/products", methods=['GET'])
+def get_products(company_id):
     result = "company not found", 404
-    company = Company.query.filter(Company.id == id).first()
+    company = Company.query.filter(Company.id == company_id).first()
     if company:
         product_json = [product.jsonify() for product in company.products]
         json.dumps({'products': product_json}), 200
@@ -104,6 +104,36 @@ def create_product():
         db.session.add(new_product)
         db.session.commit()
         result = "product created", 200
+    return result
+
+@app.route("/product/edit/<product_id>", methods=['POST'])
+@verify_token
+def edit_product(product_id):
+    result = "product not edited", 400
+    product = Product.query.filter(Product.id == product_id).first()
+    if product:
+        if g.user == product.company.owner:
+            json_data = request.get_json()
+            if 'category' in json_data: # category is optional
+                product.category = json_data['category']
+            if 'name' in json_data and 'price' in json_data:
+                product.name = json_data['name']
+                product.price = json_data['price']
+                db.session.add(product)
+                db.session.commit()
+                result = "product edited", 200
+    return result
+
+@app.route("/product/delete/<product_id>", methods=['POST'])
+@verify_token
+def delete_product(product_id):
+    result = "product not deleted", 400
+    product = Product.query.filter(Product.id == product_id).first()
+    if product:
+        if g.user == product.company.owner:
+            db.session.delete(product)
+            db.session.commit()
+            result = "product deleted", 200
     return result
 
 if __name__ == "__main__":
