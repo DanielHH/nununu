@@ -1,5 +1,5 @@
 from flask import Flask, request, g, abort
-from models import db, User, Company
+from models import db, User, Company, Product
 from functools import wraps
 import json
 
@@ -28,13 +28,14 @@ def verify_token(func):
 
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
-    result = "json error", 400
+    result = "user not created", 400
     json_data = request.get_json()
-    new_user = User(json_data['email'], json_data['password'])
-    if new_user:
-        db.session.add(new_user)
-        db.session.commit()
-        result = "user signed up", 200
+    if User.valid_password(json_data['password']):
+        new_user = User(json_data['email'], json_data['password'])
+        if new_user:
+            db.session.add(new_user)
+            db.session.commit()
+            result = "user signed up", 200
     return result
 
 @app.route("/user/sign-in", methods=['POST'])
@@ -58,11 +59,12 @@ def change_password():
     if 'oldPassword' in json_data and 'newPassword' in json_data:
         result = "newpassword not matching oldPassword", 400
         if g.user.password == json_data['oldPassword']:
-            g.user.validate_password(json_data['newPassword'])
-            g.user.password = json_data['newPassword']
-            db.session.add(g.user)
-            db.session.commit()
-            result = "password changed", 200
+            result = 'invalid password', 400
+            if g.user.valid_password(json_data['newPassword']):
+                g.user.password = json_data['newPassword']
+                db.session.add(g.user)
+                db.session.commit()
+                result = "password changed", 200
     return result
 
 @app.route("/company/create", methods=['POST'])

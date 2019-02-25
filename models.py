@@ -77,7 +77,6 @@ class User(db.Model):
     reg_date = db.Column(db.DateTime)
 
     def __init__(self, email, password):
-        self.validate_password(password)
         self.email = email
         self.password = password
         self.reg_date = datetime.utcnow()
@@ -93,10 +92,13 @@ class User(db.Model):
     def verify_password(self, password):
         return self.password == password
 
-    def validate_password(self, password):
+    @staticmethod
+    def valid_password(password):
         """ used to validate a password """
-        if len(password) <= 2:
-            raise ValueError('password too short')
+        result = False
+        if len(password) > 2:
+            result = True
+        return result
 
     @staticmethod
     def verify_token(token):

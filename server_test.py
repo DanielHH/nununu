@@ -66,8 +66,8 @@ class ServerTestCases(unittest.TestCase):
         self.sign_up_user(user1)
         token = self.sign_in_user(user1)
         json_data = json.dumps({'oldPassword': user1['password'], 'newPassword': '12'})
-        with self.assertRaises(ValueError):
-            self.tester.post('/user/change-password', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
+        response = self.tester.post('/user/change-password', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
+        self.assertEqual(response.status_code, 400)
 
 
 if __name__ == '__main__':
