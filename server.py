@@ -1,5 +1,5 @@
 from flask import Flask, request, g, abort
-from models import db, User, Company, Product
+from models import db, User, Company, Product, Purchase, PurchaseItem
 from functools import wraps
 import json
 
@@ -26,6 +26,7 @@ def verify_token(func):
         return func(*args, **kwargs)
     return wrapper
 
+
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
     result = "user not created", 400
@@ -37,6 +38,7 @@ def sign_up():
             db.session.commit()
             result = "user signed up", 200
     return result
+
 
 @app.route("/user/sign-in", methods=['POST'])
 def sign_in():
@@ -50,6 +52,7 @@ def sign_in():
                 token = user.generate_token()
                 result = json.dumps({'token': token}), 200
     return result
+
 
 @app.route("/user/change-password", methods=['POST'])
 @verify_token
@@ -67,6 +70,7 @@ def change_password():
                 result = "password changed", 200
     return result
 
+
 @app.route("/company/create", methods=['POST'])
 @verify_token
 def create_company():
@@ -80,6 +84,23 @@ def create_company():
         result = json.dumps(new_company.serialize()), 200
     return result
 
+
+@app.route("/company/<company_id>", methods=['GET'])
+def get_companies(company_id=None):
+    result = "no companies", 400
+    if company_id:
+        # get a single company
+        result = "company not found", 404
+        company = Company.query.filter(Company.id == company_id).first()
+        if company:
+            result = json.dumps(company.serialize()), 200
+    else:
+        # for now: get ALL companies
+        companies = Company.query.filter(Company.id == company_id).all()
+        result = json.dumps({'companies': [company.serialize() for company in companies]}), 200
+    return result
+
+
 @app.route("/company/<company_id>/products", methods=['GET'])
 def get_products(company_id):
     result = "company not found", 404
@@ -88,6 +109,7 @@ def get_products(company_id):
         product_json = [product.serialize() for product in company.products]
         result = json.dumps({'products': product_json}), 200
     return result
+
 
 @app.route("/product/create", methods=['POST'])
 @verify_token
@@ -105,6 +127,7 @@ def create_product():
         db.session.commit()
         result = json.dumps(new_product.serialize()), 200
     return result
+
 
 @app.route("/product/edit/<product_id>", methods=['POST'])
 @verify_token
@@ -124,6 +147,7 @@ def edit_product(product_id):
                 result = json.dumps(product.serialize()), 200
     return result
 
+
 @app.route("/product/delete/<product_id>", methods=['POST'])
 @verify_token
 def delete_product(product_id):
@@ -135,6 +159,42 @@ def delete_product(product_id):
             db.session.commit()
             result = "product deleted", 200
     return result
+
+
+@app.route("/purchase", methods=['POST'])
+def purchase(product_id):
+    # expected json:
+    # {'products': [{'id': 1, 'quantity': 3}, {'id': 3, 'quantity': 1}]}
+    json_data = request.get_json()
+    if 'products' in json_data and len(json_data['products'] > 0):
+        new_purchase = Purchase()
+        company = None
+        for product in json_data['products']:
+            found_product = Product.query.filter(Product.id == product['id']).first()
+            if found_product:
+                if company:
+                    if found_product.company != company:
+                        abort(403) # forbidden to buy from two different companies at the same time
+                    else:
+                        company = found_product.company
+                new_purchase_item = PurchaseItem(product['quantity'], found_product.price)
+                new_purchase_item.product = found_product
+                new_purchase.purchase_items.append(new_purchase_item)
+        new_purchase.company = company
+        new_purchase.setPrice()
+        db.session.add(new_purchase)
+        db.session.commit()
+
+
+    result = "product not deleted", 400
+    product = Product.query.filter(Product.id == product_id).first()
+    if product:
+        if g.user == product.company.owner:
+            db.session.delete(product)
+            db.session.commit()
+            result = "product deleted", 200
+    return result
+
 
 if __name__ == "__main__": # pragma: no cover
     app.run()

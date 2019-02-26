@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from decimal import Decimal
 import jwt, logging
 
 SECRET_KEY = 'nununu ar en bra app for den hungrige'
@@ -16,6 +17,8 @@ class Company(db.Model):
     owner = db.relationship("User", backref=db.backref("company", uselist=False))
     # a company has many products
     products = db.relationship("Product", back_populates="company")
+    # a company has many purchases
+    purchases = db.relationship("Purchase", back_populates="company")
 
     def __init__(self, name):
         self.name = name
@@ -49,14 +52,24 @@ class Product(db.Model):
 class Purchase(db.Model):
     __tablename__ = 'purchase'
     id = db.Column(db.Integer, primary_key=True)
-    order_number = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(255), nullable=False)
     purchase_date = db.Column(db.DateTime)
+    total_price = db.Column(db.DECIMAL)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
+    company = db.relationship("Company", back_populates="purchases")
+    # A purchase can be composed of many products
+    purchase_items = db.relationship("PurchaseItem", back_populates="purchase")
 
-    def __init__(self, order_number, status):
-        self.order_number = order_number
-        self.status = status
+    def __init__(self):
+        self.status = "not done"
         self.purchase_date = datetime.utcnow()
+
+    def setPrice(self):
+        # calculates and sets the total price for the purchase
+        price = Decimal(0)
+        for purhase_item in purchase_items:
+            price += purhase_item.price_per_item * purchase_item.quantity
+        self.total_price = price
 
 
 class PurchaseItem(db.Model):
@@ -64,6 +77,11 @@ class PurchaseItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
     price_per_item = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
+    purchase_id = db.Column(db.Integer, db.ForeignKey('purchase.id'))
+    purchase = db.relationship("Purchase", back_populates="purchase_items")
+    # a relation to the purchased product
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship("Product")
 
     def __init__(self, quantity, price_per_item):
         self.quantity = quantity
