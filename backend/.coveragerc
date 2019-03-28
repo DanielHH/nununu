@@ -1,0 +1,7 @@
+# .coveragerc to control coverage.py
+
+[run]
+# specify in include which files to test
+include =
+  models.py
+  server.py
