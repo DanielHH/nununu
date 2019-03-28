@@ -69,3 +69,18 @@ package-lock.json
 # ReactCommon subdir shouldn't have Xcode project
 /ReactCommon/**/*.xcodeproj
 RNTester/build
+
+bin/
+include/
+lib/
+local/
+.Python
+pip-selfcheck.json
+*.pyc
+Scripts/
+tcl/
+share/
+*database.db
+__pycache__/
+.coverage
+htmlcov/
