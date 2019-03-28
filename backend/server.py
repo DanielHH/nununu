@@ -162,10 +162,11 @@ def delete_product(product_id):
 
 
 @app.route("/purchase", methods=['POST'])
-def purchase(product_id):
+def purchase():
     # expected json:
     # {'products': [{'id': 1, 'quantity': 3}, {'id': 3, 'quantity': 1}]}
     json_data = request.get_json()
+    result = "faulty json", 400
     if 'products' in json_data and len(json_data['products'] > 0):
         new_purchase = Purchase()
         company = None
@@ -175,24 +176,18 @@ def purchase(product_id):
                 if company:
                     if found_product.company != company:
                         abort(403) # forbidden to buy from two different companies at the same time
-                    else:
-                        company = found_product.company
+                else:
+                    company = found_product.company
                 new_purchase_item = PurchaseItem(product['quantity'], found_product.price)
                 new_purchase_item.product = found_product
                 new_purchase.purchase_items.append(new_purchase_item)
+            else:
+                abort(404) # a product was not found
         new_purchase.company = company
         new_purchase.setPrice()
         db.session.add(new_purchase)
         db.session.commit()
-
-
-    result = "product not deleted", 400
-    product = Product.query.filter(Product.id == product_id).first()
-    if product:
-        if g.user == product.company.owner:
-            db.session.delete(product)
-            db.session.commit()
-            result = "product deleted", 200
+        result = new_purchase.serialize(), 200
     return result
 
 
