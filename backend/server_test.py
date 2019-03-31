@@ -5,6 +5,7 @@ from decimal import Decimal
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
 
 company1 = {'companyName': 'Nununu'}
+company2 = {'companyName': 'Matvagnen'}
 
 product1 = {'name': 'hamburgare', 'price': 10.99, 'category': 'mat'}
 product2 = {'name': 'falafel', 'price': 5.49}
@@ -97,6 +98,29 @@ class ServerTestCases(unittest.TestCase):
         json_data = json.dumps(company1)
         response = self.tester.post('/company/create', data=json_data, headers={'Authorization': token}, content_type = 'application/json')
         self.assertEqual(response.status_code, 200)
+
+    def test_response_get_a_company(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        company = self.create_company(company1, token)
+        response = self.tester.get('/company/' + str(company['id']), content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+        retrieved_company = json.loads(response.data.decode(encoding='UTF-8'))
+        self.assertEqual(retrieved_company['id'], company['id'])
+        self.assertEqual(retrieved_company['name'], company['name'])
+
+    def test_response_get_all_companies(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        company_c1 = self.create_company(company1, token)
+        company_c2 = self.create_company(company2, token)
+        response = self.tester.get('/companies', content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+        retrieved_companys = json.loads(response.data.decode(encoding='UTF-8'))
+        self.assertEqual(len(retrieved_companys), 2)
+        company_ids = [comp['id'] for comp in retrieved_companys]
+        self.assertIn(company_c1['id'], company_ids)
+        self.assertIn(company_c2['id'], company_ids)
 
     def test_response_create_product(self):
         self.sign_up_user(user1)

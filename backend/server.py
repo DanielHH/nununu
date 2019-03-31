@@ -86,18 +86,20 @@ def create_company():
 
 
 @app.route("/company/<company_id>", methods=['GET'])
-def get_companies(company_id=None):
-    result = "no companies", 400
-    if company_id:
-        # get a single company
-        result = "company not found", 404
-        company = Company.query.filter(Company.id == company_id).first()
-        if company:
-            result = json.dumps(company.serialize()), 200
-    else:
-        # for now: get ALL companies
-        companies = Company.query.filter(Company.id == company_id).all()
-        result = json.dumps({'companies': [company.serialize() for company in companies]}), 200
+def get_company(company_id):
+    # get a single company
+    result = "company not found", 404
+    company = Company.query.filter(Company.id == company_id).first()
+    if company:
+        result = json.dumps(company.serialize()), 200
+    return result
+
+
+@app.route("/companies", methods=['GET'])
+def get_companies():
+    # for now: get ALL companies
+    companies = Company.query.all()
+    result = json.dumps([company.serialize() for company in companies]), 200
     return result
 
 
