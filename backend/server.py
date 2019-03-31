@@ -169,7 +169,7 @@ def purchase():
     # {'products': [{'id': 1, 'quantity': 3}, {'id': 3, 'quantity': 1}]}
     json_data = request.get_json()
     result = "faulty json", 400
-    if 'products' in json_data and len(json_data['products'] > 0):
+    if 'products' in json_data and len(json_data['products']) > 0:
         new_purchase = Purchase()
         company = None
         for product in json_data['products']:
@@ -189,7 +189,7 @@ def purchase():
         new_purchase.setPrice()
         db.session.add(new_purchase)
         db.session.commit()
-        result = new_purchase.serialize(), 200
+        result = json.dumps(new_purchase.serialize()), 200
     return result
 
 

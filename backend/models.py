@@ -67,8 +67,8 @@ class Purchase(db.Model):
     def setPrice(self):
         # calculates and sets the total price for the purchase
         price = Decimal(0)
-        for purhase_item in purchase_items:
-            price += purhase_item.price_per_item * purchase_item.quantity
+        for purchase_item in self.purchase_items:
+            price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
     def paySwish(self):
@@ -94,7 +94,10 @@ class Purchase(db.Model):
         return result[:-1] # remove trailing comma
 
     def serialize(self):
-        pass
+        return {'id': self.id,
+                'totalPrice': str(self.total_price),
+                'company': self.company.serialize(),
+                'items': [item.serialize() for item in self.purchase_items]}
 
 
 class PurchaseItem(db.Model):
@@ -111,6 +114,10 @@ class PurchaseItem(db.Model):
     def __init__(self, quantity, price_per_item):
         self.quantity = quantity
         self.price_per_item = price_per_item
+
+    def serialize(self):
+        return {'id': self.id, 'name': self.product.name, 'quantity': self.quantity,
+                'pricePerItem': str(self.price_per_item)}
 
 
 class User(db.Model):

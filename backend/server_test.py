@@ -167,6 +167,30 @@ class ServerTestCases(unittest.TestCase):
         self.assertTrue(prod1['id'] in product_ids)
         self.assertTrue(prod2['id'] in product_ids)
 
+    def test_response_make_a_valid_purchase(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        company = self.create_company(company1, token)
+        prod1 = self.create_product(product1, token)
+        prod2 = self.create_product(product2, token)
+        to_buy = {'products': [{'id': prod1['id'], 'quantity': 3}, {'id': prod2['id'], 'quantity': 1}]}
+        response = self.tester.post('/purchase', data=json.dumps(to_buy), content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+        purchase = json.loads(response.data.decode(encoding='UTF-8'))
+        totPrice = Decimal(0)
+        for item in purchase['items']:
+            totPrice += item['quantity']*Decimal(item['pricePerItem'])
+        self.assertEqual(company['name'], purchase['company']['name'])
+        self.assertEqual(Decimal(purchase['totalPrice']), totPrice)
+
+    def test_response_try_to_purchase_products_from_different_companies(self):
+        pass
+        # should be invalid
+
+    def test_response_try_to_purchase_non_existing_product(self):
+        pass
+        # should be invalid
+
 
 if __name__ == '__main__':
     unittest.main()
