@@ -82,5 +82,6 @@ tcl/
 share/
 *database.db
 __pycache__/
+pyvenv.cfg
 .coverage
 htmlcov/

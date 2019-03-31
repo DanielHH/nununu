@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from decimal import Decimal
-import jwt, logging
+import jwt, logging, swish
 
 SECRET_KEY = 'nununu ar en bra app for den hungrige'
 db = SQLAlchemy()
@@ -70,6 +70,31 @@ class Purchase(db.Model):
         for purhase_item in purchase_items:
             price += purhase_item.price_per_item * purchase_item.quantity
         self.total_price = price
+
+    def paySwish(self):
+        swish_client = swish.SwishClient(
+            environment=swish.Environment.Test,
+            merchant_swish_number=self.company.swish_number,
+            cert=('/certs/' + self.company.id + '/cert.pem', '/certs/' + self.company.id + '/key.pem'),
+            verify= '/certs/' + self.company.id + '/swish.pem'
+        )
+        payment = swish_client.create_payment(
+            payee_payment_reference=self.id,
+            callback_url='https://example.com/api/swishcb/paymentrequests',
+            amount=self.total_price,
+            currency='SEK',
+            message=self.createSwishMessage()
+        )
+        return payment
+
+    def createSwishMessage(self):
+        result = ""
+        for item in self.purchase_items:
+            item.quantity + " " + item.product.name + ","
+        return result[:-1] # remove trailing comma
+
+    def serialize(self):
+        pass
 
 
 class PurchaseItem(db.Model):

@@ -191,5 +191,13 @@ def purchase():
     return result
 
 
+@app.route("/pay/<string:payment_method>/<int:purchase_id>", methods=['POST'])
+def pay(payment_method, purchase_id):
+    if payment_method == "swish":
+        found_purchase = Purchase.query.filter(Purchase.id == purchase_id).first()
+        payment = found_purchase.paySwish()
+        return payment.request_token, 200
+
+
 if __name__ == "__main__": # pragma: no cover
     app.run()
