@@ -199,5 +199,16 @@ def pay(payment_method, purchase_id):
         return payment.request_token, 200
 
 
+@app.route("/swishcallback/paymentrequest", methods=['POST'])
+def swishcbPaymentrequest():
+    """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
+    json_data = request.get_json()
+    if json_data.status == "PAID":
+        # order is paid for
+        # (1) notify foodtruck they have a new order
+        # (2) notify the one that purchased it that payment has gone through
+        return "", 200
+
+
 if __name__ == "__main__": # pragma: no cover
     app.run()

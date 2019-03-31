@@ -80,7 +80,7 @@ class Purchase(db.Model):
         )
         payment = swish_client.create_payment(
             payee_payment_reference=self.id,
-            callback_url='https://example.com/api/swishcb/paymentrequests',
+            callback_url='https://societygo.com/nununu/swishcallback/paymentrequest',
             amount=self.total_price,
             currency='SEK',
             message=self.createSwishMessage()
