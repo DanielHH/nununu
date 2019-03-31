@@ -3,6 +3,7 @@ import server
 from decimal import Decimal
 
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
+user2 = {'email': 'kajsa@anka.se', 'password': '4321'}
 
 company1 = {'companyName': 'Nununu'}
 company2 = {'companyName': 'Matvagnen'}
@@ -184,12 +185,30 @@ class ServerTestCases(unittest.TestCase):
         self.assertEqual(Decimal(purchase['totalPrice']), totPrice)
 
     def test_response_try_to_purchase_products_from_different_companies(self):
-        pass
         # should be invalid
+        self.sign_up_user(user1)
+        self.sign_up_user(user2)
+        token1 = self.sign_in_user(user1)
+        token2 = self.sign_in_user(user2)
+        comp1 = self.create_company(company1, token1)
+        comp2 = self.create_company(company2, token2)
+        prod1 = self.create_product(product1, token1)
+        prod2 = self.create_product(product2, token2)
+        to_buy = {'products': [{'id': prod1['id'], 'quantity': 3}, {'id': prod2['id'], 'quantity': 1}]}
+        response = self.tester.post('/purchase', data=json.dumps(to_buy), content_type = 'application/json')
+        self.assertEqual(response.status_code, 403)
 
     def test_response_try_to_purchase_non_existing_product(self):
-        pass
         # should be invalid
+        to_buy = {'products': [{'id': 1, 'quantity': 3}]}
+        response = self.tester.post('/purchase', data=json.dumps(to_buy), content_type = 'application/json')
+        self.assertEqual(response.status_code, 404)
+
+    def test_response_try_to_purchase_nothing(self):
+        # should be invalid
+        to_buy = {'products': []}
+        response = self.tester.post('/purchase', data=json.dumps(to_buy), content_type = 'application/json')
+        self.assertEqual(response.status_code, 400)
 
 
 if __name__ == '__main__':
