@@ -1,17 +1,21 @@
-version: '3'
+version: '3.7'
 services:
   web:
     build: ./app
+    environment:
+      - DOCKER=True
+      - WAIT_BEFORE_HOSTS=5
+      - WAIT_HOSTS=db:5432
+    depends_on:
+      - db
     links:
       - db:db
   db:
-    image: postgres:11
+    image: postgres:11.2
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - "5432:5432"
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testdb
   nginx:
     build: ./nginx
     ports:
@@ -19,5 +23,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/app.conf:/etc/nginx/conf.d/app.conf
+    depends_on:
+      - web
     links:
       - web:web

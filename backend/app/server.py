@@ -1,10 +1,15 @@
 from flask import Flask, request, g, abort
 from models import db, User, Company, Product, Purchase, PurchaseItem
 from functools import wraps
-import json
+import json, os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+if 'DOCKER' in os.environ:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@db/testdb'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():
