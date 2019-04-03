@@ -21,3 +21,16 @@
 
 #### View coverage report
 Open the file htmlcov/index.html in a web browser
+
+
+# docker
+
+## build image
+  ```
+  docker-compose build
+  ```
+
+## run image
+  ```
+  docker-compose up
+  ```

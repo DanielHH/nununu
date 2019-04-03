@@ -27,6 +27,11 @@ def verify_token(func):
     return wrapper
 
 
+@app.route("/", methods=['GET'])
+def hello():
+    return "helooo", 200
+
+
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
     result = "user not created", 400
@@ -213,4 +218,4 @@ def swishcbPaymentrequest():
 
 
 if __name__ == "__main__": # pragma: no cover
-    app.run()
+    app.run(host='0.0.0.0')
