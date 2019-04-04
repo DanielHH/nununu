@@ -6,7 +6,7 @@ user1 = {'email': 'kalle@anka.se', 'password': '1234'}
 user2 = {'email': 'kajsa@anka.se', 'password': '4321'}
 
 company1 = {'companyName': 'Nununu'}
-company2 = {'companyName': 'Matvagnen'}
+company2 = {'companyName': 'test', 'swishNumber': 1231181189}
 
 product1 = {'name': 'hamburgare', 'price': 10.99, 'category': 'mat'}
 product2 = {'name': 'falafel', 'price': 5.49}

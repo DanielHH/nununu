@@ -10,7 +10,8 @@ db = SQLAlchemy()
 class Company(db.Model):
     __tablename__ = 'company'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    swish_number = db.Column(db.Integer, nullable=False)
     reg_date = db.Column(db.DateTime)
     # for now: a company has ONE owner and the user has A company
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -75,8 +76,8 @@ class Purchase(db.Model):
         swish_client = swish.SwishClient(
             environment=swish.Environment.Test,
             merchant_swish_number=self.company.swish_number,
-            cert=('/certs/' + self.company.id + '/cert.pem', '/certs/' + self.company.id + '/key.pem'),
-            verify= '/certs/' + self.company.id + '/swish.pem'
+            cert=('/certs/' + self.company.name + '/merchant.pem', '/certs/' + self.company.name + '/merchant.key'),
+            verify= '/certs/' + self.company.name + '/swish.pem'
         )
         payment = swish_client.create_payment(
             payee_payment_reference=self.id,
