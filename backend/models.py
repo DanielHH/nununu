@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from decimal import Decimal
 import jwt, logging
-from server import app,db
+from app_config import app,db
 
 class Company(db.Model):
     __tablename__ = 'company'

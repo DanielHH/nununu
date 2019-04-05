@@ -1,14 +1,11 @@
-from flask import Flask, request, g, abort
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, g, abort
 from functools import wraps
+from datetime import datetime
+import jwt, logging
 import json
+from app_config import app
 import database_helper as db_helper
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["SECRET_KEY"] = 'nununu ar en bra app for den hungrige'
-db = SQLAlchemy(app)
 
 def verify_token(func):
     """
@@ -19,7 +16,7 @@ def verify_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         token = request.headers.get('Authorization')
-        g.user = db_helper.verify_token(token)
+        g.user = verify_token(token)
         if not g.user:
             abort(401)
         return func(*args, **kwargs)
@@ -162,6 +159,15 @@ def valid_password(password):
     if len(password) > 2:
         result = True
     return result
+
+
+def verify_token(token):
+    try:
+        decoded_token = jwt.decode(token, app.config["SECRET_KEY"], algorithms=['HS256'])
+        if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
+            return db_helper.get_user_by_email(decoded_token['email'])
+    except Exception as e:
+        logging.warning("Faulty token: " + repr(e))
 
 
 if __name__ == "__main__": # pragma: no cover

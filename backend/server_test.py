@@ -1,12 +1,14 @@
 import json, unittest
 import server
+import app_config as server
+from app_config import db
 from decimal import Decimal
 
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
 
 company1 = {'companyName': 'Nununu'}
 
-product1 = {'name': 'hamburgare', 'price': 10.99, 'category': 'mat'}
+product1 = {'name': 'hamburgare', 'price': 10.99, 'company': company1, 'category': 'mat'}
 product2 = {'name': 'falafel', 'price': 5.49}
 
 class ServerTestCases(unittest.TestCase):

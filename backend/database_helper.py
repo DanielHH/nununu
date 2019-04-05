@@ -1,18 +1,9 @@
-from server import db
+from app_config import db
 from models import User, Company, Product, Purchase, PurchaseItem
 
 ##############################
 ### User related functions ###
 ##############################
-def verify_token(token):
-    try:
-        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
-            return User.query.filter(User.email == decoded_token['email']).first()
-    except Exception as e:
-        logging.warning("Faulty token: " + repr(e))
-
-
 def create_user(email, password):
     new_user = User(email, password)
     if new_user:
@@ -22,7 +13,7 @@ def create_user(email, password):
 
 
 def get_user_by_email(email):
-    return User.query.filter(email=email).first()
+    return User.query.filter_by(email=email).first()
 
 
 def change_password(user, password, new_password):
@@ -33,6 +24,7 @@ def change_password(user, password, new_password):
     else:
         return False
 
+
 #################################
 ### Company related functions ###
 #################################
@@ -40,17 +32,17 @@ def create_company(company_name, user):
     new_company = Company(company_name, user)
     if new_company:
         save_to_db(new_company)
-        return company
+        return new_company
 
 
 def get_company_by_id(company_id):
-    return Company.query.filter(id=company_id).first()
+    return Company.query.filter_by(id=company_id).first()
 
 
 #################################
 ### Product related functions ###
 #################################
-def create_product(name, price, company, category,):
+def create_product(name, price, company, category):
     new_product = Product(name, price, company, category)
     if new_product:
         save_to_db(new_product)
@@ -58,7 +50,7 @@ def create_product(name, price, company, category,):
 
 
 def get_product_by_id(product_id):
-    return Product.query.filter(id=product_id).first()
+    return Product.query.filter_by(id=product_id).first()
 
 
 def edit_product(product_id, owner, json_data):
