@@ -21,9 +21,13 @@ class Company(db.Model):
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
 
-    def __init__(self, name):
+    def __init__(self, name, swishNumber=None):
         self.name = name
         self.reg_date = datetime.utcnow()
+        if swishNumber and name == "test":
+            # TODO: Change,should NOT be done like this. This is ONLY for testing/dev purpose.
+            # Certificates and swish number should be installed by us in contact with the company.
+            self.swish_number = swishNumber
 
     def serialize(self):
         return {'id': self.id, 'name': self.name}
