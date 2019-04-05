@@ -2,10 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from decimal import Decimal
 import jwt, logging
-
-SECRET_KEY = 'nununu ar en bra app for den hungrige'
-db = SQLAlchemy()
-
+from server import app,db
 
 class Company(db.Model):
     __tablename__ = 'company'
@@ -20,8 +17,9 @@ class Company(db.Model):
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
 
-    def __init__(self, name):
+    def __init__(self, name, owner):
         self.name = name
+        self.ower = owner
         self.reg_date = datetime.utcnow()
 
     def serialize(self):
@@ -38,9 +36,10 @@ class Product(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="products")
 
-    def __init__(self, name, price, category=None):
+    def __init__(self, name, price, company, category=None):
         self.name = name
         self.price = price
+        self.company = company
         if category:
             self.category = category
         self.create_date = datetime.utcnow()
@@ -108,25 +107,8 @@ class User(db.Model):
             'exp': datetime.utcnow() + timedelta(days=7),
             'iat': datetime.utcnow(),
             'email': self.email,
-            }, SECRET_KEY, algorithm='HS256').decode('utf-8')
+            }, app.config["SECRET_KEY"], algorithm='HS256').decode('utf-8')
         return token
 
     def verify_password(self, password):
         return self.password == password
-
-    @staticmethod
-    def valid_password(password):
-        """ used to validate a password """
-        result = False
-        if len(password) > 2:
-            result = True
-        return result
-
-    @staticmethod
-    def verify_token(token):
-        try:
-            decoded_token = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-            if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
-                return User.query.filter(User.email == decoded_token['email']).first()
-        except Exception as e:
-            logging.warning("Faulty token: " + repr(e))
