@@ -66,7 +66,8 @@ def change_password():
 def create_company():
     result = "company not created", 400
     json_data = request.get_json()
-    new_company = db_helper.create_company(json_data['companyName'], g.user)
+    owner = db_helper.get_user_by_email(json_data['owner']['email'])
+    new_company = db_helper.create_company(json_data['companyName'], owner)
     if new_company:
         result = json.dumps(new_company.serialize()), 200
     return result
@@ -121,7 +122,7 @@ def edit_product(product_id):
 @app.route("/product/delete/<product_id>", methods=['POST'])
 @verify_token
 def delete_product(product_id):
-    return db_helper.delete_product(product_id)
+    return db_helper.delete_product(product_id, g.user)
 
 
 @app.route("/purchase", methods=['POST'])

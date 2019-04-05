@@ -28,8 +28,8 @@ def change_password(user, password, new_password):
 #################################
 ### Company related functions ###
 #################################
-def create_company(company_name, user):
-    new_company = Company(company_name, user)
+def create_company(company_name, owner):
+    new_company = Company(company_name, owner)
     if new_company:
         save_to_db(new_company)
         return new_company

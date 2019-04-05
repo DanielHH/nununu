@@ -6,7 +6,7 @@ from decimal import Decimal
 
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
 
-company1 = {'companyName': 'Nununu'}
+company1 = {'companyName': 'Nununu', 'owner': user1}
 
 product1 = {'name': 'hamburgare', 'price': 10.99, 'company': company1, 'category': 'mat'}
 product2 = {'name': 'falafel', 'price': 5.49}
@@ -20,7 +20,7 @@ class ServerTestCases(unittest.TestCase):
         """
         Populates the tester db with a user
         """
-        self.tester.post('/user/sign-up', data=json.dumps(user), content_type = 'application/json')
+        response = self.tester.post('/user/sign-up', data=json.dumps(user), content_type = 'application/json')
 
     def sign_in_user(self, user):
         """

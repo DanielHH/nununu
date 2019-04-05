@@ -19,7 +19,7 @@ class Company(db.Model):
 
     def __init__(self, name, owner):
         self.name = name
-        self.ower = owner
+        self.owner = owner
         self.reg_date = datetime.utcnow()
 
     def serialize(self):
