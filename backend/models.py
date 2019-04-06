@@ -102,6 +102,13 @@ class User(db.Model):
         self.password = password
         self.reg_date = datetime.utcnow()
 
+    def __eq__(self, other):
+        return self.id == other.id
+
+
+    def __hash__(self):
+        return hash(str(self))
+
     def generate_token(self):
         token = jwt.encode({
             'exp': datetime.utcnow() + timedelta(days=7),

@@ -16,7 +16,7 @@ def verify_token(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         token = request.headers.get('Authorization')
-        g.user = verify_token(token)
+        g.user = verify_user_token(token)
         if not g.user:
             abort(401)
         return func(*args, **kwargs)
@@ -53,11 +53,11 @@ def change_password():
     result = "password not changed", 400
     json_data = request.get_json()
     if 'oldPassword' in json_data and 'newPassword' in json_data:
-        result = "newpassword not matching oldPassword", 400
+        result = 'invalid password', 400
         if valid_password(json_data['newPassword']):
-            result = 'invalid password', 400
+            result = "old password doesn't match current password", 400
             if db_helper.change_password(g.user, json_data['oldPassword'], json_data['newPassword']):
-                result = "password changed", 200
+                result = 'password changed', 200
     return result
 
 
@@ -67,7 +67,10 @@ def create_company():
     result = "company not created", 400
     json_data = request.get_json()
     owner = db_helper.get_user_by_email(json_data['owner']['email'])
-    new_company = db_helper.create_company(json_data['companyName'], owner)
+    new_company = None
+    if owner == g.user:
+        new_company = db_helper.create_company(json_data['companyName'], owner)
+
     if new_company:
         result = json.dumps(new_company.serialize()), 200
     return result
@@ -162,7 +165,7 @@ def valid_password(password):
     return result
 
 
-def verify_token(token):
+def verify_user_token(token):
     try:
         decoded_token = jwt.decode(token, app.config["SECRET_KEY"], algorithms=['HS256'])
         if datetime.utcnow() < datetime.fromtimestamp(decoded_token['exp']):
