@@ -1,9 +1,9 @@
 {
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "packagerPort": 19001,
+  "packagerPid": 7764,
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://cf-c2f.dalbino.nununu.exp.direct",
+  "packagerNgrokUrl": "https://packager.cf-c2f.dalbino.nununu.exp.direct",
+  "ngrokPid": 13508,
   "devToolsPort": 19002
 }
