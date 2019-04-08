@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, SectionList, StyleSheet} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -85,9 +85,9 @@ export default class HomeScreen extends React.Component {
                   <View style={styles.verticalDivider}/>
 
                   <View style={styles.quantity}>
-                    <IconButton icon="add" size={24} onPress={() => this.changeQuantity(item, true)}/>
+                    <Ionicons name="ios-add" size={32} onPress={() => this.changeQuantity(item, true)}/>
                     <Text>{item.quantity}</Text>
-                    <IconButton icon="remove" size={24} onPress={() => this.changeQuantity(item, false)}/>
+                    <Ionicons name="ios-remove" size={32} onPress={() => this.changeQuantity(item, false)}/>
                   </View>
                 </View>
               </Card.Content>
