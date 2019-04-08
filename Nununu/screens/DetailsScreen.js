@@ -2,9 +2,10 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { Button as PaperButton} from 'react-native-paper'
 import { Card } from 'react-native-paper'
-import { createIconSetFromFontello } from '@expo/vector-icons'
+import { createIconSetFromFontello } from 'react-native-vector-icons'
 import fontelloConfig from '../config.json'
-const Icon = createIconSetFromFontello(fontelloConfig, 'FontName')
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
+const Icon = createIconSetFromFontello(fontelloConfig)
 
 
 export default class DetailsScreen extends React.Component {
@@ -30,8 +31,14 @@ export default class DetailsScreen extends React.Component {
         <Text style={{fontSize: 30, marginTop: 100}}>{this.props.navigation.state.params[0].quantity}st {this.props.navigation.state.params[0].name}</Text>
         <Text style={{fontSize: 25}}>Totalt: {this.props.navigation.state.params[0].price}</Text>
 
+        { /*
         <Text style={styles.rotate}>
-          <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>
+           <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>  
+        </Text>
+        */}
+
+        <Text style={newStyles.rotate}>
+          <MaterialIcons style={styles.shadow} name="confirmation-number" size={200} color="#eddbbf"/>
         </Text>
         <Text style={{position: 'absolute', bottom: 100, fontSize: 70}}>#{Math.floor(Math.random()*10 + 1)}</Text>
 
@@ -52,5 +59,20 @@ const styles = StyleSheet.create({
       {rotate: '270deg'},
       {scaleX: 2},
       {scaleY: 2}]
+ },
+})
+
+const newStyles = StyleSheet.create({
+  shadow: {
+    textShadowOffset:{width:1, height:0},
+    shadowOpacity:0.7
+  },
+  rotate: {
+    position:'absolute',
+    bottom: -60,
+    transform: [
+      {rotate: '90deg'},
+      {scaleX: 2.5},
+      {scaleY: 2.5}]
  },
 })
