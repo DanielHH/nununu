@@ -1,5 +1,28 @@
 # Nununu backend
 
+## Run, build & test
+
+### With Docker
+
+#### build image
+  ```
+  docker-compose build
+  ```
+
+#### run image (-d for silent, do without to see debug logs in terminal)
+  ```
+  docker-compose up -d
+  ```
+
+### Without Docker
+```
+pip install -r requirements.txt
+```
+
+```
+source bin/activate
+```
+
 ## Starting the server
   ```
   python server.py
@@ -21,16 +44,3 @@
 
 #### View coverage report
 Open the file htmlcov/index.html in a web browser
-
-
-# docker
-
-## build image
-  ```
-  docker-compose build
-  ```
-
-## run image
-  ```
-  docker-compose up
-  ```
