@@ -70,8 +70,7 @@ def delete_product(product_id, owner):
     product = get_product_by_id(product_id)
     if product:
         if owner == product.company.owner:
-            db.session.delete(product)
-            db.session.commit()
+            delete_from_db(product)
             return "product deleted", 200
     return "product not deleted", 400
 
@@ -101,6 +100,9 @@ def save_to_db(entry):
     db.session.add(entry)
     db.session.commit()
 
+def delete_from_db(entry):
+    db.session.delete(entry)
+    db.session.commit()
 
 def db_reset():
     db.drop_all()
