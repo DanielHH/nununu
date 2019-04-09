@@ -85,9 +85,9 @@ export default class HomeScreen extends React.Component {
                   <View style={styles.verticalDivider}/>
 
                   <View style={styles.quantity}>
-                    <Ionicons name="ios-add" size={32} onPress={() => this.changeQuantity(item, true)}/>
+                    <IconButton icon="add" size={24} onPress={() => this.changeQuantity(item, true)}/>
                     <Text>{item.quantity}</Text>
-                    <Ionicons name="ios-remove" size={32} onPress={() => this.changeQuantity(item, false)}/>
+                    <IconButton icon="remove" size={24} onPress={() => this.changeQuantity(item, false)}/>
                   </View>
                 </View>
               </Card.Content>
