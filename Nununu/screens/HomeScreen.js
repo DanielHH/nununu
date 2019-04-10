@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, SectionList, StyleSheet} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons'
+import { MaterialCommunityIcons} from '@expo/vector-icons'
 
 export default class HomeScreen extends React.Component {
   state = {

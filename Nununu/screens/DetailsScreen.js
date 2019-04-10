@@ -35,11 +35,12 @@ export default class DetailsScreen extends React.Component {
         <Text style={styles.rotate}>
            <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>  
         </Text>
-        */}
+      */}
 
         <Text style={newStyles.rotate}>
           <MaterialIcons style={styles.shadow} name="confirmation-number" size={200} color="#eddbbf"/>
         </Text>
+        
         <Text style={{position: 'absolute', bottom: 100, fontSize: 70}}>#{Math.floor(Math.random()*10 + 1)}</Text>
 
       </View>
