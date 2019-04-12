@@ -17,15 +17,46 @@ export default class ForgotPswScreen extends Component {
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
-                <Text style={styles.pswTitle}>Forgot your password?</Text>
-                <Text style={styles.description}> Please submit your email and {'\n'} we will reset your password.</Text>
+                <Text style={styles.pswTitle}>Register User and Company</Text>
+                <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
-                  placeholder='Enter email'
+                  placeholder='Your name'
+                  placenholderTextColor='rgba(255,255,255,0.8)'
+                  keyboardType='default'
+                  returnKeyType='next'
+                  onSubmitEditing={() => { this.emailInput.focus() }}
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <TextInput style={styles.input}
+                  ref={(input) => { this.emailInput = input }}
+                  placeholder='Email'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='email-address'
+                  returnKeyType='next'
+                  onSubmitEditing={() => { this.companyInput.focus() }}
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <TextInput style={styles.input}
+                  ref={(input) => { this.companyInput = input }}
+                  placeholder='Company'
+                  placenholderTextColor='rgba(255,255,255,0.8)'
+                  keyboardType='default'
+                  returnKeyType='next'
+                  onSubmitEditing={() => { this.organisationInput.focus() }}
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <TextInput style={styles.input}
+                  ref={(input) => { this.organisationInput = input }}
+                  placeholder='Organisation number'
+                  placenholderTextColor='rgba(255,255,255,0.8)'
+                  keyboardType='numeric'
                   returnKeyType='go'
+                  //onSubmitEditing={() => { this.emailInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
