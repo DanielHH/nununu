@@ -68,18 +68,18 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   descriptionContainer:{
-    color: '#f7c744',
-    fontSize: 18,
-    opacity: 0.75,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   pswTitle:{
     color: '#f7c744',
-    fontSize: 18,
+    fontSize: 24,
     opacity: 0.75,
   },
   description:{
     color: '#f7c744',
-    fontSize: 18,
+    fontSize: 14,
     opacity: 0.75,
   },
   infoContainer: {
