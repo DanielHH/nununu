@@ -8,8 +8,7 @@ def create_user(email, password):
     new_user = User(email, password)
     if new_user:
         save_to_db(new_user)
-        return True
-    return False
+        return new_user
 
 
 def get_user_by_email(email):
@@ -71,8 +70,7 @@ def delete_product(product_id, owner):
     if product:
         if owner == product.company.owner:
             delete_from_db(product)
-            return "product deleted", 200
-    return "product not deleted", 400
+            return product
 
 
 ##################################
