@@ -125,7 +125,10 @@ def edit_product(product_id):
 @app.route("/product/delete/<product_id>", methods=['POST'])
 @verify_token
 def delete_product(product_id):
-    return db_helper.delete_product(product_id, g.user)
+    result = "product not deleted", 400
+    if db_helper.delete_product(product_id, g.user):
+        result = "product deleted", 200
+    return result
 
 
 @app.route("/purchase", methods=['POST'])
