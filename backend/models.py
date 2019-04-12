@@ -66,8 +66,8 @@ class Purchase(db.Model):
     def setPrice(self):
         # calculates and sets the total price for the purchase
         price = Decimal(0)
-        for purhase_item in purchase_items:
-            price += purhase_item.price_per_item * purchase_item.quantity
+        for purchase_item in self.purchase_items:
+            price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
 

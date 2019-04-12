@@ -134,7 +134,7 @@ def purchase():
     # {'products': [{'id': 1, 'quantity': 3}, {'id': 3, 'quantity': 1}]}
     json_data = request.get_json()
     result = "faulty json", 400
-    if 'products' in json_data and len(json_data['products'] > 0):
+    if 'products' in json_data and len(json_data['products']) > 0:
         new_purchase = db_helper.create_purchase()
         database_entries = []
         company = None
@@ -145,7 +145,7 @@ def purchase():
                 if company:
                     if found_product.company != company:
                         for entry in database_entries:
-                            database_helper.delete_from_db(entry)
+                            db_helper.delete_from_db(entry)
                         abort(403) # forbidden to buy from two different companies at the same time
                 else:
                     company = found_product.company
@@ -155,7 +155,7 @@ def purchase():
                 new_purchase.purchase_items.append(new_purchase_item)
             else:
                 for entry in database_entries:
-                    database_helper.delete_from_db(entry)
+                    db_helper.delete_from_db(entry)
                 abort(404) # a product was not found
         new_purchase.company = company
         new_purchase.setPrice()
