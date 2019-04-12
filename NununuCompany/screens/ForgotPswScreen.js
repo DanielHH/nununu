@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
+import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
 
@@ -16,12 +16,6 @@ export default class ForgotPswScreen extends Component {
         <KeyboardAvoidingView behaviour='padding' style={styles.container}>
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-              {/*
-              <View style={styles.logoContainer}>
-                <Image style={styles.logo} source={require('../images/nununu.png')}/>
-                <Text style={styles.title}> Company </Text>
-              </View>
-              */}
               <View style={styles.descriptionContainer}>
                 <Text style={styles.pswTitle}>Forgot your password?</Text>
                 <Text style={styles.description}> Please submit your email and {'\n'} we will reset your password.</Text>
