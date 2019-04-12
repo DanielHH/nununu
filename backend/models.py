@@ -70,6 +70,13 @@ class Purchase(db.Model):
             price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
+    def serialize(self):
+        return {'id': self.id, 
+        'status': self.status, 
+        'purchase_date': str(self.purchase_date), 
+        'total_price': str(self.total_price), 
+        'company_id': self.company_id}
+
 
 class PurchaseItem(db.Model):
     __tablename__ = 'purchaseitem'

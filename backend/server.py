@@ -163,7 +163,7 @@ def purchase():
         new_purchase.company = company
         new_purchase.setPrice()
         db_helper.save_to_db(new_purchase)
-        result = new_purchase.serialize(), 200
+        result = json.dumps(new_purchase.serialize()), 200
     return result
 
 
