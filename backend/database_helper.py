@@ -70,8 +70,7 @@ def delete_product(product_id, owner):
     if product:
         if owner == product.company.owner:
             delete_from_db(product)
-            return True
-    return False
+            return product
 
 
 ##################################
