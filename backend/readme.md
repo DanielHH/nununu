@@ -46,14 +46,14 @@ Open the file htmlcov/index.html in a web browser
 
 Requires docker and docker-compose to be installed on your system. 
 
-## build image
+#### build image
   ```
   docker-compose build
   ```
 
-## run image
+#### run image (silently with -d)
   ```
-  docker-compose up
+  docker-compose up -d
   ```
 
   
