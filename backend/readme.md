@@ -5,7 +5,7 @@ You  have two options:
 1. use a virtual environment if you just want to run the python code
 2. run using docker to run with nginx, postgresql db and python server app.
 
-### 1. 
+### 1. Virtual environment
 setup a virtual environment using Python3
 
 ```
