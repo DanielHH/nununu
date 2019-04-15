@@ -19,7 +19,7 @@ class CompletedOrderScreen extends React.Component {
         justifyContent: 'space-between',
       }}>
         <Text style={{
-          fontWeight: 'bold',
+          Weight: 'bold',
           color: 'white',
           fontSize: 26,
         }}>
