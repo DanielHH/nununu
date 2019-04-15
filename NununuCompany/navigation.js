@@ -5,7 +5,7 @@ import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
@@ -43,7 +43,7 @@ const OrderStackNav = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Ordrar',
       headerLeft: (
-        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
+        <MaterialCommunityIcons name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
@@ -55,7 +55,7 @@ const EditMenuStackNav = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Redigera meny',
       headerLeft: (
-        <Icon name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
+        <MaterialCommunityIcons name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
