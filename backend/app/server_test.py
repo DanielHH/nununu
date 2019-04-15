@@ -1,5 +1,7 @@
 import json, unittest
 import server
+import app_config as server
+from app_config import db
 from decimal import Decimal
 
 user1 = {'email': 'kalle@anka.se', 'password': '1234'}
@@ -20,7 +22,7 @@ class ServerTestCases(unittest.TestCase):
         """
         Populates the tester db with a user
         """
-        self.tester.post('/user/sign-up', data=json.dumps(user), content_type = 'application/json')
+        response = self.tester.post('/user/sign-up', data=json.dumps(user), content_type = 'application/json')
 
     def sign_in_user(self, user):
         """

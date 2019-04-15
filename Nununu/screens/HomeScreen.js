@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, SectionList, StyleSheet} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons} from '@expo/vector-icons'
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -56,7 +56,7 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Sukaldari',
     headerRight: (
-      <Icon name="silverware-variant" size={24} style={{marginRight: 15}}/>
+      <MaterialCommunityIcons name="silverware-variant" size={24} style={{marginRight: 15}}/>
     ),
     headerStyle: {
       backgroundColor: '#f4511e',

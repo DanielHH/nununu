@@ -70,6 +70,9 @@ package-lock.json
 /ReactCommon/**/*.xcodeproj
 RNTester/build
 
+# Expo
+.expo/
+
 bin/
 include/
 lib/
