@@ -3,7 +3,7 @@ import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
 
-export default class ForgotPswScreen extends Component {
+export default class RegisterUserScreen extends Component {
 
   constructor(props) {
     super(props)
