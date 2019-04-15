@@ -66,11 +66,7 @@ def change_password():
 def create_company():
     result = "company not created", 400
     json_data = request.get_json()
-    owner = db_helper.get_user_by_email(json_data['owner']['email'])
-    new_company = None
-    if owner == g.user:
-        new_company = db_helper.create_company(json_data['companyName'], owner)
-
+    new_company = db_helper.create_company(json_data['companyName'], g.user)
     if new_company:
         result = json.dumps(new_company.serialize()), 200
     return result
