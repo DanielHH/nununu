@@ -16,6 +16,7 @@ export default class App extends Component<Props> {
     this.conf = testExport()
   }
 
+
   render() {
     return (
       <Provider store={this.conf.store}>
