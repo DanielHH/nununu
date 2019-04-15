@@ -54,3 +54,9 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+# Expo 
+.expo/
+
+# package-lock
+package-lock.json
