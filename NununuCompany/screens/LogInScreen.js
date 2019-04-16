@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-          KeyboardAvoidingView} from 'react-native'
+          KeyboardAvoidingView, AsyncStorage} from 'react-native'
 
 export default class LogInScreen extends Component {
 
@@ -9,11 +9,16 @@ export default class LogInScreen extends Component {
     super(props)
   }
 
+  testLogin() {
+    AsyncStorage.setItem('userToken', 'testtest')
+    console.log(AsyncStorage.getItem('userToken'))
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
-        <KeyboardAvoidingView behaviour='padding' style={styles.container}>
+        <KeyboardAvoidingView behavior='padding' style={styles.container}>
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.logoContainer}>
@@ -40,7 +45,7 @@ export default class LogInScreen extends Component {
                   ref={'txtPassword'}
                 />
                 <TouchableOpacity style={styles.buttonContainer}>
-                  <Text style={styles.buttonText}>SIGN IN</Text>
+                  <Text onPress={this.testLogin} style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
                   <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
