@@ -13,15 +13,15 @@ export default class RegisterUserScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
-        <KeyboardAvoidingView behaviour='padding' style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior='padding'>
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
-                <Text style={styles.pswTitle}>Register User and Company</Text>
+                <Text style={styles.title}>Register User and Company</Text>
                 <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
               <View style={styles.infoContainer}>
-                <TextInput style={styles.input}
+               {/* <TextInput style={styles.input}
                   placeholder='Your name'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
@@ -29,13 +29,24 @@ export default class RegisterUserScreen extends Component {
                   onSubmitEditing={() => { this.emailInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
-                />
+                />*/}
                 <TextInput style={styles.input}
                   ref={(input) => { this.emailInput = input }}
                   placeholder='Email'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='email-address'
                   returnKeyType='next'
+                  onSubmitEditing={() => { this.passwordInput.focus() }}
+                  autoCorrect={false}
+                  blurOnSubmit={false}
+                />
+                <TextInput style={styles.input}
+                  ref={(input) => { this.passwordInput = input }}
+                  placeholder='Password'
+                  placenholderTextColor='rgba(255,255,255,0.8)'
+                  keyboardType='default'
+                  returnKeyType='next'
+                  secureTextEntry={true}
                   onSubmitEditing={() => { this.companyInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -87,17 +98,12 @@ const styles = StyleSheet.create({
     height: 56,
     width: 128,
   },
-  title:{
-    color: '#f7c744',
-    fontSize: 18,
-    opacity: 0.75,
-  },
   descriptionContainer:{
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pswTitle:{
+  title:{
     color: '#f7c744',
     fontSize: 24,
     opacity: 0.75,
@@ -110,7 +116,6 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     paddingHorizontal: 15,
-    //backgroundColor: 'red',
   },
   input: {
     height: 40,

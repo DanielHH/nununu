@@ -5,6 +5,7 @@ import { connection } from './feathersSetup'
 import { PersistGate } from 'redux-persist/integration/react'
 import testExport from './configureStore'
 import { Provider } from 'react-redux'
+import RegisterUserScreen from './screens/RegisterUserScreen'
 
 type Props = {};
 
@@ -21,7 +22,7 @@ export default class App extends Component<Props> {
       <Provider store={this.conf.store}>
         <PersistGate loading={null} persistor={this.conf.persistor}>
           <View style={{flex: 1}}>
-            <Navigation/>
+            <RegisterUserScreen/>
           </View>
         </PersistGate>
       </Provider>

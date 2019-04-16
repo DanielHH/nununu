@@ -13,7 +13,7 @@ export default class ForgotPswScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
-        <KeyboardAvoidingView behaviour='padding' style={styles.container}>
+        <KeyboardAvoidingView style={styles.container}  behavior='padding'>
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
