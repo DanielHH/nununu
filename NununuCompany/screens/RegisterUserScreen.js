@@ -21,7 +21,7 @@ export default class RegisterUserScreen extends Component {
                 <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
               <View style={styles.infoContainer}>
-               {/* <TextInput style={styles.input}
+                <TextInput style={styles.input}
                   placeholder='Your name'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
@@ -29,7 +29,7 @@ export default class RegisterUserScreen extends Component {
                   onSubmitEditing={() => { this.emailInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
-                />*/}
+                />
                 <TextInput style={styles.input}
                   ref={(input) => { this.emailInput = input }}
                   placeholder='Email'
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   infoContainer: {
-    flex: 1,
+    flex: 2,
     paddingHorizontal: 15,
   },
   input: {
