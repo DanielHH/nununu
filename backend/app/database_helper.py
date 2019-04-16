@@ -86,6 +86,10 @@ def create_purchase():
     return Purchase()
 
 
+def get_purchase_by_id(purchase_id):
+    return Purchase.query.filter(Purchase.id == purchase_id).first()
+
+
 #######################################
 ### Purchase item related functions ###
 #######################################

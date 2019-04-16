@@ -75,7 +75,7 @@ class Purchase(db.Model):
             price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
-    def paySwish(self):
+    def startPaySwish(self):
         swish_client = swish.SwishClient(
             environment=swish.Environment.Test,
             merchant_swish_number=self.company.swish_number,
@@ -84,7 +84,7 @@ class Purchase(db.Model):
         )
         payment = swish_client.create_payment(
             payee_payment_reference=self.id,
-            callback_url='https://societygo.com/nununu/swishcallback/paymentrequest',
+            callback_url='https://mastega.nu/swishcallback/paymentrequest',
             amount=self.total_price,
             currency='SEK',
             message=self.createSwishMessage()

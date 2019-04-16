@@ -169,10 +169,15 @@ def purchase():
 
 @app.route("/pay/<string:payment_method>/<int:purchase_id>", methods=['POST'])
 def pay(payment_method, purchase_id):
+    result = "not a valid payment method", 400
     if payment_method == "swish":
-        found_purchase = Purchase.query.filter(Purchase.id == purchase_id).first()
-        payment = found_purchase.paySwish()
-        return payment.request_token, 200
+        result = "purchase not found", 404
+        found_purchase = get_purchase_by_id(purchase_id)
+        if found_purchase:
+            payment = found_purchase.startPaySwish()
+            # return request token to client app and start swish with it
+            result = payment.request_token, 200
+    return result
 
 
 @app.route("/swishcallback/paymentrequest", methods=['POST'])
