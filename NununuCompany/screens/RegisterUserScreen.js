@@ -41,28 +41,6 @@ export default class RegisterUserScreen extends Component {
     })
   }
 
-  signUp() {
-    console.log(this.state)
-    var xmlhttp = new XMLHttpRequest()
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        var response = JSON.parse(xmlhttp.responseText)
-        console.log('success', xmlhttp.responseText)
-        if (response.success == false) {
-          console.warn('error')
-        }
-      }
-    }
-    this.sendXHR(xmlhttp, 'POST', 'https://mastega.nu/user/sign-up', this.state, false)
-  
-    return false
-  }
-
-  sendXHR(req, method, url, data = null, needAuth = true, asynch = true) {
-    req.open(method, url, asynch)
-    req.send(JSON.stringify(data))
-  }
-
   render() {
     return (
       <SafeAreaView style={styles.container}>
