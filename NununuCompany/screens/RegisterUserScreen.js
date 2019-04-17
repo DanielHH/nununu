@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
+import axios from 'axios'
 
 export default class RegisterUserScreen extends Component {
 
@@ -15,6 +16,22 @@ export default class RegisterUserScreen extends Component {
       company: '',
       orgnumber: '',
     }
+  }
+
+  signUpAxios() {
+    const user = {
+      email: 'daniel.herzegh@gmail.com',
+      password: '12345678',
+    }
+
+
+    axios.post('https://mastega.nu/user/signup', { user })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   }
 
   signUp() {
@@ -106,7 +123,7 @@ export default class RegisterUserScreen extends Component {
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
-                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUp()}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUpAxios()}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
