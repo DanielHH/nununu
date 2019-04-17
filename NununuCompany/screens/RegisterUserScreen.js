@@ -26,8 +26,8 @@ export default class RegisterUserScreen extends Component {
 
 
     axios.post('https://mastega.nu/user/signup', { user })
-    .then(res => {
-      console.log(res)
+    .then(function (response){
+      console.log(response)
     })
     .catch(function (error) {
       console.log(error)
