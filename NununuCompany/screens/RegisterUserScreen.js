@@ -1,3 +1,4 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 import React, {Component} from 'react'
 import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
@@ -19,15 +20,21 @@ export default class RegisterUserScreen extends Component {
   }
 
   signUpAxios() {
-    const user = {
-      email: 'daniel.herzegh@gmail.com',
-      password: '12345678',
-    }
+    axios.post('http://192.168.1.216:5000/user/sign-up', { 
+      email: this.state.email,
+      password: this.state.password })
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+  }
 
-
-    axios.post('https://mastega.nu/user/signup', { user })
-    .then(function (response){
-      console.log(response)
+  signUpAxios1() {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+    .then(res => {
+      console.log(res.data)
     })
     .catch(function (error) {
       console.log(error)
@@ -46,7 +53,7 @@ export default class RegisterUserScreen extends Component {
         }
       }
     }
-    this.sendXHR(xmlhttp, 'POST', 'https://mastega.nu/user/signup', this.state, false)
+    this.sendXHR(xmlhttp, 'POST', 'https://mastega.nu/user/sign-up', this.state, false)
   
     return false
   }
