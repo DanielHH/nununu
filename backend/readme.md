@@ -100,5 +100,5 @@ build image
 
 run image (silently with -d)
   ```
-  docker-compose up -d
+  CADDYFILE=./caddy/Caddyfile.prod docker-compose up -d
   ```

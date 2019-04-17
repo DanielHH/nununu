@@ -16,13 +16,15 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=testdb
-  nginx:
-    build: ./nginx
+  caddy:
+    image: abiosoft/caddy:0.11.5
+    environment:
+      - ACME_AGREE=true
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:2015"
+      - "443:2015"
     volumes:
-      - ./nginx/app.conf:/etc/nginx/conf.d/app.conf
+      - ${CADDYFILE}:/etc/Caddyfile
     depends_on:
       - web
     links:
