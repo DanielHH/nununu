@@ -1,2 +1,2 @@
-localhost
+0.0.0.0:80
 proxy / web:5000

@@ -21,8 +21,8 @@ services:
     environment:
       - ACME_AGREE=true
     ports:
-      - "80:2015"
-      - "443:2015"
+      - "80:80"
+      - "443:443"
     volumes:
       - ${CADDYFILE}:/etc/Caddyfile
     depends_on:
