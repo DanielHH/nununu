@@ -53,7 +53,7 @@ Requires docker and docker-compose to be installed on your system.
 
 #### run image (silently with -d)
   ```
-  docker-compose up -d
+  CADDYFILE=./caddy/Caddyfile.local docker-compose up -d
   ```
 
 
@@ -100,5 +100,5 @@ build image
 
 run image (silently with -d)
   ```
-  CADDYFILE=./caddy/Caddyfile.prod docker-compose up -d
+  docker-compose up -d
   ```
