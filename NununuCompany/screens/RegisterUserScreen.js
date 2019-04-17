@@ -7,6 +7,36 @@ export default class RegisterUserScreen extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      name: '',
+      email: '',
+      password: '',
+      company: '',
+      orgnumber: '',
+    }
+  }
+
+  signUp() {
+    console.log(this.state)
+    var xmlhttp = new XMLHttpRequest()
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var response = JSON.parse(xmlhttp.responseText)
+        console.log('success', xmlhttp.responseText)
+        if (response.success == false) {
+          console.warn('error')
+        }
+      }
+    }
+    this.sendXHR(xmlhttp, 'POST', 'https://mastega.nu/user/signup', this.state, false)
+  
+    return false
+  }
+
+  sendXHR(req, method, url, data = null, needAuth = true, asynch = true) {
+    req.open(method, url, asynch)
+    req.send(JSON.stringify(data))
   }
 
   render() {
@@ -26,6 +56,7 @@ export default class RegisterUserScreen extends Component {
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
                   returnKeyType='next'
+                  onChangeText={(text) => this.setState({name:text})}
                   onSubmitEditing={() => { this.emailInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -36,6 +67,7 @@ export default class RegisterUserScreen extends Component {
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='email-address'
                   returnKeyType='next'
+                  onChangeText={(text) => this.setState({email:text})}
                   onSubmitEditing={() => { this.passwordInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -47,6 +79,7 @@ export default class RegisterUserScreen extends Component {
                   keyboardType='default'
                   returnKeyType='next'
                   secureTextEntry={true}
+                  onChangeText={(text) => this.setState({password:text})}
                   onSubmitEditing={() => { this.companyInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -57,6 +90,7 @@ export default class RegisterUserScreen extends Component {
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
                   returnKeyType='next'
+                  onChangeText={(text) => this.setState({company:text})}
                   onSubmitEditing={() => { this.organisationInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -67,11 +101,12 @@ export default class RegisterUserScreen extends Component {
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='numeric'
                   returnKeyType='go'
-                  //onSubmitEditing={() => { this.emailInput.focus() }}
+                  onChangeText={(text) => this.setState({orgnumber:text})}
+                  // onSubmitEditing={() => { Keyboard.dismiss}}
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
-                <TouchableOpacity style={styles.buttonContainer}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUp()}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
@@ -82,6 +117,9 @@ export default class RegisterUserScreen extends Component {
     )
   }
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -132,6 +170,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: 'center',
-    color: '#FFF'
+    color: '#FFF',
   },
 })
