@@ -187,11 +187,13 @@ def pay(payment_method, purchase_id):
 def swishcbPaymentrequest():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
     json_data = request.get_json()
+    print(json_data)
     if json_data.status == "PAID":
+        pass
         # order is paid for
         # (1) notify foodtruck they have a new order
         # (2) notify the one that purchased it that payment has gone through
-        return "", 200
+    return "", 200
 
 
 def startPaySwish(purchase):
