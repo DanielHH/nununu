@@ -186,24 +186,26 @@ def pay(payment_method, purchase_id):
 @app.route("/swishcallback/paymentrequest", methods=['POST'])
 def swish_callback_payment_request():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
-    logging.warning(request)
     json_data = request.get_json()
-    logging.warning(json_data)
+    logging.debug(json_data)
     if 'payeePaymentReference' in json_data:
         purchase_id = json_data['payeePaymentReference']
         purchase = db_helper.get_purchase_by_id(purchase_id)
-        if json_data['status'] == 'PAID':
-            purchase.payment_status = 'PAID'
-            purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
-            db_helper.save_to_db(purchase)
-            # (1) notify foodtruck they have a new order
-            # (2) notify the one that purchased it that the payment has gone through
-        elif json_data['status'] == 'DECLINED':
-            # The payer declined to make the payment
-            pass
-        elif json_data['status'] == 'ERROR':
-            handle_swish_payment_request_error(json_data['errorCode'], purchase)
-    return "", 200
+        result = "payeePaymentReference not found", 404
+        if purchase:
+            result = "", 200
+            if json_data['status'] == 'PAID':
+                purchase.payment_status = 'PAID'
+                purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
+                db_helper.save_to_db(purchase)
+                # (1) notify foodtruck they have a new order
+                # (2) notify the one that purchased it that the payment has gone through
+            elif json_data['status'] == 'DECLINED':
+                # The payer declined to make the payment
+                pass
+            elif json_data['status'] == 'ERROR':
+                handle_swish_payment_request_error(json_data['errorCode'], purchase)
+    return result
 
 
 def start_pay_swish(purchase):
