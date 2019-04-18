@@ -65,6 +65,8 @@ class Purchase(db.Model):
     purchase_items = db.relationship("PurchaseItem", back_populates="purchase")
     swish_payment_id = db.Column(db.String(255))
     swish_payment_location = db.Column(db.String(255))
+    payment_status = db.Column(db.String(255))
+    payment_date = db.Column(db.DateTime)
 
     def __init__(self):
         self.status = "not done"

@@ -2,7 +2,7 @@ from flask import request, g, abort
 from functools import wraps
 from datetime import datetime
 from pathlib import Path
-import jwt, logging, json, os, swish
+import jwt, logging, json, os, swish, dateutil.parser
 from app_config import app
 import database_helper as db_helper
 
@@ -190,12 +190,14 @@ def swish_callback_payment_request():
     json_data = request.get_json()
     logging.warning(json_data)
     if 'payeePaymentReference' in json_data:
-        purchase = db_helper.get_purchase_by_id(json_data['payeePaymentReference'])
+        purchase_id = json_data['payeePaymentReference']
+        purchase = db_helper.get_purchase_by_id(purchase_id)
         if json_data['status'] == 'PAID':
-            # order is paid for
+            purchase.payment_status = 'PAID'
+            purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
+            db_helper.save_to_db(purchase)
             # (1) notify foodtruck they have a new order
             # (2) notify the one that purchased it that the payment has gone through
-            pass
         elif json_data['status'] == 'DECLINED':
             # The payer declined to make the payment
             pass
