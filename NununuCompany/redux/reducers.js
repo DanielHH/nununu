@@ -29,6 +29,25 @@ function order(state = initialOrderState, action) {
   }
 }
 
+
+const initialAuthState = {
+  token: {},
+  loading: true,
+  error: null
+}
+
+function authentication(state = initialAuthState, action) {
+  switch (action.type) {
+  case 'SAVE_TOKEN':
+    return {...state, token: action.token}
+  case 'REMOVE_TOKEN':
+    return {...state, token: null}
+  default:
+    return state
+  }
+}
+
 export const reducers = {
   order,
+  authentication,
 }

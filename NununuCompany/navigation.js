@@ -1,11 +1,33 @@
-import React from 'react'
-import {View, Text} from 'react-native'
-import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation'
+import React, { Component } from 'react'
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  AsyncStorage,
+  StatusBar,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Button,
+} from 'react-native'
+import {
+  createDrawerNavigator,
+  createMaterialTopTabNavigator,
+  createStackNavigator,
+  createSwitchNavigator,
+  createAppContainer,
+  DrawerItems} from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import LogInScreen from './screens/LogInScreen'
+import AuthLoadingScreen from './screens/AuthLoadingScreen'
+
+import { removeToken } from './redux/actions'
+import { connect } from 'react-redux'
+import CustomContentComponent from './drawerMenu'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
@@ -49,7 +71,7 @@ const OrderStackNav = createStackNavigator({
   },
 })
 
-const EditMenuStackNav = createStackNavigator({
+export const EditMenuStackNav = createStackNavigator({
   EditMenu: {
     screen: EditMenuScreen,
     navigationOptions: ({ navigation }) => ({
@@ -73,7 +95,7 @@ const EditMenuStackNav = createStackNavigator({
   },
 })
 
-const Drawer = createDrawerNavigator({
+let Drawer = createAppContainer(createDrawerNavigator({
   OrderStack: {
     screen: OrderStackNav,
     navigationOptions: {
@@ -86,6 +108,15 @@ const Drawer = createDrawerNavigator({
       drawerLabel: 'Redigera meny',
     },
   },
+
+}, {
+  drawerWidth: 300,
+  contentComponent: (props) => <CustomContentComponent {...props} />
+}))
+
+
+const mapDispatchToProps = dispatch => ({
+  removeUserToken: () => dispatch(removeToken())
 })
 
-export default Drawer
+export default connect(null, mapDispatchToProps)(Drawer)

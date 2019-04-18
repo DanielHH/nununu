@@ -2,15 +2,23 @@ import React, {Component} from 'react'
 import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           TextInput, SafeAreaView, Keyboard, TouchableOpacity,
           KeyboardAvoidingView, AsyncStorage} from 'react-native'
+import { connect } from 'react-redux'
+import { saveToken } from '../redux/actions'
 
-export default class LogInScreen extends Component {
+class LogInScreen extends Component {
 
   constructor(props) {
     super(props)
   }
 
-  testLogin() {
-    AsyncStorage.setItem('userToken', 'testtest')
+  testLogin = () => {
+    let token = 'TEST TOKEN'
+    this.props.saveUserToken(token)
+  }
+
+  testLogOut = () => {
+    console.log("TEST LOG OUT")
+    AsyncStorage.setItem('userToken', '')
     console.log(AsyncStorage.getItem('userToken'))
   }
 
@@ -51,7 +59,7 @@ export default class LogInScreen extends Component {
                   <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH FACEBOOK</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
+                  <TouchableOpacity onPress={this.testLogOut} style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH GOOGLE</Text>
                   </TouchableOpacity>
                 </View>
@@ -118,5 +126,10 @@ const styles = StyleSheet.create({
   googleButton: {
     backgroundColor: '#dd4b39'
   }
-
 })
+
+const mapDispatchToProps = dispatch => ({
+  saveUserToken: (token) => dispatch(saveToken(token))
+})
+
+export default connect(null, mapDispatchToProps)(LogInScreen)
