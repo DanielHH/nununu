@@ -16,7 +16,6 @@ class DrawerContentComponents extends Component {
         <View forceInset={{ top: 'always', horizontal: 'never' }}>
           <DrawerItems {...this.props} />
           <Button title="Logout" onPress={() => {
-            console.log(this)
             this.props.removeUserToken()}}/>
         </View>
       </SafeAreaView>
