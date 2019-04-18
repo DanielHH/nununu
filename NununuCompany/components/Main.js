@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Drawer from '../navigation'
 import { connect } from 'react-redux'
-import LogInScreen from '../screens/LogInScreen'
+import { AuthenticationStack } from '../navigation'
 
 class Main extends Component {
   render() {
@@ -9,7 +9,7 @@ class Main extends Component {
     if (this.props.token == null) {
       // USER NOT SIGNED IN
       return (
-        <LogInScreen />
+        <AuthenticationStack />
       )
     } else {
       // USER SIGNED IN

@@ -23,8 +23,8 @@ import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LogInScreen from './screens/LogInScreen'
-import AuthLoadingScreen from './screens/AuthLoadingScreen'
-
+import RegisterUserScreen from './screens/RegisterUserScreen'
+import ForgotPswScreen from './screens/ForgotPswScreen'
 import { removeToken } from './redux/actions'
 import { connect } from 'react-redux'
 import CustomContentComponent from './drawerMenu'
@@ -114,6 +114,18 @@ let Drawer = createAppContainer(createDrawerNavigator({
   contentComponent: (props) => <CustomContentComponent {...props} />
 }))
 
+export const AuthenticationStack = createAppContainer(createStackNavigator({
+  Login: {
+    screen: LogInScreen,
+  },
+  Register: {
+    screen: RegisterUserScreen,
+  },
+  ForgotPSW: {
+    screen: ForgotPswScreen,
+  }
+
+}, {headerMode: 'none'}))
 
 const mapDispatchToProps = dispatch => ({
   removeUserToken: () => dispatch(removeToken())

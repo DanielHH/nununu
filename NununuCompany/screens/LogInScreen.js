@@ -22,6 +22,10 @@ class LogInScreen extends Component {
     console.log(AsyncStorage.getItem('userToken'))
   }
 
+  testPrint = () => {
+    console.log("HEJEJEHEJH");
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -46,23 +50,25 @@ class LogInScreen extends Component {
                 <TextInput style={styles.input}
                   placeholder='Enter password'
                   placenholderTextColor='rgba(255,255,255,0.8)'
-                  KeyboardType='email-address'
                   returnKeyType='go'
                   autoCorrect={false}
                   secureTextEntry={true}
                   ref={'txtPassword'}
                 />
+                <Text onPress={() => this.props.navigation.navigate('ForgotPSW')} style={styles.forgotPswText}>Forgot Password</Text>
                 <TouchableOpacity style={styles.buttonContainer}>
                   <Text onPress={this.testLogin} style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
-                  <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
+                  <TouchableOpacity onPress={this.testPrint} style={[styles.buttonContainer, styles.faceboookButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH FACEBOOK</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={this.testLogOut} style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH GOOGLE</Text>
                   </TouchableOpacity>
                 </View>
+                <View style={styles.dividerDecorator}></View>
+                <Text onPress={() => this.props.navigation.navigate('Register')} style={styles.signUpText}>Sign Up</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -105,6 +111,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 64,
   },
+  forgotPswText: {
+      color: '#FFF',
+      textDecorationLine: 'underline',
+      alignSelf: 'flex-end',
+      marginTop: -20,
+      marginBottom: 20,
+  },
   buttonContainer: {
     backgroundColor: '#f7c744',
     borderRadius: 64,
@@ -125,7 +138,20 @@ const styles = StyleSheet.create({
   },
   googleButton: {
     backgroundColor: '#dd4b39'
-  }
+  },
+  dividerDecorator: {
+    backgroundColor: '#FFF',
+    height: 1,
+    width: 100,
+    marginTop: 30,
+    marginBottom: 20,
+    alignSelf: 'center'
+  },
+  signUpText: {
+    color: '#fff',
+
+    alignSelf: 'center'
+  },
 })
 
 const mapDispatchToProps = dispatch => ({
