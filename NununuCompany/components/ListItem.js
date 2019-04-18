@@ -1,6 +1,7 @@
 import React from 'react'
 import {View, Text, StyleSheet, Animated, Dimensions, PanResponder} from 'react-native'
-
+import { IconButton, Card, Title, Paragraph} from 'react-native-paper'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 const {width} = Dimensions.get('window')
 
 export default class ListItem extends React.PureComponent {
@@ -56,33 +57,17 @@ export default class ListItem extends React.PureComponent {
   render() {
     return (
       <View style={styles.listItem}>
+        <View style={styles.absoluteCell}>
+          <Icon style={{marginLeft: 10,}}name="check" size={42} color="white"/>
+        </View>
         <Animated.View style={[this.state.position.getLayout()]} {...this.panResponder.panHandlers}>
-          <View style={styles.absoluteCell}>
-            <Text style={styles.absoluteCellText}>CLEAR</Text>
-          </View>
           <View style={styles.innerCell}>
-            <View style={{
-              height: 100,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-              <Text style={{
-                fontWeight: 'bold',
-                color: 'white',
-                fontSize: 26,
-              }}>
-                {this.props.content}
-              </Text>
-              <Text style={{
-                fontWeight: 'bold',
-                color: 'black',
-                backgroundColor: 'yellow',
-                fontSize: 26,
-              }}>
-                {this.props.orderNumber}
-              </Text>
-            </View>
+            <Card style={{margin:5, marginBottom:1,}}>
+              <Card.Content>
+                <Title>Order: {this.props.orderNumber}</Title>
+                <Paragraph>{this.props.content}</Paragraph>
+              </Card.Content>
+            </Card>
           </View>
         </Animated.View>
       </View>
@@ -92,29 +77,26 @@ export default class ListItem extends React.PureComponent {
 
 const styles = StyleSheet.create({
   listItem: {
-    height: 100,
-    marginLeft: -100,
-    justifyContent: 'center',
-    backgroundColor: 'red',
+    flex:1,
+
   },
   absoluteCell: {
     position: 'absolute',
+    marginTop:10,
+    marginLeft:10,
+    height: 80,
     top: 0,
     bottom: 0,
     left: 0,
-    width: 100,
+    width: width - 20,
+    backgroundColor: 'green',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+
   },
   absoluteCellText: {
-    margin: 16,
-    color: '#FFF',
+
   },
-  innerCell: {
-    width: width,
-    height: 100,
-    marginLeft: 100,
-    backgroundColor: 'blue',
-  },
+
 })
