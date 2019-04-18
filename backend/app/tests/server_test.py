@@ -254,6 +254,25 @@ class ServerTestCases(unittest.TestCase):
         self.assertTrue(isinstance(payment['request_token'], str))
         self.assertTrue(len(payment['request_token']) > 0)
 
+    def test_response_swish_callback(self):
+        self.sign_up_user(user1)
+        token = self.sign_in_user(user1)
+        company = self.create_company(company2, token)
+        prod1 = self.create_product(product1, token)
+        prod2 = self.create_product(product2, token)
+        to_buy = {'products': [{'id': prod1['id'], 'quantity': 3}, {'id': prod2['id'], 'quantity': 1}]}
+        purchase = json.loads(self.tester.post('/purchase', data=json.dumps(to_buy), content_type = 'application/json').data.decode(encoding='UTF-8'))
+        self.tester.post('/pay/swish/' + str(purchase['id']))
+        swish_cb = {'id': '73FA9E5B199A433B9E76D85785264643', 'payeePaymentReference': purchase['id'],
+                     'paymentReference': 'CE87871288D44DE98FF3985A6EF489A3',
+                     'callbackUrl': 'https://swish.mastega.nu/swishcallback/paymentrequest',
+                     'payerAlias': '46464646464', 'payeeAlias': '1231181189', 'currency': 'SEK',
+                     'message': '', 'errorMessage': None, 'status': 'PAID', 'amount': '38.46',
+                     'dateCreated': '2019-04-18T23:08:48.064+0200', 'datePaid': '2019-04-18T23:08:52.065+0200',
+                     'errorCode': None}
+        response = self.tester.post('/swishcallback/paymentrequest', data=json.dumps(swish_cb), content_type = 'application/json')
+        self.assertEqual(response.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
