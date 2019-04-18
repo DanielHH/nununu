@@ -1,8 +1,8 @@
 from flask import request, g, abort
 from functools import wraps
 from datetime import datetime
-import jwt, logging
-import json
+from pathlib import Path
+import jwt, logging, json, os, swish
 from app_config import app
 import database_helper as db_helper
 
@@ -71,7 +71,10 @@ def change_password():
 def create_company():
     result = "company not created", 400
     json_data = request.get_json()
-    new_company = db_helper.create_company(json_data['companyName'], g.user)
+    swish_number = None
+    if 'swishNumber' in json_data:
+        swish_number = json_data['swishNumber']
+    new_company = db_helper.create_company(json_data['companyName'], g.user, swish_number)
     if new_company:
         result = json.dumps(new_company.serialize()), 200
     return result
@@ -172,11 +175,11 @@ def pay(payment_method, purchase_id):
     result = "not a valid payment method", 400
     if payment_method == "swish":
         result = "purchase not found", 404
-        found_purchase = get_purchase_by_id(purchase_id)
+        found_purchase = db_helper.get_purchase_by_id(purchase_id)
         if found_purchase:
-            payment = found_purchase.startPaySwish()
-            # return request token to client app and start swish with it
-            result = payment.request_token, 200
+            result = "purchase already paid for", 409
+            if found_purchase.status != "PAID":
+                result = startPaySwish(found_purchase)
     return result
 
 
@@ -189,6 +192,36 @@ def swishcbPaymentrequest():
         # (1) notify foodtruck they have a new order
         # (2) notify the one that purchased it that payment has gone through
         return "", 200
+
+
+def startPaySwish(purchase):
+    result = "swish number not found for the company", 404
+    if purchase.company.swish_number:
+        dirname = os.path.dirname(__file__)
+        path_cert_pem = os.path.join(dirname, 'certs/' + purchase.company.name + '/merchant.pem')
+        path_key_pem = os.path.join(dirname, 'certs/' + purchase.company.name + '/merchant.key')
+        path_swish_pem = os.path.join(dirname, 'certs/' + purchase.company.name + '/swish.pem')
+        # check if files exist
+        result = "certificates not found for the company", 404
+        if Path(path_cert_pem).is_file() and Path(path_key_pem).is_file() and Path(path_swish_pem).is_file():
+            swish_client = swish.SwishClient(
+                environment=swish.Environment.Test,
+                merchant_swish_number=purchase.company.swish_number,
+                cert=(path_cert_pem, path_key_pem),
+                verify=path_swish_pem
+            )
+            payment = swish_client.create_payment(
+                payee_payment_reference=purchase.id,
+                callback_url='https://mastega.nu/swishcallback/paymentrequest',
+                amount=purchase.total_price,
+                currency='SEK',
+                message=purchase.createPurchaseMessage()
+            )
+            purchase.swish_payment_id = payment.id
+            purchase.swish_payment_location = payment.location
+            db_helper.save_to_db(purchase)
+            result = json.dumps({'request_token': payment.request_token}), 200
+    return result
 
 
 def valid_password(password):

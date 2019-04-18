@@ -27,8 +27,8 @@ def change_password(user, password, new_password):
 #################################
 ### Company related functions ###
 #################################
-def create_company(company_name, owner):
-    new_company = Company(company_name, owner)
+def create_company(company_name, owner, swishNumber=None):
+    new_company = Company(company_name, owner, swishNumber)
     if new_company:
         save_to_db(new_company)
         return new_company

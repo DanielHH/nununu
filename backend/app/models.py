@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from decimal import Decimal
-import jwt, logging, swish
+import jwt, logging
 from app_config import app, db
 
 class Company(db.Model):
@@ -63,6 +63,8 @@ class Purchase(db.Model):
     company = db.relationship("Company", back_populates="purchases")
     # A purchase can be composed of many products
     purchase_items = db.relationship("PurchaseItem", back_populates="purchase")
+    swish_payment_id = db.Column(db.String(255))
+    swish_payment_location = db.Column(db.String(255))
 
     def __init__(self):
         self.status = "not done"
@@ -75,26 +77,11 @@ class Purchase(db.Model):
             price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
-    def startPaySwish(self):
-        swish_client = swish.SwishClient(
-            environment=swish.Environment.Test,
-            merchant_swish_number=self.company.swish_number,
-            cert=('/certs/' + self.company.name + '/merchant.pem', '/certs/' + self.company.name + '/merchant.key'),
-            verify= '/certs/' + self.company.name + '/swish.pem'
-        )
-        payment = swish_client.create_payment(
-            payee_payment_reference=self.id,
-            callback_url='https://mastega.nu/swishcallback/paymentrequest',
-            amount=self.total_price,
-            currency='SEK',
-            message=self.createSwishMessage()
-        )
-        return payment
 
-    def createSwishMessage(self):
+    def createPurchaseMessage(self):
         result = ""
         for item in self.purchase_items:
-            item.quantity + " " + item.product.name + ","
+            str(item.quantity) + " " + item.product.name + ","
         return result[:-1] # remove trailing comma
 
     def serialize(self):
