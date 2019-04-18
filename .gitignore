@@ -72,19 +72,3 @@ RNTester/build
 
 # Expo
 .expo/
-
-bin/
-include/
-lib/
-local/
-.Python
-pip-selfcheck.json
-*.pyc
-Scripts/
-tcl/
-share/
-*database.db
-__pycache__/
-pyvenv.cfg
-.coverage
-htmlcov/
