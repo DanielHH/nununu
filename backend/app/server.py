@@ -179,26 +179,32 @@ def pay(payment_method, purchase_id):
         if found_purchase:
             result = "purchase already paid for", 409
             if found_purchase.status != "PAID":
-                result = startPaySwish(found_purchase)
+                result = start_pay_swish(found_purchase)
     return result
 
 
 @app.route("/swishcallback/paymentrequest", methods=['POST'])
-def swishcbPaymentrequest():
+def swish_callback_payment_request():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
-    logging.warning("swish callback route")
     logging.warning(request)
     json_data = request.get_json()
     logging.warning(json_data)
-    if json_data.status == "PAID":
-        pass
-        # order is paid for
-        # (1) notify foodtruck they have a new order
-        # (2) notify the one that purchased it that payment has gone through
+    if 'payeePaymentReference' in json_data:
+        purchase = db_helper.get_purchase_by_id(json_data['payeePaymentReference'])
+        if json_data['status'] == 'PAID':
+            # order is paid for
+            # (1) notify foodtruck they have a new order
+            # (2) notify the one that purchased it that the payment has gone through
+            pass
+        elif json_data['status'] == 'DECLINED':
+            # The payer declined to make the payment
+            pass
+        elif json_data['status'] == 'ERROR':
+            handle_swish_payment_request_error(json_data['errorCode'], purchase)
     return "", 200
 
 
-def startPaySwish(purchase):
+def start_pay_swish(purchase):
     result = "swish number not found for the company", 404
     if purchase.company.swish_number:
         dirname = os.path.dirname(__file__)
@@ -216,7 +222,7 @@ def startPaySwish(purchase):
             )
             payment = swish_client.create_payment(
                 payee_payment_reference=purchase.id,
-                callback_url='https://mastega.nu/swishcallback/paymentrequest',
+                callback_url='https://swish.mastega.nu/swishcallback/paymentrequest',
                 amount=purchase.total_price,
                 currency='SEK',
                 message=purchase.createPurchaseMessage()
@@ -226,6 +232,49 @@ def startPaySwish(purchase):
             db_helper.save_to_db(purchase)
             result = json.dumps({'request_token': payment.request_token}), 200
     return result
+
+
+def handle_swish_payment_request_error(error_code, purchase):
+    if error_code == 'ACMT03':
+        # Payer not enrolled.
+        pass
+    elif error_code == 'ACMT01':
+        # Counterpart is not activated
+        pass
+    elif error_code == 'ACMT07':
+        # Payee not enrolled.
+        pass
+    elif error_code == 'RF07':
+        """
+        Transaction declined. The payment was unfortunately declined.
+        A reason for the decline could be that the payer has exceeded
+        their defined Swish limit. Please advise the payer to check
+        with their bank.
+        """
+        pass
+    elif error_code == 'BANKIDCL':
+        # Payer cancelled BankID signing.
+        pass
+    elif error_code == 'FF10':
+        # Bank system processing error.
+        pass
+    elif error_code == 'TM01':
+        # Swish timed out before the payment was started.
+        pass
+    elif error_code == 'DS24':
+        """
+        Swish timed out waiting for an answer from the banks after payment was started.
+        Note: If this happens Swish has no knowledge of whether the payment was
+        successful or not. The merchant should inform its consumer about this and
+        recommend them to check with their bank about the status of this payment.
+        """
+        pass
+    elif error_code == 'BANKIDONGOING':
+        # BankID already in use.
+        pass
+    elif error_code == 'BANKIDUNKN':
+        # BankID is not able to authorize the payment.
+        pass
 
 
 def valid_password(password):
