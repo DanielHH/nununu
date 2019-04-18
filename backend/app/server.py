@@ -186,8 +186,10 @@ def pay(payment_method, purchase_id):
 @app.route("/swishcallback/paymentrequest", methods=['POST'])
 def swishcbPaymentrequest():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
+    logging.warning("swish callback route")
+    logging.warning(request)
     json_data = request.get_json()
-    print(json_data)
+    logging.warning(json_data)
     if json_data.status == "PAID":
         pass
         # order is paid for
