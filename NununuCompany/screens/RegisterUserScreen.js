@@ -19,20 +19,10 @@ export default class RegisterUserScreen extends Component {
     }
   }
 
-  signUpAxios() {
-    axios.post('http://192.168.1.216:5000/user/sign-up', { 
+  signUp() {
+    axios.post('https://mastega.nu/user/sign-up', { 
       email: this.state.email,
       password: this.state.password })
-    .then(res => {
-      console.log(res.data)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
-  }
-
-  signUpAxios1() {
-    axios.get('https://jsonplaceholder.typicode.com/users')
     .then(res => {
       console.log(res.data)
     })
@@ -108,7 +98,7 @@ export default class RegisterUserScreen extends Component {
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
-                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUpAxios()}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUp()}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
