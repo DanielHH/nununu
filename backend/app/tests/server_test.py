@@ -126,7 +126,7 @@ class ServerTestCases(unittest.TestCase):
         company_c2 = self.create_company(company2, token)
         response = self.tester.get('/companies', content_type = 'application/json')
         self.assertEqual(response.status_code, 200)
-        retrieved_companys = json.loads(response.data.decode(encoding='UTF-8'))
+        retrieved_companys = json.loads(response.data.decode(encoding='UTF-8'))['companies']
         self.assertEqual(len(retrieved_companys), 2)
         company_ids = [comp['id'] for comp in retrieved_companys]
         self.assertIn(company_c1['id'], company_ids)
@@ -224,7 +224,7 @@ class ServerTestCases(unittest.TestCase):
         response = self.tester.post('/pay/byteshandel/1')
         self.assertEqual(response.status_code, 400)
 
-    def test_response_pay_swish_non_existing_product(self):
+    def test_response_pay_swish_non_existing_purchase(self):
         # should be invalid
         response = self.tester.post('/pay/swish/1')
         self.assertEqual(response.status_code, 404)

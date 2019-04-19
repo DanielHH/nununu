@@ -94,7 +94,7 @@ def get_company(company_id):
 def get_companies():
     # for now: get ALL companies
     companies = db_helper.get_all_companies()
-    result = json.dumps([company.serialize() for company in companies]), 200
+    result = json.dumps({'companies': [company.serialize() for company in companies]}), 200
     return result
 
 
