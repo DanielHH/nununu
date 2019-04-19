@@ -90,6 +90,18 @@ def get_purchase_by_id(purchase_id):
     return Purchase.query.filter(Purchase.id == purchase_id).first()
 
 
+def get_active_purchases(company):
+    return Purchase.query.filter(Purchase.company == company and
+                                 Purchase.payment_status == 'PAID' and
+                                 Purchase.completed == False).all()
+
+
+def get_completed_purchases(company):
+    return Purchase.query.filter(Purchase.company == company and
+                                 Purchase.payment_status == 'PAID' and
+                                 Purchase.completed == True).all()
+
+
 #######################################
 ### Purchase item related functions ###
 #######################################

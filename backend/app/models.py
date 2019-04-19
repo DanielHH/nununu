@@ -56,7 +56,6 @@ class Product(db.Model):
 class Purchase(db.Model):
     __tablename__ = 'purchase'
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(255), nullable=False)
     purchase_date = db.Column(db.DateTime)
     total_price = db.Column(db.DECIMAL)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
@@ -67,9 +66,9 @@ class Purchase(db.Model):
     swish_payment_location = db.Column(db.String(255))
     payment_status = db.Column(db.String(255))
     payment_date = db.Column(db.DateTime)
+    completed = db.Column(db.Boolean)
 
     def __init__(self):
-        self.status = "not done"
         self.purchase_date = datetime.utcnow()
 
     def setPrice(self):
@@ -88,7 +87,8 @@ class Purchase(db.Model):
 
     def serialize(self):
         return {'id': self.id,
-                'status': self.status,
+                'payment_status': self.payment_status,
+                'completed': self.completed,
                 'purchase_date': str(self.purchase_date),
                 'totalPrice': str(self.total_price),
                 'company': self.company.serialize(),

@@ -142,6 +142,34 @@ def delete_product(product_id):
     return result
 
 
+@app.route("/purchases/active", methods=['GET'])
+@verify_token
+def get_active_purchases():
+    active_purchases = db_helper.get_active_purchases(g.user.company)
+    purchases = [purchase.serialize() for purchase in active_purchases]
+    return json.dumps({'active_purchases': purchases}), 200
+
+
+@app.route("/purchase/makecompleted/<purchase_id>", methods=['POST'])
+@verify_token
+def make_purchase_completed(purchase_id):
+    result = "purchase not found", 404
+    purchase = db_helper.get_purchase_by_id(purchase_id)
+    if purchase:
+        purchase.completed = True
+        save_to_db(purchase)
+        result = json.dumps(purchase.serialize()), 200
+    return result
+
+
+@app.route("/purchases/completed", methods=['GET'])
+@verify_token
+def get_completed_purchases():
+    completed_purchases = db_helper.get_completed_purchases(g.user.company)
+    purchases = [purchase.serialize() for purchase in completed_purchases]
+    return json.dumps({'completed_purchases': purchases}), 200
+
+
 @app.route("/purchase", methods=['POST'])
 def purchase():
     # expected json:
