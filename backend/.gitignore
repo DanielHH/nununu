@@ -9,7 +9,7 @@ pip-selfcheck.json
 Scripts/
 tcl/
 share/
-*database.db
+*.db
 __pycache__/
 pyvenv.cfg
 .coverage

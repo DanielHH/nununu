@@ -58,6 +58,7 @@ class ServerTestCases(unittest.TestCase):
         # 'DEBUG' True causes AssertionError: A setup function was called after the first request was handled.
         server.app.config['DEBUG'] = False
         server.app.config['TESTING'] = True
+        server.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_database.db'
         server.db.init_app(server.app)
         with server.app.app_context():
             # Extensions like Flask-SQLAlchemy now know what the "current" app
