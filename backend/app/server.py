@@ -300,4 +300,5 @@ def verify_user_token(token):
 
 if __name__ == "__main__": # pragma: no cover
     db_helper.db_reset()
+    db_helper.seed_database()
     app.run(host='0.0.0.0')
