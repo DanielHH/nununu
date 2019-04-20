@@ -2,8 +2,10 @@ import React from 'react'
 import { View, Text, SectionList, StyleSheet} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import { MaterialCommunityIcons} from '@expo/vector-icons'
+import { getCompanyProducts } from '../redux/actions'
+import { connect } from 'react-redux'
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   state = {
     sections: {
       title: 'Hamburgare',
@@ -49,7 +51,7 @@ export default class HomeScreen extends React.Component {
         selectedPurchaseItems.push(sections.data[i])
       }
     }
-    
+
     return selectedPurchaseItems
   }
 
@@ -63,6 +65,10 @@ export default class HomeScreen extends React.Component {
     },
     headerTintColor: '#fff',
   };
+
+  componentDidMount() {
+    this.props.dispatch(getCompanyProducts(1))
+  }
 
   render() {
     return (
@@ -102,6 +108,12 @@ export default class HomeScreen extends React.Component {
     )
   }
 }
+
+export default connect((state) => {
+  return {
+    products: state.products,
+  }
+})(HomeScreen)
 
 const styles = StyleSheet.create({
   container: {
