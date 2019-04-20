@@ -38,36 +38,35 @@ class HomeScreen extends React.Component {
     this.props.dispatch(getCompanyProducts(1))
   }
 
+  renderCard = (item) => {
+    return (
+      <Card
+        style={styles.item}
+        flexDirection='row'>
+        <Card.Content style={styles.cardContentContainer}>
+          <View style={{flex:1, flexDirection: 'row'}}>
+            <View style={styles.foodInfo}>
+              <Title>{item.name + ' ' + item.price}</Title>
+              <Paragraph>Sallad, tomat, picklad rödlök, cheddarost & tuggdressing.</Paragraph>
+            </View>
+            <View style={styles.verticalDivider}/>
+            <View style={styles.quantity}>
+              <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(item))}/>
+              <Text>{item.quantity}</Text>
+              <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(item))}/>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
-
         <SectionList
           sections={this.props.sections}
-          renderItem={({item}) => (
-
-            <Card
-              style={styles.item}
-              flexDirection='row'>
-              <Card.Content style={styles.cardContentContainer}>
-                <View style={{flex:1, flexDirection: 'row'}}>
-                  <View style={styles.foodInfo}>
-                    <Title>{item.name + ' ' + item.price}</Title>
-                    <Paragraph>Sallad, tomat, picklad rödlök, cheddarost & tuggdressing.</Paragraph>
-                  </View>
-
-                  <View style={styles.verticalDivider}/>
-
-                  <View style={styles.quantity}>
-                    <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(item))}/>
-                    <Text>{item.quantity}</Text>
-                    <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(item))}/>
-                  </View>
-                </View>
-              </Card.Content>
-            </Card>
-
-          )}
+          renderItem={({item}) => (this.renderCard(item))}
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
