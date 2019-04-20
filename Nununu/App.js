@@ -1,11 +1,15 @@
 // In App.js in a new project
 
 import React from 'react'
+import { View } from 'react-native'
 import { createStackNavigator, createAppContainer} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
 import HomeScreen from './screens/HomeScreen'
 import DetailsScreen from './screens/DetailsScreen'
 import { AppLoading, Asset, Font, Icon } from 'expo'
+import { PersistGate } from 'redux-persist/integration/react'
+import createPersistStore from './configureStore'
+import { Provider } from 'react-redux'
 
 const RootStack = createStackNavigator(
   {
@@ -23,6 +27,12 @@ export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   }
+
+  constructor(props) {
+    super(props)
+    this.conf = createPersistStore()
+  }
+
   render(){
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
@@ -34,12 +44,19 @@ export default class App extends React.Component {
       )
     }
     return (
-      <PaperProvider>
-        <AppContainer />
-      </PaperProvider>
+      <Provider store={this.conf.store}>
+        <PersistGate loading={null} persistor={this.conf.persistor}>
+          <View style={{flex: 1}}>
+            <PaperProvider>
+              <AppContainer />
+            </PaperProvider>
+          </View>
+        </PersistGate>
+      </Provider>
     )
 
   }
+
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
