@@ -2,59 +2,10 @@ import React from 'react'
 import { View, Text, SectionList, StyleSheet} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import { MaterialCommunityIcons} from '@expo/vector-icons'
-import { getCompanyProducts } from '../redux/actions'
+import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity} from '../redux/actions'
 import { connect } from 'react-redux'
 
 class HomeScreen extends React.Component {
-  state = {
-    sections: {
-      title: 'Hamburgare',
-      data: [
-        {name: 'La Mejicana', price: '79kr', quantity: 0},
-        {name: 'Sukaldari', price: '95kr', quantity: 0},
-        {name: 'BBQ Cheese', price: '89kr', quantity: 0},
-        {name: 'The Original', price: '89kr', quantity: 0},
-        {name: 'Angus', price: '89kr', quantity: 0}],
-    },
-  }
-
-  changeQuantity(item, isAdd) {
-    let dataCopy = {...this.state.sections}
-    for (var i = 0; i < dataCopy.data.length; i++) {
-      let food = dataCopy.data[i]
-      if (food.name == item.name) {
-        if (isAdd) {
-          dataCopy.data[i].quantity++
-        } else {
-          if (dataCopy.data[i].quantity > 0) {
-            dataCopy.data[i].quantity--
-          }
-        }
-        if (dataCopy.data[i].quantity >= 0) {
-          this.setState({
-            sections : dataCopy,
-          })
-        }
-      }
-    }
-  }
-
-  navigateTo(screen) {
-    this.props.navigation.navigate(screen, this.prepareOrder())
-  }
-
-  prepareOrder() {
-    let selectedPurchaseItems = []
-    let sections = {...this.state.sections}
-    for (var i = 0; i < sections.data.length; i++) {
-      if (sections.data[i].quantity > 0) {
-        selectedPurchaseItems.push(sections.data[i])
-      }
-    }
-
-    return selectedPurchaseItems
-  }
-
   static navigationOptions = {
     title: 'Sukaldari',
     headerRight: (
@@ -64,7 +15,24 @@ class HomeScreen extends React.Component {
       backgroundColor: '#f4511e',
     },
     headerTintColor: '#fff',
-  };
+  }
+
+  navigateTo(screen) {
+    this.props.navigation.navigate(screen, this.prepareOrder())
+  }
+
+  prepareOrder() {
+    let selectedPurchaseItems = []
+    let sections = [...this.props.sections]
+    for (let i = 0; i < sections.length; i++) {
+      for (let j = 0; j < sections[i].data.length; j++) {
+        if (sections[i].data[j].quantity > 0) {
+          selectedPurchaseItems.push(sections[i].data[j])
+        }
+      }
+    }
+    return selectedPurchaseItems
+  }
 
   componentDidMount() {
     this.props.dispatch(getCompanyProducts(1))
@@ -75,7 +43,7 @@ class HomeScreen extends React.Component {
       <View style={styles.container}>
 
         <SectionList
-          sections={[this.state.sections]}
+          sections={this.props.sections}
           renderItem={({item}) => (
 
             <Card
@@ -91,9 +59,9 @@ class HomeScreen extends React.Component {
                   <View style={styles.verticalDivider}/>
 
                   <View style={styles.quantity}>
-                    <IconButton icon="add" size={24} onPress={() => this.changeQuantity(item, true)}/>
+                    <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(item))}/>
                     <Text>{item.quantity}</Text>
-                    <IconButton icon="remove" size={24} onPress={() => this.changeQuantity(item, false)}/>
+                    <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(item))}/>
                   </View>
                 </View>
               </Card.Content>
@@ -111,7 +79,7 @@ class HomeScreen extends React.Component {
 
 export default connect((state) => {
   return {
-    products: state.products,
+    sections: state.store.sections,
   }
 })(HomeScreen)
 
