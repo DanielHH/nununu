@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['products'], // only products will be persisted
+  whitelist: [], // only these will be persisted
 }
 
 const persistedReducer = persistCombineReducers(persistConfig, reducers)
