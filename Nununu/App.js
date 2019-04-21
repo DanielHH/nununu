@@ -1,7 +1,7 @@
 // In App.js in a new project
 
 import React from 'react'
-import { View } from 'react-native'
+import { View, StatusBar } from 'react-native'
 import { createStackNavigator, createAppContainer} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
 import HomeScreen from './screens/HomeScreen'
@@ -10,6 +10,8 @@ import { AppLoading, Asset, Font, Icon } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
+import DropdownAlert from 'react-native-dropdownalert'
+import DropDownHolder from './components/DropDownHolder'
 
 const RootStack = createStackNavigator(
   {
@@ -44,17 +46,18 @@ export default class App extends React.Component {
       )
     }
     return (
-      <Provider store={this.conf.store}>
-        <PersistGate loading={null} persistor={this.conf.persistor}>
-          <View style={{flex: 1}}>
+      <View style={{flex: 1}}>
+        <Provider store={this.conf.store}>
+          <PersistGate loading={null} persistor={this.conf.persistor}>
             <PaperProvider>
               <AppContainer />
             </PaperProvider>
-          </View>
-        </PersistGate>
-      </Provider>
+          </PersistGate>
+        </Provider>
+        <DropdownAlert ref={(ref) => DropDownHolder.setDropDown(ref)}
+          defaultContainer={{ padding: 8, paddingTop: StatusBar.currentHeight, flexDirection: 'row' }}/>
+      </View>
     )
-
   }
 
   _loadResourcesAsync = async () => {

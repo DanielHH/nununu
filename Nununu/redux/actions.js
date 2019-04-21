@@ -46,8 +46,9 @@ export function decreaseProductQuantity(product) {
 }
 
 export function postPurchase(purchaseItems) {
+  let products = {'products': purchaseItems}
   return function (dispatch) {
-    apiClient.post('/purchase', purchaseItems)
+    apiClient.post('/purchase', products)
     .then((response) => dispatch({
       type: POST_PURCHASE_SUCCESS,
       purchase: response.data,

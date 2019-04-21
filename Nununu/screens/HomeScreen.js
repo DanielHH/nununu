@@ -5,6 +5,7 @@ import { MaterialCommunityIcons} from '@expo/vector-icons'
 import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
   postPurchase, startPaySwish } from '../redux/actions'
 import { connect } from 'react-redux'
+import DropDownHolder from '../components/DropDownHolder'
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -82,7 +83,9 @@ class HomeScreen extends React.Component {
       this.props.dispatch(startPaySwish(this.props.unpaidPurchase.id))
     } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
       // retrieved a swish request token, open the swish app with it
-      Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken + '&callbackurl=back_scheme')
+      Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken)
+    } else if (this.props.purchaseError !== prevProps.purchaseError) {
+      DropDownHolder.getDropDown().alertWithType('error', 'Error', this.props.purchaseError)
     }
   }
 }
@@ -92,6 +95,7 @@ export default connect((state) => {
     sections: state.store.sections,
     swishRequestToken: state.purchase.swish_request_token,
     unpaidPurchase: state.purchase.unpaid_purchase,
+    purchaseError: state.purchase.error,
   }
 })(HomeScreen)
 

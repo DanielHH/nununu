@@ -63,7 +63,7 @@ function store(state = initialStoreState, action) {
 }
 
 const initialPurchaseState = {
-  unpaid_purchase: {},
+  unpaid_purchase: null,
   paid_purchases: [],
   done_purchases: [],
   swish_request_token: null,
