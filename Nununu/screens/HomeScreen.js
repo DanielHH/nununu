@@ -40,7 +40,7 @@ class HomeScreen extends React.Component {
     this.props.dispatch(getCompanyProducts(1))
   }
 
-  renderCard = (item) => {
+  renderCard = (item, index, section) => {
     return (
       <Card
         style={styles.item}
@@ -53,9 +53,9 @@ class HomeScreen extends React.Component {
             </View>
             <View style={styles.verticalDivider}/>
             <View style={styles.quantity}>
-              <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(item))}/>
+              <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(index, section.title))}/>
               <Text>{item.quantity}</Text>
-              <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(item))}/>
+              <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(index, section.title))}/>
             </View>
           </View>
         </Card.Content>
@@ -68,7 +68,7 @@ class HomeScreen extends React.Component {
       <View style={styles.container}>
         <SectionList
           sections={this.props.sections}
-          renderItem={({item}) => (this.renderCard(item))}
+          renderItem={({item, index, section}) => (this.renderCard(item, index, section))}
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />

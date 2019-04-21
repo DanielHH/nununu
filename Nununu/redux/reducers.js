@@ -32,12 +32,8 @@ function store(state = initialStoreState, action) {
   case INCREASE_PRODUCT_QUANTITY: {
     let new_sections = [...state.sections] // clone data
     for (let i = 0; i<new_sections.length; i++) {
-      if (new_sections[i].title == action.product.category) {
-        for (let j = 0; j<new_sections[i].data.length; j++) {
-          if (new_sections[i].data[j].id == action.product.id) {
-            new_sections[i].data[j].quantity += 1
-          }
-        }
+      if (new_sections[i].title == action.sectionTitle) {
+        new_sections[i].data[action.index].quantity += 1
       }
     }
     return {...state, sections: new_sections}
@@ -45,13 +41,9 @@ function store(state = initialStoreState, action) {
   case DECREASE_PRODUCT_QUANTITY: {
     let new_sections = [...state.sections] // clone data
     for (let i = 0; i<new_sections.length; i++) {
-      if (new_sections[i].title == action.product.category) {
-        for (let j = 0; j<new_sections[i].data.length; j++) {
-          if (new_sections[i].data[j].id == action.product.id) {
-            if (new_sections[i].data[j].quantity > 0) {
-              new_sections[i].data[j].quantity -= 1
-            }
-          }
+      if (new_sections[i].title == action.sectionTitle) {
+        if (new_sections[i].data[action.index].quantity > 0) {
+          new_sections[i].data[action.index].quantity -= 1
         }
       }
     }

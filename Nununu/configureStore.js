@@ -19,11 +19,11 @@ export default function createPersistStore () {
   )
   // subscribe to store for debbuging, logs all the changes
   // note that logging all the changes is performance demanding
-
+  /*
   store.subscribe(() => {
     console.log(store.getState())
   })
-
+  */
   let persistor = persistStore(store)
   return { store, persistor }
 }

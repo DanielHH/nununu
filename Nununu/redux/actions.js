@@ -37,12 +37,12 @@ export function getCompanyProducts(companyId) {
   }
 }
 
-export function increaseProductQuantity(product) {
-  return { type: INCREASE_PRODUCT_QUANTITY, product}
+export function increaseProductQuantity(index, sectionTitle) {
+  return { type: INCREASE_PRODUCT_QUANTITY, index, sectionTitle}
 }
 
-export function decreaseProductQuantity(product) {
-  return { type: DECREASE_PRODUCT_QUANTITY, product}
+export function decreaseProductQuantity(index, sectionTitle) {
+  return { type: DECREASE_PRODUCT_QUANTITY, index, sectionTitle}
 }
 
 export function postPurchase(purchaseItems) {
