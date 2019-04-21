@@ -1,5 +1,6 @@
 import { GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE,
-  INCREASE_PRODUCT_QUANTITY, DECREASE_PRODUCT_QUANTITY } from './actions'
+  INCREASE_PRODUCT_QUANTITY, DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS,
+  POST_PURCHASE_FAILURE, START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE } from './actions'
 
 const initialStoreState = {
   sections: [],
@@ -61,6 +62,31 @@ function store(state = initialStoreState, action) {
   }
 }
 
+const initialPurchaseState = {
+  unpaid_purchase: {},
+  paid_purchases: [],
+  done_purchases: [],
+  swish_request_token: null,
+  error: '',
+}
+
+function purchase(state = initialPurchaseState, action) {
+  switch(action.type) {
+  case POST_PURCHASE_SUCCESS: {
+    return {...state, unpaid_purchase: action.purchase}
+  }
+  case POST_PURCHASE_FAILURE:
+    return {...state, error: action.error}
+  case START_PAY_SWISH_SUCCESS:
+    return {...state, swish_request_token: action.requestToken}
+  case START_PAY_SWISH_FAILURE:
+    return {...state, error: action.error}
+  default:
+    return state
+  }
+}
+
 export const reducers = {
   store,
+  purchase,
 }

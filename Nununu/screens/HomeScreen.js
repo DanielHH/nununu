@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, Text, SectionList, StyleSheet} from 'react-native'
+import { View, Text, SectionList, StyleSheet, Linking} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import { MaterialCommunityIcons} from '@expo/vector-icons'
-import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity} from '../redux/actions'
+import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
+  postPurchase, startPaySwish } from '../redux/actions'
 import { connect } from 'react-redux'
 
 class HomeScreen extends React.Component {
@@ -70,15 +71,27 @@ class HomeScreen extends React.Component {
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
-        <Button onPress={() => this.navigateTo('Details')}> Checka ut </Button>
+        <Button onPress={() => this.props.dispatch(postPurchase(this.prepareOrder()))}> Checka ut </Button>
       </View>
     )
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.unpaidPurchase !== prevProps.unpaidPurchase && this.props.unpaidPurchase !== null) {
+      // make request to start pay with swish
+      this.props.dispatch(startPaySwish(this.props.unpaidPurchase.id))
+    } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
+      // retrieved a swish request token, open the swish app with it
+      Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken + '&callbackurl=back_scheme')
+    }
   }
 }
 
 export default connect((state) => {
   return {
     sections: state.store.sections,
+    swishRequestToken: state.purchase.swish_request_token,
+    unpaidPurchase: state.purchase.unpaid_purchase,
   }
 })(HomeScreen)
 
