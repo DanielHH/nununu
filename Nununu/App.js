@@ -4,8 +4,9 @@ import React from 'react'
 import { View, StatusBar } from 'react-native'
 import { createStackNavigator, createAppContainer} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
-import HomeScreen from './screens/HomeScreen'
+import ProductsScreen from './screens/ProductsScreen'
 import DetailsScreen from './screens/DetailsScreen'
+import CompaniesScreen from './screens/CompaniesScreen'
 import { AppLoading, Asset, Font, Icon } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
@@ -15,11 +16,12 @@ import DropDownHolder from './components/DropDownHolder'
 
 const RootStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Companies: CompaniesScreen,
+    Products: ProductsScreen,
     Details: DetailsScreen,
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'Companies',
   }
 )
 

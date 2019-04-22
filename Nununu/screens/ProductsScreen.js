@@ -7,9 +7,17 @@ import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
 
-class HomeScreen extends React.Component {
+class RenderTitle extends React.Component {
+  render() {
+    return <Text>{this.props.title}</Text>
+  }
+}
+
+let TitleContainer = connect(state => ({ title: state.store.selectedCompany.name }))(RenderTitle)
+
+class ProductsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Sukaldari',
+    headerTitle: <TitleContainer />,
     headerRight: (
       <MaterialCommunityIcons name="silverware-variant" size={24} style={{marginRight: 15}}/>
     ),
@@ -37,7 +45,7 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(getCompanyProducts(1))
+    this.props.dispatch(getCompanyProducts(this.props.selectedCompany.id))
   }
 
   renderCard = (item, index, section) => {
@@ -93,11 +101,13 @@ class HomeScreen extends React.Component {
 export default connect((state) => {
   return {
     sections: state.store.sections,
+    selectedCompany: state.store.selectedCompany,
     swishRequestToken: state.purchase.swish_request_token,
     unpaidPurchase: state.purchase.unpaid_purchase,
     purchaseError: state.purchase.error,
+
   }
-})(HomeScreen)
+})(ProductsScreen)
 
 const styles = StyleSheet.create({
   container: {
