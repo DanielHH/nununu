@@ -1,14 +1,23 @@
-import { GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE,
-  INCREASE_PRODUCT_QUANTITY, DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS,
-  POST_PURCHASE_FAILURE, START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE } from './actions'
+import { GET_COMPANIES_SUCCESS, GET_COMPANIES_FAILURE, SET_SELECTED_COMPANY,
+  GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE, INCREASE_PRODUCT_QUANTITY,
+  DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS, POST_PURCHASE_FAILURE,
+  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE } from './actions'
 
 const initialStoreState = {
+  companies: [],
+  selectedCompany: null,
   sections: [],
   error: '',
 }
 
 function store(state = initialStoreState, action) {
   switch (action.type) {
+  case GET_COMPANIES_SUCCESS:
+    return {...state, companies: action.data}
+  case GET_COMPANIES_FAILURE:
+    return {...state, companies: action.error}
+  case SET_SELECTED_COMPANY:
+    return {...state, selectedCompany: action.company}
   case GET_COMPANY_PRODUCTS_SUCCESS: {
     let products_copy = [...action.data]
     let new_sections = []
