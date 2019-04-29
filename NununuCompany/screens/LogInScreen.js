@@ -30,21 +30,6 @@ class LogInScreen extends Component {
     })
   }
 
-  testLogin = () => {
-    let token = 'TEST TOKEN'
-    this.props.saveUserToken(token)
-  }
-
-  testLogOut = () => {
-    console.log("TEST LOG OUT")
-    AsyncStorage.setItem('userToken', '')
-    console.log(AsyncStorage.getItem('userToken'))
-  }
-
-  testPrint = () => {
-    console.log("HEJEJEHEJH");
-  }
-
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -81,10 +66,10 @@ class LogInScreen extends Component {
                   <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
-                  <TouchableOpacity onPress={this.testPrint} style={[styles.buttonContainer, styles.faceboookButton]}>
+                  <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH FACEBOOK</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={this.testLogOut} style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
+                  <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH GOOGLE</Text>
                   </TouchableOpacity>
                 </View>

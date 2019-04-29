@@ -8,12 +8,10 @@ class Main extends Component {
 
     if (this.props.token == null) {
       // USER NOT SIGNED IN
-      console.log("TOKEN00", this.props.token)
       return (
         <AuthenticationStack />
       )
     } else {
-      console.log("TOKEN01", this.props.token)
       return (
         <Drawer />
       )
