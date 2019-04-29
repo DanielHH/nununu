@@ -4,11 +4,30 @@ import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           KeyboardAvoidingView, AsyncStorage} from 'react-native'
 import { connect } from 'react-redux'
 import { saveToken } from '../redux/actions'
+import axios from 'axios'
 
 class LogInScreen extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      email: '',
+      password: '',
+    }
+  }
+
+  signIn() {
+    axios.post('http://10.0.2.2:5000/user/sign-in', {
+      email: this.state.email,
+      password: this.state.password })
+    .then(res => {
+      console.log(res.data)
+      this.props.saveUserToken(res.data)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   }
 
   testLogin = () => {
@@ -41,6 +60,7 @@ class LogInScreen extends Component {
                 <TextInput style={styles.input}
                   placeholder='Enter username/email'
                   placenholderTextColor='rgba(255,255,255,0.8)'
+                  onChangeText={(text) => this.setState({email:text})}
                   KeyboardType='email-address'
                   returnKeyType='next'
                   autoCorrect={false}
@@ -50,14 +70,15 @@ class LogInScreen extends Component {
                 <TextInput style={styles.input}
                   placeholder='Enter password'
                   placenholderTextColor='rgba(255,255,255,0.8)'
+                  onChangeText={(text) => this.setState({password:text})}
                   returnKeyType='go'
                   autoCorrect={false}
                   secureTextEntry={true}
                   ref={'txtPassword'}
                 />
                 <Text onPress={() => this.props.navigation.navigate('ForgotPSW')} style={styles.forgotPswText}>Forgot Password</Text>
-                <TouchableOpacity style={styles.buttonContainer}>
-                  <Text onPress={this.testLogin} style={styles.buttonText}>SIGN IN</Text>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => this.signIn()}>
+                  <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
                   <TouchableOpacity onPress={this.testPrint} style={[styles.buttonContainer, styles.faceboookButton]}>

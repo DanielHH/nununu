@@ -1,7 +1,6 @@
 import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS } from './actions'
 
 
-
 const initialOrderState = {
   active: [],
   completed: [],
@@ -31,9 +30,7 @@ function order(state = initialOrderState, action) {
 
 
 const initialAuthState = {
-  token: {},
-  loading: true,
-  error: null
+  token: null,
 }
 
 function authentication(state = initialAuthState, action) {

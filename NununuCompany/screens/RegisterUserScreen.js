@@ -20,7 +20,7 @@ export default class RegisterUserScreen extends Component {
   }
 
   signUp() {
-    axios.post('https://mastega.nu/user/sign-up', { 
+    axios.post('http://10.0.2.2:5000/user/sign-up', {
       email: this.state.email,
       password: this.state.password })
     .then(res => {

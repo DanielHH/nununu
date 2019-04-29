@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import {NavigationActions, DrawerItems} from 'react-navigation'
-import {View, Button, SafeAreaView } from 'react-native'
+import { DrawerItems, SafeAreaView } from 'react-navigation'
+import {View, Button } from 'react-native'
 import { connect } from 'react-redux'
 import { removeToken } from './redux/actions'
 
