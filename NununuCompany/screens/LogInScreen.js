@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-          KeyboardAvoidingView, AsyncStorage} from 'react-native'
+          KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
 import { saveToken } from '../redux/actions'
 import axios from 'axios'
