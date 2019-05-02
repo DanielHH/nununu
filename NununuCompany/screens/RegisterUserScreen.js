@@ -21,7 +21,7 @@ export default class RegisterUserScreen extends Component {
   }
 
   signUp() {
-    axios.post('constants.EmulatorUrl+/user/sign-up', {
+    axios.post(constants.EmulatorUrl+'/user/sign-up', {
       email: this.state.email,
       password: this.state.password })
     .then(res => {
