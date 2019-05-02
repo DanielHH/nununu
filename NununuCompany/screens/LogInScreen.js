@@ -3,7 +3,7 @@ import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           TextInput, SafeAreaView, Keyboard, TouchableOpacity,
           KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
-import { saveToken } from '../redux/actions'
+import { signInUser } from '../redux/actions'
 import axios from 'axios'
 import constants from '../constants'
 
@@ -12,25 +12,10 @@ class LogInScreen extends Component {
   constructor(props) {
     super(props)
 
-
-
     this.state = {
       email: '',
       password: '',
     }
-  }
-
-  signIn() {
-    axios.post(constants.EmulatorUrl+'/user/sign-in', {
-      email: this.state.email,
-      password: this.state.password })
-    .then(res => {
-      console.log(res.data)
-      this.props.saveUserToken(res.data)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
   }
 
   render() {
@@ -65,7 +50,7 @@ class LogInScreen extends Component {
                   ref={'txtPassword'}
                 />
                 <Text onPress={() => this.props.navigation.navigate('ForgotPSW')} style={styles.forgotPswText}>Forgot Password</Text>
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => this.signIn()}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.signInUser(this.state.email, this.state.password)}>
                   <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
@@ -86,6 +71,12 @@ class LogInScreen extends Component {
     )
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  signInUser: (email, password) => dispatch(signInUser(email,password))
+})
+
+export default connect(null, mapDispatchToProps)(LogInScreen)
 
 const styles = StyleSheet.create({
   container: {
@@ -162,9 +153,3 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
 })
-
-const mapDispatchToProps = dispatch => ({
-  saveUserToken: (token) => dispatch(saveToken(token))
-})
-
-export default connect(null, mapDispatchToProps)(LogInScreen)

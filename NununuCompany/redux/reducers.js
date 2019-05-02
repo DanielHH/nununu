@@ -1,4 +1,4 @@
-import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS } from './actions'
+import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS, SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN } from './actions'
 
 
 const initialOrderState = {
@@ -35,9 +35,9 @@ const initialAuthState = {
 
 function authentication(state = initialAuthState, action) {
   switch (action.type) {
-  case 'SAVE_TOKEN':
+  case SIGN_IN_USER_SUCCESS:
     return {...state, token: action.token}
-  case 'REMOVE_TOKEN':
+  case REMOVE_TOKEN:
     return {...state, token: null}
   default:
     return state
