@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { saveToken } from '../redux/actions'
 import axios from 'axios'
 import constants from '../constants'
+
 class LogInScreen extends Component {
 
   constructor(props) {

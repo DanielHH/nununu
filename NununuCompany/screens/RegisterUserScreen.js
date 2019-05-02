@@ -4,6 +4,7 @@ import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
 import axios from 'axios'
+import constants from '../constants'
 
 export default class RegisterUserScreen extends Component {
 
@@ -20,7 +21,7 @@ export default class RegisterUserScreen extends Component {
   }
 
   signUp() {
-    axios.post('http://10.0.2.2:5000/user/sign-up', {
+    axios.post('constants.EmulatorUrl+/user/sign-up', {
       email: this.state.email,
       password: this.state.password })
     .then(res => {
