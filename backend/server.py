@@ -22,10 +22,6 @@ def verify_token(func):
         return func(*args, **kwargs)
     return wrapper
 
-@app.route('/',methods=["GET"])
-def hello_world():
-    return 'Hello, World!'
-
 
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
