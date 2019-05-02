@@ -5,11 +5,13 @@ import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
 import { connect } from 'react-redux'
 import { saveToken } from '../redux/actions'
 import axios from 'axios'
-
+import constants from '../constants'
 class LogInScreen extends Component {
 
   constructor(props) {
     super(props)
+
+
 
     this.state = {
       email: '',
@@ -18,7 +20,7 @@ class LogInScreen extends Component {
   }
 
   signIn() {
-    axios.post('http://10.0.2.2:5000/user/sign-in', {
+    axios.post(constants.EmulatorUrl+'/user/sign-in', {
       email: this.state.email,
       password: this.state.password })
     .then(res => {
