@@ -69,12 +69,12 @@ class LogInScreen extends Component {
                   <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
                 <View style={styles.alternativeLogins}>
-                  <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
+                  {/*<TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH FACEBOOK</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.buttonContainer, styles.faceboookButton, styles.googleButton]}>
                     <Text style={styles.buttonText}>SIGN IN WITH GOOGLE</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>*/}
                 </View>
                 <View style={styles.dividerDecorator}></View>
                 <Text onPress={() => this.props.navigation.navigate('Register')} style={styles.signUpText}>Sign Up</Text>
