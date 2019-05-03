@@ -1,5 +1,6 @@
 import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
-   SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN, SIGN_UP_USER_SUCCESS } from './actions'
+   SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
+   , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, HIDE_SUCCESSFUL_SIGN_UP_TEXT } from './actions'
 
 
 const initialOrderState = {
@@ -32,17 +33,24 @@ function order(state = initialOrderState, action) {
 
 const initialAuthState = {
   token: null,
-  isRegistered: false,
+  showSuccessfulSignUp: false,
+  error: {},
 }
 
 function authentication(state = initialAuthState, action) {
   switch (action.type) {
   case SIGN_IN_USER_SUCCESS:
-    return {...state, token: action.token, isRegistered: action.isRegistered}
+    return {...state, token: action.token, showSuccessfulSignUp: action.showSuccessfulSignUp}
+  case SIGN_IN_USER_FAILURE:
+    return {...state, error: action.error}
   case REMOVE_TOKEN:
     return {...state, token: null}
   case SIGN_UP_USER_SUCCESS:
-    return {...state, isRegistered: action.isRegistered}
+    return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp}
+  case SIGN_UP_USER_FAILURE:
+    return {...state, error: action.error}
+  case HIDE_SUCCESSFUL_SIGN_UP_TEXT:
+    return {...state, showSuccessfulSignUp: false}
   default:
     return state
   }

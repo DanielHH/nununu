@@ -20,6 +20,7 @@ class RegisterUserScreen extends Component {
   }
 
   render() {
+    console.log('ERROR STUFF IN HERE: ', this.props.error)
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
@@ -97,7 +98,7 @@ class RegisterUserScreen extends Component {
     )
   }
   componentDidUpdate(prevProps) {
-    if (this.props.isRegistered) {
+    if (this.props.showSuccessfulSignUp) {
       this.props.navigation.navigate('Login')
     }
   }
@@ -108,7 +109,8 @@ const mapDispatchToProps = dispatch => ({
 })
 
 const mapStateToProps = state => ({
-  isRegistered: state.authentication.isRegistered,
+  showSuccessfulSignUp: state.authentication.showSuccessfulSignUp,
+  error: state.authentication.error,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegisterUserScreen)

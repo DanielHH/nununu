@@ -3,9 +3,7 @@ import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
           TextInput, SafeAreaView, Keyboard, TouchableOpacity,
           KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
-import { signInUser } from '../redux/actions'
-import axios from 'axios'
-import constants from '../constants'
+import { signInUser, hideSuccessfulSignUpText } from '../redux/actions'
 
 class LogInScreen extends Component {
 
@@ -29,7 +27,7 @@ class LogInScreen extends Component {
                 <Image style={styles.logo} source={require('../images/nununu.png')}/>
                 <Text style={styles.title}> Company </Text>
               </View>
-              {this.props.isRegistered && (<Text style={styles.successfulSignup}>  Succesfully signed up </Text>)}
+              {this.props.showSuccessfulSignUp && (<Text style={styles.successfulSignup}>  Successfully signed up </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Enter username/email'
@@ -63,7 +61,7 @@ class LogInScreen extends Component {
                   </TouchableOpacity>*/}
                 </View>
                 <View style={styles.dividerDecorator}></View>
-                <Text onPress={() => this.props.navigation.navigate('Register')} style={styles.signUpText}>Sign Up</Text>
+                <Text onPress={() => {this.props.hideSuccessfulSignUpText(false), this.props.navigation.navigate('Register')}} style={styles.signUpText}>Sign Up</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -74,11 +72,12 @@ class LogInScreen extends Component {
 }
 
 const mapStateToProps = state => ({
-  isRegistered: state.authentication.isRegistered,
+  showSuccessfulSignUp: state.authentication.showSuccessfulSignUp,
 })
 
 const mapDispatchToProps = dispatch => ({
-  signInUser: (email, password) => dispatch(signInUser(email,password))
+  signInUser: (email, password) => dispatch(signInUser(email,password)),
+  hideSuccessfulSignUpText: () => dispatch(hideSuccessfulSignUpText())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogInScreen)
