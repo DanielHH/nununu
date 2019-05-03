@@ -18,6 +18,10 @@ export const SIGN_IN_USER_SUCCESS = 'SIGN_IN_USER_SUCCESS'
 
 export const SIGN_IN_USER_FAILURE = 'SIGN_IN_USER_FAILURE'
 
+export const SIGN_UP_USER_SUCCESS = 'SIGN_UP_USER_SUCCESS'
+
+export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
+
 /*
  * other constants
  */
@@ -47,33 +51,31 @@ export function removeToken() {
   return { type: REMOVE_TOKEN }
 }
 
-/*export function signInUser(email, password){
-  console.log(email, password)
-  return function (dispatch) {
-    apiClient.post('/user/sign-in', {
-      email: email,
-      password: password,
-    }).then(res => dispatch({
-      type: SIGN_IN_USER_SUCCESS,
-      token: res.data,
-    })).catch(res => dispatch({
-      type: SIGN_IN_USER_FAILURE,
-      error: res,
-    }))
-  }
-}*/
-
 export function signInUser(email, password){
-  console.log(email, password)
   let credentials = {'email': email, 'password': password}
   return function (dispatch) {
     apiClient.post('/user/sign-in', credentials)
     .then(res => dispatch({
       type: SIGN_IN_USER_SUCCESS,
       token: res.data,
+      isRegistered: false,
     })).catch(res => dispatch({
       type: SIGN_IN_USER_FAILURE,
       error: res,
     }))
+  }
 }
+
+export function signUpUser(email, password){
+  let credentials = {'email': email, 'password': password}
+  return function (dispatch) {
+    apiClient.post('/user/sign-up', credentials)
+    .then(() => dispatch({
+      type: SIGN_UP_USER_SUCCESS,
+      isRegistered: true,
+    })).catch(res => dispatch({
+      type: SIGN_UP_USER_FAILURE,
+      error: res,
+    }))
+  }
 }

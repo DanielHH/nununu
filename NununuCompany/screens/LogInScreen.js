@@ -29,6 +29,7 @@ class LogInScreen extends Component {
                 <Image style={styles.logo} source={require('../images/nununu.png')}/>
                 <Text style={styles.title}> Company </Text>
               </View>
+              {this.props.isRegistered && (<Text style={styles.successfulSignup}>  Succesfully signed up </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Enter username/email'
@@ -72,11 +73,15 @@ class LogInScreen extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  isRegistered: state.authentication.isRegistered,
+})
+
 const mapDispatchToProps = dispatch => ({
   signInUser: (email, password) => dispatch(signInUser(email,password))
 })
 
-export default connect(null, mapDispatchToProps)(LogInScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(LogInScreen)
 
 const styles = StyleSheet.create({
   container: {
@@ -93,14 +98,19 @@ const styles = StyleSheet.create({
     height: 56,
     width: 128,
   },
-  title:{
+  title: {
     color: '#f7c744',
     fontSize: 18,
     opacity: 0.75,
   },
+  successfulSignup: {
+    alignSelf: 'center',
+    color: '#FFF',
+  },
   infoContainer: {
     flex: 1,
     paddingHorizontal: 15,
+    marginTop: 20,
     //backgroundColor: 'red',
   },
   input: {

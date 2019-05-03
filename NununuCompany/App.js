@@ -15,6 +15,7 @@ export default class App extends Component<Props> {
     super(props)
     connection.setupConnection()
     this.conf = testExport()
+    console.disableYellowBox = true // DISABLES YELLOW WARNING BOX
   }
 
   render() {

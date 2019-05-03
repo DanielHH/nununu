@@ -3,10 +3,9 @@ import React, {Component} from 'react'
 import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
-import axios from 'axios'
-import constants from '../constants'
-
-export default class RegisterUserScreen extends Component {
+import { connect } from 'react-redux'
+import { signUpUser } from '../redux/actions'
+class RegisterUserScreen extends Component {
 
   constructor(props) {
     super(props)
@@ -18,18 +17,6 @@ export default class RegisterUserScreen extends Component {
       company: '',
       orgnumber: '',
     }
-  }
-
-  signUp() {
-    axios.post(constants.EmulatorUrl+'/user/sign-up', {
-      email: this.state.email,
-      password: this.state.password })
-    .then(res => {
-      console.log(res.data)
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
   }
 
   render() {
@@ -99,7 +86,7 @@ export default class RegisterUserScreen extends Component {
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
-                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.signUp()}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state.email, this.state.password)}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
@@ -109,9 +96,22 @@ export default class RegisterUserScreen extends Component {
       </SafeAreaView>
     )
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.isRegistered) {
+      this.props.navigation.navigate('Login')
+    }
+  }
 }
 
+const mapDispatchToProps = dispatch => ({
+  signUpUser: (email, password) => dispatch(signUpUser(email,password))
+})
 
+const mapStateToProps = state => ({
+  isRegistered: state.authentication.isRegistered,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterUserScreen)
 
 
 const styles = StyleSheet.create({

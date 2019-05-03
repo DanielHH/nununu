@@ -7,7 +7,7 @@ import { reducers } from './redux/reducers'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['order', 'authentication'], // only order will be persisted
+  whitelist: ['order', 'authentication'], 
 }
 
 const persistedReducer = persistCombineReducers(persistConfig, reducers)
