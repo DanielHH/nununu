@@ -1,6 +1,6 @@
 import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
    SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
-   , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, HIDE_SUCCESSFUL_SIGN_UP_TEXT } from './actions'
+   , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, GO_TO_SIGN_UP_SCREEN} from './actions'
 
 
 const initialOrderState = {
@@ -46,11 +46,11 @@ function authentication(state = initialAuthState, action) {
   case REMOVE_TOKEN:
     return {...state, token: null}
   case SIGN_UP_USER_SUCCESS:
-    return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp}
+    return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp, error: {}}
   case SIGN_UP_USER_FAILURE:
-    return {...state, error: action.error}
-  case HIDE_SUCCESSFUL_SIGN_UP_TEXT:
-    return {...state, showSuccessfulSignUp: false}
+    return {...state, error: {signUpError: action.error}}
+  case GO_TO_SIGN_UP_SCREEN:
+    return {...state, showSuccessfulSignUp: false, error: {}}
   default:
     return state
   }

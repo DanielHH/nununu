@@ -31,6 +31,7 @@ class RegisterUserScreen extends Component {
                 <Text style={styles.title}>Register User and Company</Text>
                 <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
+              {this.props.error.signUpError && (<Text style={styles.RegisterError}> Failed to sign up new user </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Your name'
@@ -98,6 +99,7 @@ class RegisterUserScreen extends Component {
     )
   }
   componentDidUpdate(prevProps) {
+    console.log(this.props.error.signUpError)
     if (this.props.showSuccessfulSignUp) {
       this.props.navigation.navigate('Login')
     }
@@ -146,9 +148,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.75,
   },
+  RegisterError: {
+    alignSelf: 'center',
+    color: '#F00',
+  },
   infoContainer: {
     flex: 2,
     paddingHorizontal: 15,
+    marginTop: 20,
   },
   input: {
     height: 40,

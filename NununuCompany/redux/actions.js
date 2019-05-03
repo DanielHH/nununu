@@ -20,7 +20,7 @@ export const SIGN_UP_USER_SUCCESS = 'SIGN_UP_USER_SUCCESS'
 
 export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
 
-export const HIDE_SUCCESSFUL_SIGN_UP_TEXT = 'HIDE_SUCCESSFUL_SIGN_UP_TEXT'
+export const GO_TO_SIGN_UP_SCREEN = 'GO_TO_SIGN_UP_SCREEN'
 
 /*
  * other constants
@@ -47,8 +47,8 @@ export function removeToken() {
   return { type: REMOVE_TOKEN }
 }
 
-export function hideSuccessfulSignUpText() {
-    return { type: HIDE_SUCCESSFUL_SIGN_UP_TEXT }
+export function goToSignUpScreen() {
+  return { type: GO_TO_SIGN_UP_SCREEN }
 }
 
 export function signInUser(email, password){
