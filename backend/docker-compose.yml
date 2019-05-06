@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  web:
+    build: ./app
+    environment:
+      - DOCKER=True
+      - WAIT_BEFORE_HOSTS=5
+      - WAIT_HOSTS=db:5432
+    depends_on:
+      - db
+    links:
+      - db:db
+  db:
+    image: postgres:11.2
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=testdb
+  caddy:
+    image: abiosoft/caddy:0.11.5
+    environment:
+      - ACME_AGREE=true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${CADDYFILE}:/etc/Caddyfile
+      - ./caddy/.caddy:/root/.caddy
+    depends_on:
+      - web
+    links:
+      - web:web

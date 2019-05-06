@@ -27,8 +27,8 @@ def change_password(user, password, new_password):
 #################################
 ### Company related functions ###
 #################################
-def create_company(company_name, owner):
-    new_company = Company(company_name, owner)
+def create_company(name, owner, swishNumber=None):
+    new_company = Company(name, owner, swishNumber)
     if new_company:
         save_to_db(new_company)
         return new_company
@@ -36,6 +36,10 @@ def create_company(company_name, owner):
 
 def get_company_by_id(company_id):
     return Company.query.filter_by(id=company_id).first()
+
+
+def get_all_companies():
+    return Company.query.all()
 
 
 #################################
@@ -82,11 +86,27 @@ def create_purchase():
     return Purchase()
 
 
+def get_purchase_by_id(purchase_id):
+    return Purchase.query.filter(Purchase.id == purchase_id).first()
+
+
+def get_active_purchases(company):
+    return Purchase.query.filter(Purchase.company == company and
+                                 Purchase.payment_status == 'PAID' and
+                                 Purchase.completed == False).all()
+
+
+def get_completed_purchases(company):
+    return Purchase.query.filter(Purchase.company == company and
+                                 Purchase.payment_status == 'PAID' and
+                                 Purchase.completed == True).all()
+
+
 #######################################
 ### Purchase item related functions ###
 #######################################
-def create_purchase_item(quantity, price):
-    purchase_item = PurchaseItem(quantity, price)
+def create_purchase_item(quantity, product):
+    purchase_item = PurchaseItem(quantity, product)
     save_to_db(purchase_item)
     return purchase_item
 
@@ -105,3 +125,12 @@ def delete_from_db(entry):
 def db_reset():
     db.drop_all()
     db.create_all()
+
+def seed_database():
+    test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
+    test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
+    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'category': 'Mat'})
+    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'category': 'Mat'})
+    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'category': 'Mat'})
+    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'company': test_company, 'category': 'Dricka'})
+    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'company': test_company, 'category': 'Dricka'})

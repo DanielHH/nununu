@@ -1,0 +1,19 @@
+# Python
+bin/
+include/
+lib/
+local/
+.Python
+pip-selfcheck.json
+*.pyc
+Scripts/
+tcl/
+share/
+*.db
+__pycache__/
+pyvenv.cfg
+.coverage
+htmlcov/
+
+# Caddy
+.caddy
