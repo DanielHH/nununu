@@ -216,10 +216,11 @@ def swish_callback_payment_request():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
     json_data = request.get_json()
     logging.debug(json_data)
+    result = "payeePaymentReference not found", 404
     if 'payeePaymentReference' in json_data:
         purchase_id = json_data['payeePaymentReference']
         purchase = db_helper.get_purchase_by_id(purchase_id)
-        result = "payeePaymentReference not found", 404
+        result = "purchase not found", 404
         if purchase:
             result = "", 200
             if json_data['status'] == 'PAID':
