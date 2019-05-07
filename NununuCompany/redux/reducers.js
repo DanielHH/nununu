@@ -2,7 +2,7 @@ import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
   , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, GO_TO_SIGN_UP_SCREEN,
   ADD_PRODUCT_SUCCESS, ADD_PRODUCT_FAILURE, REMOVE_PRODUCT, EDIT_PRODUCT_INFO, CHANGE_PRODUCT_ORDER} from './actions'
-import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack';
+import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
 import produce from 'immer'
 
 const initialOrderState = {

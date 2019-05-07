@@ -20,7 +20,7 @@ import {
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
-import ArticleScreen from './screens/ArticleScreen'
+import ProductScreen from './screens/ProductScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LogInScreen from './screens/LogInScreen'
 import RegisterUserScreen from './screens/RegisterUserScreen'
@@ -81,16 +81,16 @@ export const EditMenuStackNav = createStackNavigator({
       ),
     }),
   },
-  EditArticle: {
-    screen: ArticleScreen,
+  EditProduct: {
+    screen: ProductScreen,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Redigera artikel',
+      headerTitle: 'Redigera produkt',
     }),
   },
-  AddArticle: {
-    screen: ArticleScreen,
+  AddProduct: {
+    screen: ProductScreen,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Lägg till artikel',
+      headerTitle: 'Lägg till produkt',
     }),
   },
 })

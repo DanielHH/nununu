@@ -29,14 +29,14 @@ export default class EditMenuScreen extends React.Component {
     })
   }
 
-  addArticle = (name, price, description) => {
+  addProduct = (name, price, description) => {
     let data_copy = [...this.state.data]
     data_copy.push({id: data_copy.length, name: name, price: price, description: description})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
 
-  editArticle = (id, name, price, description) => {
+  editProduct = (id, name, price, description) => {
     let data_copy = [...this.state.data]
     for (let i = 0; i < data_copy.length; i++) {
       if (data_copy[i].id === id) {
@@ -61,7 +61,7 @@ export default class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditArticle', {editArticle: this.editArticle, item: item})}>
+        onPress={() => this.props.navigation.navigate('EditProduct', {editProduct: this.editProduct, item: item})}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
@@ -88,7 +88,7 @@ export default class EditMenuScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddArticle', {addArticle: this.addArticle})}
+          onPress={() => this.props.navigation.navigate('AddProduct', {addProduct: this.addProduct})}
         />
       </View>
     )

@@ -3,7 +3,7 @@ import {View, Text, TextInput, Button} from 'react-native'
 import { connect } from 'react-redux'
 import { addProduct } from '../redux/actions'
 
-class ArticleScreen extends React.Component {
+class ProductScreen extends React.Component {
 
   constructor(props) {
     super(props)
@@ -26,10 +26,10 @@ class ArticleScreen extends React.Component {
   }
 
   saveFunc = () => {
-    if (this.state.item) { // edit article
-      this.props.navigation.state.params.editArticle(this.state.item.id, this.state.name, this.state.price, this.state.description)
-    } else { // new article
-      this.props.navigation.state.params.addArticle(this.state.name, this.state.price, this.state.description)
+    if (this.state.item) { // edit product
+      this.props.navigation.state.params.editProduct(this.state.item.id, this.state.name, this.state.price, this.state.description)
+    } else { // new product
+      this.props.navigation.state.params.addProduct(this.state.name, this.state.price, this.state.description)
       this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.props.token.token)
     }
   }
@@ -78,4 +78,4 @@ const mapStateToProps = state => ({
   token: state.authentication.token,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ProductScreen)
