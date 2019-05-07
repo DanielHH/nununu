@@ -105,3 +105,13 @@ def delete_from_db(entry):
 def db_reset():
     db.drop_all()
     db.create_all()
+
+
+def seed_database():
+    test_user = create_user(**{'email': 'test', 'password': 'test'})
+    test_company = create_company(**{'company_name': 'test', 'owner': test_user})
+    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'category': 'Mat'})
+    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'category': 'Mat'})
+    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'category': 'Mat'})
+    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'company': test_company, 'category': 'Dricka'})
+    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'company': test_company, 'category': 'Dricka'})
