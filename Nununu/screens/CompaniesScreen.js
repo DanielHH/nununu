@@ -65,12 +65,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#e9ebee'
   },
-  sectionHeader: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   item: {
     flex: 1,
     margin: 5,
