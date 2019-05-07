@@ -19,7 +19,7 @@ export const SIGN_UP_USER_SUCCESS = 'SIGN_UP_USER_SUCCESS'
 
 export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
 
-export const START_NEW_REGISTRATION = 'START_NEW_REGISTRATION'
+export const START_NEW_SIGNUP = 'START_NEW_SIGNUP'
 
 /*
  * other constants
@@ -46,8 +46,8 @@ export function removeToken() {
   return { type: REMOVE_TOKEN }
 }
 
-export function startNewRegistration() {
-  return { type: START_NEW_REGISTRATION }
+export function startNewSignUp() {
+  return { type: START_NEW_SIGNUP }
 }
 
 export function signInUser(email, password){

@@ -5,7 +5,7 @@ import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
 import { signUpUser } from '../redux/actions'
-class RegisterUserScreen extends Component {
+class SignUpUserScreen extends Component {
 
   constructor(props) {
     super(props)
@@ -30,7 +30,7 @@ class RegisterUserScreen extends Component {
                 <Text style={styles.title}>Register User and Company</Text>
                 <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
-              {this.props.error.signUpError && (<Text style={styles.RegisterError}> Failed to sign up new user </Text>)}
+              {this.props.error.signUpError && (<Text style={styles.SignUpError}> Failed to sign up new user </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Your name'
@@ -113,7 +113,7 @@ const mapStateToProps = state => ({
   error: state.authentication.error,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterUserScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpUserScreen)
 
 
 const styles = StyleSheet.create({
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.75,
   },
-  RegisterError: {
+  SignUpError: {
     alignSelf: 'center',
     color: '#F00',
   },
