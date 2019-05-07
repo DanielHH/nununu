@@ -22,6 +22,16 @@ export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
 
 export const GO_TO_SIGN_UP_SCREEN = 'GO_TO_SIGN_UP_SCREEN'
 
+export const ADD_PRODUCT_SUCCESS = 'ADD_PRODUCT_SUCCESS'
+
+export const ADD_PRODUCT_FAILURE = 'ADD_PRODUCT_FAILURE'
+
+export const REMOVE_PRODUCT = 'REMOVE_PRODUCT'
+
+export const EDIT_PRODUCT_INFO = 'EDIT_PRODUCT_INFO'
+
+export const CHANGE_PRODUCT_ORDER = 'CHANGE_PRODUCT_ORDER'
+
 /*
  * other constants
  */
@@ -51,7 +61,7 @@ export function goToSignUpScreen() {
   return { type: GO_TO_SIGN_UP_SCREEN }
 }
 
-export function signInUser(email, password){
+export function signInUser(email, password) {
   let credentials = {'email': email, 'password': password}
   return function (dispatch) {
     apiClient.post('/user/sign-in', credentials)
@@ -66,7 +76,7 @@ export function signInUser(email, password){
   }
 }
 
-export function signUpUser(email, password){
+export function signUpUser(email, password) {
   let credentials = {'email': email, 'password': password}
   return function (dispatch) {
     apiClient.post('/user/sign-up', credentials)
@@ -75,6 +85,21 @@ export function signUpUser(email, password){
       showSuccessfulSignUp: true,
     })).catch(res => dispatch({
       type: SIGN_UP_USER_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function addProduct(id, name, price, description, token) {
+  let new_product = {'id': id, 'name': name, 'price': price, 'description': description}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/product/create', new_product)
+    .then(() => dispatch({ 
+      type: ADD_PRODUCT_SUCCESS, 
+      new_product,
+    })).catch(res => dispatch({
+      type: ADD_PRODUCT_FAILURE,
       error: res,
     }))
   }

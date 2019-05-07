@@ -1,7 +1,9 @@
 import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
-   SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
-   , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, GO_TO_SIGN_UP_SCREEN} from './actions'
-
+  SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
+  , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, GO_TO_SIGN_UP_SCREEN,
+  ADD_PRODUCT_SUCCESS, ADD_PRODUCT_FAILURE, REMOVE_PRODUCT, EDIT_PRODUCT_INFO, CHANGE_PRODUCT_ORDER} from './actions'
+import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack';
+import produce from 'immer'
 
 const initialOrderState = {
   active: [],
@@ -56,7 +58,31 @@ function authentication(state = initialAuthState, action) {
   }
 }
 
+const initialMenuState = []
+
+function menu(state = initialMenuState, action) {
+  switch (action.type) {
+  case ADD_PRODUCT_SUCCESS:
+    return produce(state, draft => {
+      draft.push[action.new_product]
+    })
+  case ADD_PRODUCT_FAILURE:
+    return
+  case REMOVE_PRODUCT:
+    return produce(state, draft => {
+      draft.splice(draft.findIndex(product => product.id === action.id), 1)
+    })
+  case EDIT_PRODUCT_INFO:
+    return
+  case CHANGE_PRODUCT_ORDER:
+    return
+  default:
+    return state
+  }
+}
+
 export const reducers = {
   order,
   authentication,
+  menu,
 }

@@ -1,7 +1,9 @@
 import React from 'react'
 import {View, Text, TextInput, Button} from 'react-native'
+import { connect } from 'react-redux'
+import { addProduct } from '../redux/actions'
 
-export default class ArticleScreen extends React.Component {
+class ArticleScreen extends React.Component {
 
   constructor(props) {
     super(props)
@@ -28,6 +30,7 @@ export default class ArticleScreen extends React.Component {
       this.props.navigation.state.params.editArticle(this.state.item.id, this.state.name, this.state.price, this.state.description)
     } else { // new article
       this.props.navigation.state.params.addArticle(this.state.name, this.state.price, this.state.description)
+      this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.props.token.token)
     }
   }
 
@@ -66,3 +69,13 @@ export default class ArticleScreen extends React.Component {
     )
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  addProduct: (id, name, price, description, token) => dispatch(addProduct(id, name, price, description, token))
+})
+
+const mapStateToProps = state => ({
+  token: state.authentication.token,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleScreen)
