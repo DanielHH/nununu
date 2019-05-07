@@ -59,7 +59,6 @@ export default connect((state) => {
   }
 })(CompaniesScreen)
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
