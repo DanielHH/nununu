@@ -20,7 +20,6 @@ class RegisterUserScreen extends Component {
   }
 
   render() {
-    console.log('ERROR STUFF IN HERE: ', this.props.error)
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
