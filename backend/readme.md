@@ -1,6 +1,6 @@
 # Nununu backend
 
-## Running localy
+## Running locally
 You  have two options:
 1. use a virtual environment if you just want to run the python code
 2. run using docker to run with nginx, postgresql db and python server app.
@@ -42,7 +42,7 @@ pip install -r requirements.txt
 Open the file htmlcov/index.html in a web browser
 
 
-### 2. docker
+### 2. Docker
 
 Requires docker and docker-compose to be installed on your system.
 
