@@ -28,7 +28,6 @@ class CompaniesScreen extends React.Component {
   };
 
   render() {
-    console.log('companies: ', this.props.companies)
     return (
       <SafeAreaView style={styles.container}>
         <FlatList
@@ -80,5 +79,4 @@ const styles = StyleSheet.create({
   cardContentContainer: {
     marginTop: 10,
   },
-
 })
