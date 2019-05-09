@@ -94,8 +94,8 @@ def get_company(company_id):
 def get_companies():
     # for now: get ALL companies
     companies = db_helper.get_all_companies()
-    result = json.dumps({'companies': [company.serialize() for company in companies]}), 200
-    return result
+    serialized_companies = [company.serialize() for company in companies]
+    return json.dumps({'companies': serialized_companies}), 200
 
 
 @app.route("/company/<company_id>/products", methods=['GET'])
