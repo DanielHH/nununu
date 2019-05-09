@@ -206,7 +206,7 @@ def pay(payment_method, purchase_id):
         found_purchase = db_helper.get_purchase_by_id(purchase_id)
         if found_purchase:
             result = "purchase already paid for", 409
-            if found_purchase.status != "PAID":
+            if found_purchase.payment_status != "PAID":
                 result = start_pay_swish(found_purchase)
     return result
 
