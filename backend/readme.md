@@ -52,6 +52,7 @@ Requires docker and docker-compose to be installed on your system.
   ```
 
 #### run image (silently with -d)
+(Note: Works on git-bash on Windows)
   ```
   CADDYFILE=./caddy/Caddyfile.local docker-compose up -d
   ```
