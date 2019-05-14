@@ -65,8 +65,8 @@ export function signInUser(email, password){
   }
 }
 
-export function signUpUser(email, password){
-  let credentials = {'email': email, 'password': password}
+export function signUpUser(params){
+  let credentials = params
   return function (dispatch) {
     apiClient.post('/user/sign-up', credentials)
     .then(() => dispatch({

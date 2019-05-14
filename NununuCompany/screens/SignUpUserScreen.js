@@ -14,7 +14,7 @@ class SignUpUserScreen extends Component {
       name: '',
       email: '',
       password: '',
-      company: '',
+      companyName: '',
       orgnumber: '',
     }
   }
@@ -71,7 +71,7 @@ class SignUpUserScreen extends Component {
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
                   returnKeyType='next'
-                  onChangeText={(text) => this.setState({company:text})}
+                  onChangeText={(text) => this.setState({companyName:text})}
                   onSubmitEditing={() => { this.organisationInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -87,7 +87,7 @@ class SignUpUserScreen extends Component {
                   autoCorrect={false}
                   blurOnSubmit={false}
                 />
-                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state.email, this.state.password)}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state)}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>

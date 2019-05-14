@@ -27,8 +27,10 @@ def verify_token(func):
 def sign_up():
     result = "user not created", 400
     json_data = request.get_json()
+    print (json_data)
     if valid_password(json_data['password']):
-        if db_helper.create_user(json_data['email'], json_data['password']):
+        user = db_helper.create_user(json_data['email'], json_data['password'])
+        if user and db_helper.create_company(json_data['companyName'], user):
             result = "user signed up", 200
     return result
 
