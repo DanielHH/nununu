@@ -40,7 +40,7 @@ class ProductsScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(getCompanyProducts(this.props.selectedCompany.id))
+    this.props.getCompanyProducts(this.props.selectedCompany.id)
   }
 
   renderCard = (item, index, section) => {
@@ -56,9 +56,9 @@ class ProductsScreen extends React.Component {
             </View>
             <View style={styles.verticalDivider}/>
             <View style={styles.quantity}>
-              <IconButton icon="add" size={24} onPress={() => this.props.dispatch(increaseProductQuantity(index, section.title))}/>
+              <IconButton icon="add" size={24} onPress={() => this.props.increaseProductQuantity(index, section.title)}/>
               <Text>{item.quantity}</Text>
-              <IconButton icon="remove" size={24} onPress={() => this.props.dispatch(decreaseProductQuantity(index, section.title))}/>
+              <IconButton icon="remove" size={24} onPress={() => this.props.decreaseProductQuantity(index, section.title)}/>
             </View>
           </View>
         </Card.Content>
@@ -75,7 +75,7 @@ class ProductsScreen extends React.Component {
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
-        <Button onPress={() => this.props.dispatch(postPurchase(this.prepareOrder()))}> Checka ut </Button>
+        <Button onPress={() => this.props.postPurchase(this.prepareOrder())}> Checka ut </Button>
       </View>
     )
   }
@@ -83,7 +83,7 @@ class ProductsScreen extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.unpaidPurchase !== prevProps.unpaidPurchase && this.props.unpaidPurchase !== null) {
       // make request to start pay with swish
-      this.props.dispatch(startPaySwish(this.props.unpaidPurchase.id))
+      this.props.startPaySwish(this.props.unpaidPurchase.id)
     } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
       // retrieved a swish request token, open the swish app with it
       Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken)
@@ -93,16 +93,23 @@ class ProductsScreen extends React.Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    sections: state.store.sections,
-    selectedCompany: state.store.selectedCompany,
-    swishRequestToken: state.purchase.swish_request_token,
-    unpaidPurchase: state.purchase.unpaid_purchase,
-    purchaseError: state.purchase.error,
+const mapStateToProps = state => ({
+  sections: state.store.sections,
+  selectedCompany: state.store.selectedCompany,
+  swishRequestToken: state.purchase.swish_request_token,
+  unpaidPurchase: state.purchase.unpaid_purchase,
+  purchaseError: state.purchase.error,
+})
 
-  }
-})(ProductsScreen)
+const mapDispatchToProps = {
+  getCompanyProducts,
+  increaseProductQuantity,
+  decreaseProductQuantity,
+  postPurchase,
+  startPaySwish,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsScreen)
 
 const styles = StyleSheet.create({
   container: {
