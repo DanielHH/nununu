@@ -6,12 +6,7 @@ import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
   postPurchase, startPaySwish } from '../redux/actions'
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
-
-class RenderTitle extends React.Component {
-  render() {
-    return <Text>{this.props.title}</Text>
-  }
-}
+import RenderTitle from '../components/RenderTitle'
 
 let TitleContainer = connect(state => ({ title: state.store.selectedCompany.name }))(RenderTitle)
 
