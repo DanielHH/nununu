@@ -81,11 +81,10 @@ class SignUpUserScreen extends Component {
                   placeholder='Organisation number'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='numeric'
-                  returnKeyType='go'
+                  returnKeyType='done'
                   onChangeText={(text) => this.setState({orgnumber:text})}
                   // onSubmitEditing={() => { Keyboard.dismiss}}
                   autoCorrect={false}
-                  blurOnSubmit={false}
                 />
                 <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state)}>
                   <Text style={styles.buttonText}>Submit</Text>
