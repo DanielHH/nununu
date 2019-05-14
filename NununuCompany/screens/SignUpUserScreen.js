@@ -67,7 +67,7 @@ class SignUpUserScreen extends Component {
                 />
                 <TextInput style={styles.input}
                   ref={(input) => { this.companyInput = input }}
-                  placeholder='Company'
+                  placeholder='Company Name'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
                   returnKeyType='next'
@@ -83,8 +83,8 @@ class SignUpUserScreen extends Component {
                   keyboardType='numeric'
                   returnKeyType='done'
                   onChangeText={(text) => this.setState({orgnumber:text})}
-                  // onSubmitEditing={() => { Keyboard.dismiss}}
                   autoCorrect={false}
+                  onSubmitEditing={() => this.props.signUpUser(this.state)}
                 />
                 <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state)}>
                   <Text style={styles.buttonText}>Submit</Text>
