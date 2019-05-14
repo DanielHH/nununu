@@ -5,7 +5,7 @@ import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
 import { signUpUser } from '../redux/actions'
-class RegisterUserScreen extends Component {
+class SignUpUserScreen extends Component {
 
   constructor(props) {
     super(props)
@@ -20,7 +20,6 @@ class RegisterUserScreen extends Component {
   }
 
   render() {
-    console.log('ERROR STUFF IN HERE: ', this.props.error)
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle='light-content' />
@@ -28,10 +27,10 @@ class RegisterUserScreen extends Component {
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
-                <Text style={styles.title}>Register User and Company</Text>
-                <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
+                <Text style={styles.title}>Sign Up User and Company</Text>
+                <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for signing up a new account.</Text>
               </View>
-              {this.props.error.signUpError && (<Text style={styles.RegisterError}> Failed to sign up new user </Text>)}
+              {this.props.error.signUpError && (<Text style={styles.SignUpError}> Failed to sign up new user </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Your name'
@@ -99,8 +98,8 @@ class RegisterUserScreen extends Component {
     )
   }
   componentDidUpdate(prevProps) {
-    console.log(this.props.error.signUpError)
-    if (this.props.showSuccessfulSignUp) {
+    if (this.props.showSuccessfulSignUp !== prevProps.showSuccessfulSignUp &&
+    this.props.showSuccessfulSignUp) {
       this.props.navigation.navigate('Login')
     }
   }
@@ -115,7 +114,7 @@ const mapStateToProps = state => ({
   error: state.authentication.error,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterUserScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpUserScreen)
 
 
 const styles = StyleSheet.create({
@@ -147,8 +146,9 @@ const styles = StyleSheet.create({
     color: '#f7c744',
     fontSize: 14,
     opacity: 0.75,
+    textAlign: 'center'
   },
-  RegisterError: {
+  SignUpError: {
     alignSelf: 'center',
     color: '#F00',
   },
