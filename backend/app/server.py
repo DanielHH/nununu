@@ -94,8 +94,8 @@ def get_company(company_id):
 def get_companies():
     # for now: get ALL companies
     companies = db_helper.get_all_companies()
-    result = json.dumps({'companies': [company.serialize() for company in companies]}), 200
-    return result
+    serialized_companies = [company.serialize() for company in companies]
+    return json.dumps({'companies': serialized_companies}), 200
 
 
 @app.route("/company/<company_id>/products", methods=['GET'])
@@ -206,7 +206,7 @@ def pay(payment_method, purchase_id):
         found_purchase = db_helper.get_purchase_by_id(purchase_id)
         if found_purchase:
             result = "purchase already paid for", 409
-            if found_purchase.status != "PAID":
+            if found_purchase.payment_status != "PAID":
                 result = start_pay_swish(found_purchase)
     return result
 
@@ -216,10 +216,11 @@ def swish_callback_payment_request():
     """IMPORTANT: ONLY GetSwish AB should be able to use this route"""
     json_data = request.get_json()
     logging.debug(json_data)
+    result = "payeePaymentReference not found", 404
     if 'payeePaymentReference' in json_data:
         purchase_id = json_data['payeePaymentReference']
         purchase = db_helper.get_purchase_by_id(purchase_id)
-        result = "payeePaymentReference not found", 404
+        result = "purchase not found", 404
         if purchase:
             result = "", 200
             if json_data['status'] == 'PAID':
@@ -232,7 +233,9 @@ def swish_callback_payment_request():
                 # The payer declined to make the payment
                 pass
             elif json_data['status'] == 'ERROR':
-                handle_swish_payment_request_error(json_data['errorCode'], purchase)
+                handle_swish_payment_request_error(
+                    json_data['errorCode'], json_data['errorMessage'],
+                    json_data['additionalInformation'], purchase)
     return result
 
 
@@ -266,7 +269,13 @@ def start_pay_swish(purchase):
     return result
 
 
-def handle_swish_payment_request_error(error_code, purchase):
+def handle_swish_payment_request_error(error_code, error_message, additional_information, purchase):
+    # save info about the error
+    purchase.payment_status = 'ERROR'
+    purchase.error_code = 'ERROR'
+    purchase.error_message = error_message
+    purchase.additional_information = additional_information
+    db_helper.save_to_db(purchase)
     if error_code == 'ACMT03':
         # Payer not enrolled.
         pass

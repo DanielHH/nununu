@@ -87,19 +87,19 @@ def create_purchase():
 
 
 def get_purchase_by_id(purchase_id):
-    return Purchase.query.filter(Purchase.id == purchase_id).first()
+    return Purchase.query.filter_by(id=purchase_id).first()
 
 
 def get_active_purchases(company):
-    return Purchase.query.filter(Purchase.company == company and
-                                 Purchase.payment_status == 'PAID' and
-                                 Purchase.completed == False).all()
+    return Purchase.query.filter_by(company=company,
+                                    payment_status='PAID',
+                                    completed=False).all()
 
 
 def get_completed_purchases(company):
-    return Purchase.query.filter(Purchase.company == company and
-                                 Purchase.payment_status == 'PAID' and
-                                 Purchase.completed == True).all()
+    return Purchase.query.filter_by(company=company,
+                                    payment_status='PAID',
+                                    completed=True).all()
 
 
 #######################################
