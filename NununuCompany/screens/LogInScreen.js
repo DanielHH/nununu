@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
-          TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-          KeyboardAvoidingView} from 'react-native'
+  TextInput, SafeAreaView, Keyboard, TouchableOpacity,
+  KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
-import { signInUser, goToSignUpScreen } from '../redux/actions'
+import { signInUser, startNewSignUp } from '../redux/actions'
 
 class LogInScreen extends Component {
 
@@ -61,7 +61,7 @@ class LogInScreen extends Component {
                   </TouchableOpacity>*/}
                 </View>
                 <View style={styles.dividerDecorator}></View>
-                <Text onPress={() => {this.props.goToSignUpScreen(), this.props.navigation.navigate('Register')}} style={styles.signUpText}>Sign Up</Text>
+                <Text onPress={() => {this.props.startNewSignUp(), this.props.navigation.navigate('SignUp')}} style={styles.signUpText}>Sign Up</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -77,7 +77,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   signInUser: (email, password) => dispatch(signInUser(email,password)),
-  goToSignUpScreen: () => dispatch(goToSignUpScreen())
+  startNewSignUp: () => dispatch(startNewSignUp())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogInScreen)

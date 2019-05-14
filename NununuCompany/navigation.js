@@ -2,28 +2,19 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  Button,
 } from 'react-native'
 import {
   createDrawerNavigator,
   createMaterialTopTabNavigator,
   createStackNavigator,
-  createSwitchNavigator,
-  createAppContainer,
-  DrawerItems} from 'react-navigation'
+  createAppContainer} from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ProductScreen from './screens/ProductScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LogInScreen from './screens/LogInScreen'
-import RegisterUserScreen from './screens/RegisterUserScreen'
+import SignUpUserScreen from './screens/SignUpUserScreen'
 import ForgotPswScreen from './screens/ForgotPswScreen'
 import { removeToken } from './redux/actions'
 import { connect } from 'react-redux'
@@ -118,8 +109,8 @@ export const AuthenticationStack = createAppContainer(createStackNavigator({
   Login: {
     screen: LogInScreen,
   },
-  Register: {
-    screen: RegisterUserScreen,
+  SignUp: {
+    screen: SignUpUserScreen,
   },
   ForgotPSW: {
     screen: ForgotPswScreen,

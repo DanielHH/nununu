@@ -2,12 +2,13 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from decimal import Decimal
 import jwt, logging
-from app_config import app,db
+from app_config import app, db
 
 class Company(db.Model):
     __tablename__ = 'company'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), unique=True, nullable=False)
+    swish_number = db.Column(db.Integer)
     reg_date = db.Column(db.DateTime)
     # for now: a company has ONE owner and the user has A company
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -17,10 +18,14 @@ class Company(db.Model):
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
 
-    def __init__(self, name, owner):
+    def __init__(self, name, owner, swishNumber=None):
         self.name = name
         self.owner = owner
         self.reg_date = datetime.utcnow()
+        if swishNumber and name == "test":
+            # TODO: Change,should NOT be done like this. This is ONLY for testing/dev purpose.
+            # Certificates and swish number should be installed by us in contact with the company.
+            self.swish_number = swishNumber
 
     def serialize(self):
         return {'id': self.id, 'name': self.name}
@@ -51,16 +56,22 @@ class Product(db.Model):
 class Purchase(db.Model):
     __tablename__ = 'purchase'
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(255), nullable=False)
     purchase_date = db.Column(db.DateTime)
     total_price = db.Column(db.DECIMAL)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="purchases")
     # A purchase can be composed of many products
     purchase_items = db.relationship("PurchaseItem", back_populates="purchase")
+    swish_payment_id = db.Column(db.String(255))
+    swish_payment_location = db.Column(db.String(255))
+    payment_status = db.Column(db.String(255))
+    payment_date = db.Column(db.DateTime)
+    error_code = db.Column(db.String(255))
+    error_message = db.Column(db.String(255))
+    additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
+    completed = db.Column(db.Boolean)
 
     def __init__(self):
-        self.status = "not done"
         self.purchase_date = datetime.utcnow()
 
     def setPrice(self):
@@ -70,12 +81,24 @@ class Purchase(db.Model):
             price += purchase_item.price_per_item * purchase_item.quantity
         self.total_price = price
 
+
+    def createPurchaseMessage(self):
+        result = ""
+        for item in self.purchase_items:
+            str(item.quantity) + " " + item.product.name + ","
+        return result[:-1] # remove trailing comma
+
     def serialize(self):
-        return {'id': self.id, 
-        'status': self.status, 
-        'purchase_date': str(self.purchase_date), 
-        'total_price': str(self.total_price), 
-        'company_id': self.company_id}
+        return {'id': self.id,
+                'payment_status': self.payment_status,
+                'completed': self.completed,
+                'purchase_date': str(self.purchase_date),
+                'totalPrice': str(self.total_price),
+                'errorCode': self.error_code,
+                'errorMessage': self.error_message,
+                'additionalInformation': self.additional_information,
+                'company': self.company.serialize(),
+                'items': [item.serialize() for item in self.purchase_items]}
 
 
 class PurchaseItem(db.Model):
@@ -89,9 +112,14 @@ class PurchaseItem(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     product = db.relationship("Product")
 
-    def __init__(self, quantity, price_per_item):
+    def __init__(self, quantity, product):
         self.quantity = quantity
-        self.price_per_item = price_per_item
+        self.product = product
+        self.price_per_item = product.price
+
+    def serialize(self):
+        return {'id': self.id, 'name': self.product.name, 'quantity': self.quantity,
+                'pricePerItem': str(self.price_per_item)}
 
 
 class User(db.Model):
@@ -111,7 +139,6 @@ class User(db.Model):
 
     def __eq__(self, other):
         return self.id == other.id
-
 
     def __hash__(self):
         return hash(str(self))

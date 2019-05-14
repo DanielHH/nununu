@@ -1,5 +1,4 @@
 import { apiClient } from '../apiClient'
-import axios from 'axios'
 /*
  * action types
  */
@@ -20,7 +19,7 @@ export const SIGN_UP_USER_SUCCESS = 'SIGN_UP_USER_SUCCESS'
 
 export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
 
-export const GO_TO_SIGN_UP_SCREEN = 'GO_TO_SIGN_UP_SCREEN'
+export const START_NEW_SIGNUP = 'START_NEW_SIGNUP'
 
 export const ADD_PRODUCT_SUCCESS = 'ADD_PRODUCT_SUCCESS'
 
@@ -57,8 +56,8 @@ export function removeToken() {
   return { type: REMOVE_TOKEN }
 }
 
-export function goToSignUpScreen() {
-  return { type: GO_TO_SIGN_UP_SCREEN }
+export function startNewSignUp() {
+  return { type: START_NEW_SIGNUP }
 }
 
 export function signInUser(email, password) {
