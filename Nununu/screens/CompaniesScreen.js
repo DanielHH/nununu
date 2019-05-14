@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, SafeAreaView, Text, SectionList, StyleSheet } from 'react-native'
+import { View, FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
 import { getCompanies, setSelectedCompany } from '../redux/actions'
@@ -8,11 +8,11 @@ import { MaterialCommunityIcons} from '@expo/vector-icons'
 class CompaniesScreen extends React.Component {
 
   componentDidMount() {
-    this.props.dispatch(getCompanies())
+    this.props.getCompanies()
   }
 
   displayCompany = (company) => {
-    this.props.dispatch(setSelectedCompany(company))
+    this.props.setSelectedCompany(company)
     this.props.navigation.navigate('Products')
   }
 
@@ -53,11 +53,16 @@ class CompaniesScreen extends React.Component {
   }
 }
 
-export default connect((state) => {
-  return {
-    companies: state.store.companies,
-  }
-})(CompaniesScreen)
+const mapStateToProps = state => ({
+  companies: state.store.companies,
+})
+
+const mapDispatchToProps = {
+  getCompanies,
+  setSelectedCompany,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompaniesScreen)
 
 const styles = StyleSheet.create({
   container: {
