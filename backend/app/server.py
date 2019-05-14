@@ -233,7 +233,9 @@ def swish_callback_payment_request():
                 # The payer declined to make the payment
                 pass
             elif json_data['status'] == 'ERROR':
-                handle_swish_payment_request_error(json_data['errorCode'], purchase)
+                handle_swish_payment_request_error(
+                    json_data['errorCode'], json_data['errorMessage'],
+                    json_data['additionalInformation'], purchase)
     return result
 
 
@@ -267,7 +269,13 @@ def start_pay_swish(purchase):
     return result
 
 
-def handle_swish_payment_request_error(error_code, purchase):
+def handle_swish_payment_request_error(error_code, error_message, additional_information, purchase):
+    # save info about the error
+    purchase.payment_status = 'ERROR'
+    purchase.error_code = 'ERROR'
+    purchase.error_message = error_message
+    purchase.additional_information = additional_information
+    db_helper.save_to_db(purchase)
     if error_code == 'ACMT03':
         # Payer not enrolled.
         pass
