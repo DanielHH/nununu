@@ -27,7 +27,7 @@ class SignUpUserScreen extends Component {
           <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
-                <Text style={styles.title}>Register User and Company</Text>
+                <Text style={styles.title}>Sign Up User and Company</Text>
                 <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
               </View>
               {this.props.error.signUpError && (<Text style={styles.SignUpError}> Failed to sign up new user </Text>)}
