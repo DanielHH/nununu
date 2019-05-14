@@ -97,8 +97,9 @@ class SignUpUserScreen extends Component {
       </SafeAreaView>
     )
   }
-  componentDidUpdate() {
-    if (this.props.showSuccessfulSignUp) {
+  componentDidUpdate(prevProps) {
+    if (this.props.showSuccessfulSignUp !== prevProps.showSuccessfulSignUp &&
+    this.props.showSuccessfulSignUp) {
       this.props.navigation.navigate('Login')
     }
   }
