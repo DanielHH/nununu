@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View, TouchableOpacity} from 'react-native'
+import {StyleSheet, View, TouchableOpacity, SectionList} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
@@ -8,11 +8,11 @@ import { connection } from '../feathersSetup'
 export default class EditMenuScreen extends React.Component {
   state = {
     data: [
-      {id: 0, name: 'La Mejicana', price: '79', description: 'bmb'},
-      {id: 1, name: 'Sukaldari', price: '95', description: 'bmb'},
-      {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb'},
-      {id: 3, name: 'The Original', price: '89', description: 'bmb'},
-      {id: 4, name: 'Angus', price: '89', description: 'bmb'}],
+      {id: 0, name: 'La Mejicana', price: '79', description: 'bmb', category: 'burger'},
+      {id: 1, name: 'Sukaldari', price: '95', description: 'bmb', category: 'burger'},
+      {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb', category: 'burger'},
+      {id: 3, name: 'The Original', price: '89', description: 'bmb', category: 'burger'},
+      {id: 4, name: 'Angus', price: '89', description: 'bmb', category: 'burger'}],
   }
 
 
@@ -29,20 +29,21 @@ export default class EditMenuScreen extends React.Component {
     })
   }
 
-  addProduct = (name, price, description) => {
+  addProduct = (name, price, description, category) => {
     let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, price: price, description: description})
+    data_copy.push({id: data_copy.length, name: name, price: price, description: description, category: category})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
 
-  editProduct = (id, name, price, description) => {
+  editProduct = (id, name, price, description, category) => {
     let data_copy = [...this.state.data]
     for (let i = 0; i < data_copy.length; i++) {
       if (data_copy[i].id === id) {
         data_copy[i].name = name
         data_copy[i].price = price
         data_copy[i].description = description
+        data_copy[i].category = category
         this.setState({data: data_copy})
         break
       }

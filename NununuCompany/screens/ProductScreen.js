@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, TextInput, Button} from 'react-native'
+import {View, Text, TextInput, Button, Picker} from 'react-native'
 import { connect } from 'react-redux'
 import { addProduct } from '../redux/actions'
 
@@ -13,6 +13,7 @@ class ProductScreen extends React.Component {
         name: item.name,
         price: item.price,
         description: item.description,
+        category: item.category,
         item: item,
       }
     }
@@ -21,16 +22,17 @@ class ProductScreen extends React.Component {
         name: '',
         price: '',
         description: '',
+        category: '',
       }
     }
   }
 
   saveFunc = () => {
     if (this.state.item) { // edit product
-      this.props.navigation.state.params.editProduct(this.state.item.id, this.state.name, this.state.price, this.state.description)
+      this.props.navigation.state.params.editProduct(this.state.item.id, this.state.name, this.state.price, this.state.description, this.state.category)
     } else { // new product
-      this.props.navigation.state.params.addProduct(this.state.name, this.state.price, this.state.description)
-      this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.props.token.token)
+      this.props.navigation.state.params.addProduct(this.state.name, this.state.price, this.state.description, this.state.category)
+      this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.state.category, this.props.token.token)
     }
   }
 
@@ -64,6 +66,18 @@ class ProductScreen extends React.Component {
           onChangeText={(description) => this.setState({description})}
           value={this.state.description}
         />
+        <Text>
+          Kategori
+        </Text>
+        <Picker
+          selectedValue={this.state.category}
+          style={{height: 40}}
+          onValueChange={(itemValue, itemIndex) =>
+            this.setState({category: itemValue})
+          }>
+          <Picker.Item label="Burgers" value="Burgers" />
+          <Picker.Item label="Drinks" value="Drinks" />
+        </Picker>
         <Button title="Spara" onPress={() => this.saveFunc()}/>
       </View>
     )
