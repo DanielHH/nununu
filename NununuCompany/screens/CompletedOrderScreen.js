@@ -1,5 +1,7 @@
 import React from 'react'
 import {View, Text, FlatList} from 'react-native'
+import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 import { setCompletedOrders } from '../redux/actions'
 
@@ -12,28 +14,12 @@ class CompletedOrderScreen extends React.Component {
 
   renderItem(item) {
     return (
-      <View style={{
-        height: 100,
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}>
-        <Text style={{
-          Weight: 'bold',
-          color: 'white',
-          fontSize: 26,
-        }}>
-          {item.content}
-        </Text>
-        <Text style={{
-          fontWeight: 'bold',
-          color: 'black',
-          backgroundColor: 'yellow',
-          fontSize: 26,
-        }}>
-          {item.orderNumber}
-        </Text>
-      </View>
+      <Card style={{margin:5, marginBottom:1,}}>
+        <Card.Content>
+          <Title>Order: {item.orderNumber}</Title>
+          <Paragraph>{item.content}</Paragraph>
+        </Card.Content>
+      </Card>
     )
   }
 

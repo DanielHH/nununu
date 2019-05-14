@@ -1,5 +1,6 @@
-import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS } from './actions'
-
+import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
+  SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
+  , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, START_NEW_SIGNUP} from './actions'
 
 
 const initialOrderState = {
@@ -29,6 +30,33 @@ function order(state = initialOrderState, action) {
   }
 }
 
+
+const initialAuthState = {
+  token: null,
+  showSuccessfulSignUp: false,
+  error: {},
+}
+
+function authentication(state = initialAuthState, action) {
+  switch (action.type) {
+  case SIGN_IN_USER_SUCCESS:
+    return {...state, token: action.token, showSuccessfulSignUp: action.showSuccessfulSignUp}
+  case SIGN_IN_USER_FAILURE:
+    return {...state, error: action.error}
+  case REMOVE_TOKEN:
+    return {...state, token: null}
+  case SIGN_UP_USER_SUCCESS:
+    return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp, error: {}}
+  case SIGN_UP_USER_FAILURE:
+    return {...state, error: {signUpError: action.error}}
+  case START_NEW_SIGNUP:
+    return {...state, showSuccessfulSignUp: false, error: {}}
+  default:
+    return state
+  }
+}
+
 export const reducers = {
   order,
+  authentication,
 }

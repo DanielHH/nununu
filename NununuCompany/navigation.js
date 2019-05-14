@@ -1,11 +1,24 @@
-import React from 'react'
-import {View, Text} from 'react-native'
-import { createDrawerNavigator, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation'
+import React, { Component } from 'react'
+import {
+  View,
+  Text,
+} from 'react-native'
+import {
+  createDrawerNavigator,
+  createMaterialTopTabNavigator,
+  createStackNavigator,
+  createAppContainer} from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
 import ArticleScreen from './screens/ArticleScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import LogInScreen from './screens/LogInScreen'
+import SignUpUserScreen from './screens/SignUpUserScreen'
+import ForgotPswScreen from './screens/ForgotPswScreen'
+import { removeToken } from './redux/actions'
+import { connect } from 'react-redux'
+import CustomContentComponent from './drawerMenu'
 
 const OrderTabNav = createMaterialTopTabNavigator({
   Active: {
@@ -49,7 +62,7 @@ const OrderStackNav = createStackNavigator({
   },
 })
 
-const EditMenuStackNav = createStackNavigator({
+export const EditMenuStackNav = createStackNavigator({
   EditMenu: {
     screen: EditMenuScreen,
     navigationOptions: ({ navigation }) => ({
@@ -73,7 +86,7 @@ const EditMenuStackNav = createStackNavigator({
   },
 })
 
-const Drawer = createDrawerNavigator({
+let Drawer = createAppContainer(createDrawerNavigator({
   OrderStack: {
     screen: OrderStackNav,
     navigationOptions: {
@@ -86,6 +99,27 @@ const Drawer = createDrawerNavigator({
       drawerLabel: 'Redigera meny',
     },
   },
+
+}, {
+  drawerWidth: 300,
+  contentComponent: (props) => <CustomContentComponent {...props} />
+}))
+
+export const AuthenticationStack = createAppContainer(createStackNavigator({
+  Login: {
+    screen: LogInScreen,
+  },
+  SignUp: {
+    screen: SignUpUserScreen,
+  },
+  ForgotPSW: {
+    screen: ForgotPswScreen,
+  }
+
+}, {headerMode: 'none'}))
+
+const mapDispatchToProps = dispatch => ({
+  removeUserToken: () => dispatch(removeToken())
 })
 
-export default Drawer
+export default connect(null, mapDispatchToProps)(Drawer)

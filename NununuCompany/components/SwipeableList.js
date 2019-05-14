@@ -53,7 +53,7 @@ class SwipeableList extends Component {
       <FlatList
         style={this.props.style}
         data={this.props.active}
-        ItemSeparatorComponent={this.renderSeparator}
+        backgroundColor={'#e9ebee'}
         renderItem={({item}) => this.renderItem(item)}
         keyExtractor={(item, index) => item.id}
         scrollEnabled={this.state.enable}

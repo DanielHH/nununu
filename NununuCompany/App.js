@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
-import {View} from 'react-native'
-import Navigation from './navigation'
+import { View } from 'react-native'
+
 import { connection } from './feathersSetup'
 import { PersistGate } from 'redux-persist/integration/react'
 import testExport from './configureStore'
 import { Provider } from 'react-redux'
+import Main from './components/Main'
 
 type Props = {};
 
@@ -14,6 +15,7 @@ export default class App extends Component<Props> {
     super(props)
     connection.setupConnection()
     this.conf = testExport()
+    console.disableYellowBox = true // DISABLES YELLOW WARNING BOX
   }
 
   render() {
@@ -21,7 +23,7 @@ export default class App extends Component<Props> {
       <Provider store={this.conf.store}>
         <PersistGate loading={null} persistor={this.conf.persistor}>
           <View style={{flex: 1}}>
-            <Navigation/>
+            <Main/>
           </View>
         </PersistGate>
       </Provider>
