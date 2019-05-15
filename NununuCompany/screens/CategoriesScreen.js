@@ -82,7 +82,7 @@ export default class CategoriesScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddCategory', {addCatergory: this.addCategory})}
+          onPress={() => this.props.navigation.navigate('AddCategory', {addCategory: this.addCategory})}
         />
       </View>
     )

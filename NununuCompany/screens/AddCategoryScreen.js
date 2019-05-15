@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, TextInput, Button, Picker} from 'react-native'
+import {View, Text, TextInput, Button} from 'react-native'
 import { connect } from 'react-redux'
 import { addProduct } from '../redux/actions'
 

@@ -78,9 +78,6 @@ export const EditMenuStackNav = createStackNavigator({
     screen: EditMenuScreen,
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Redigera meny',
-      headerLeft: (
-        <MaterialCommunityIcons name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
-      ),
     }),
   },
   AddCategory: {
