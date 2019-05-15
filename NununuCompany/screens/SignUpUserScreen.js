@@ -28,7 +28,7 @@ class SignUpUserScreen extends Component {
             <View style={styles.container}>
               <View style={styles.descriptionContainer}>
                 <Text style={styles.title}>Sign Up User and Company</Text>
-                <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for registering a new user.</Text>
+                <Text style={styles.description}> Please fill in the following and submit it to {'\n'} start a request for signing up a new account.</Text>
               </View>
               {this.props.error.signUpError && (<Text style={styles.SignUpError}> Failed to sign up new user </Text>)}
               <View style={styles.infoContainer}>
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     color: '#f7c744',
     fontSize: 14,
     opacity: 0.75,
+    textAlign: 'center'
   },
   SignUpError: {
     alignSelf: 'center',
