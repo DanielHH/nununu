@@ -5,20 +5,18 @@ import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connection } from '../feathersSetup'
 
-export default class EditMenuScreen extends React.Component {
+export default class CategoriesScreen extends React.Component {
   state = {
     data: [
-      {id: 0, name: 'La Mejicana', price: '79', description: 'bmb', category: 'burger'},
-      {id: 1, name: 'Sukaldari', price: '95', description: 'bmb', category: 'burger'},
-      {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb', category: 'burger'},
-      {id: 3, name: 'The Original', price: '89', description: 'bmb', category: 'burger'},
-      {id: 4, name: 'Angus', price: '89', description: 'bmb', category: 'burger'}],
+      {id: 0, category: 'Burgers'},
+      {id: 1,  category: 'Drinks'},
+      {id: 2, category: 'Extras'}],
   }
 
 
   constructor(props) {
     super(props)
-    // query that retrieves ALL the prodcts
+    // query that retrieves ALL the categories
     connection.productService.find({
       query: { },
     }).then((value) => {
@@ -29,20 +27,17 @@ export default class EditMenuScreen extends React.Component {
     })
   }
 
-  addProduct = (name, price, description, category) => {
+  addCategory = (category) => {
     let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, price: price, description: description, category: category})
+    data_copy.push({id: data_copy.length, category: category})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
-
-  editProduct = (id, name, price, description, category) => {
+  /*
+  editProduct = (category) => {
     let data_copy = [...this.state.data]
     for (let i = 0; i < data_copy.length; i++) {
       if (data_copy[i].id === id) {
-        data_copy[i].name = name
-        data_copy[i].price = price
-        data_copy[i].description = description
         data_copy[i].category = category
         this.setState({data: data_copy})
         break
@@ -50,7 +45,7 @@ export default class EditMenuScreen extends React.Component {
     }
     this.props.navigation.goBack(null)
   }
-
+    */
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
     return (
       <TouchableOpacity
@@ -62,12 +57,10 @@ export default class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditProduct', {editProduct: this.editProduct, item: item})}>
+        onPress={() => this.props.navigation.navigate('EditMenu', {editMenu: this.editMenu, item: item})}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
-            <Title>{item.name}</Title>
-            <Paragraph> {item.price} kr</Paragraph>
-            <Paragraph> {item.description}</Paragraph>
+            <Title>{item.category}</Title>
           </Card.Content>
         </Card>
       </TouchableOpacity>
@@ -89,7 +82,7 @@ export default class EditMenuScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddProduct', {addProduct: this.addProduct})}
+          onPress={() => this.props.navigation.navigate('AddCategory', {addCatergory: this.addCategory})}
         />
       </View>
     )
