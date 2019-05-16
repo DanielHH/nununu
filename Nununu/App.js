@@ -22,12 +22,26 @@ const TabNav = createMaterialTopTabNavigator(
   },
   {
     initialRouteName: 'Restaurants',
+    tabBarOptions: {
+      labelStyle: {
+        fontSize: 12,
+      },
+      style: {
+        backgroundColor: 'green',
+        paddingTop: StatusBar.currentHeight,
+      },
+    },
   }
 )
 
 const StackNav = createStackNavigator(
   {
-    TabNav: TabNav,
+    TabNav: {
+      screen: TabNav,
+      navigationOptions: {
+        header: null,
+      },
+    },
     Products: ProductsScreen,
     Details: DetailsScreen,
   },
