@@ -2,11 +2,12 @@
 
 import React from 'react'
 import { View, StatusBar } from 'react-native'
-import { createStackNavigator, createAppContainer} from 'react-navigation'
+import { createStackNavigator, createAppContainer, createMaterialTopTabNavigator} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
 import ProductsScreen from './screens/ProductsScreen'
 import DetailsScreen from './screens/DetailsScreen'
 import CompaniesScreen from './screens/CompaniesScreen'
+import PurchasesScreen from './screens/PurchasesScreen'
 import { AppLoading, Asset, Font, Icon } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
@@ -14,18 +15,28 @@ import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
 
-const RootStack = createStackNavigator(
+const TabNav = createMaterialTopTabNavigator(
   {
-    Companies: CompaniesScreen,
+    Restaurants: CompaniesScreen,
+    Purchases: PurchasesScreen,
+  },
+  {
+    initialRouteName: 'Restaurants',
+  }
+)
+
+const StackNav = createStackNavigator(
+  {
+    TabNav: TabNav,
     Products: ProductsScreen,
     Details: DetailsScreen,
   },
   {
-    initialRouteName: 'Companies',
+    initialRouteName: 'TabNav',
   }
 )
 
-const AppContainer = createAppContainer(RootStack)
+const AppContainer = createAppContainer(StackNav)
 
 export default class App extends React.Component {
   state = {
