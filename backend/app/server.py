@@ -201,7 +201,13 @@ def purchase():
 @app.route("/pay/<string:payment_method>/<int:purchase_id>", methods=['POST'])
 def pay(payment_method, purchase_id):
     result = "not a valid payment method", 400
-    if payment_method == "swish":
+    if app.config['SKIP_PAY']:
+        purchase = db_helper.get_purchase_by_id(purchase_id)
+        purchase.payment_status = 'PAID'
+        purchase.payment_date = datetime.utcnow()
+        db_helper.save_to_db(purchase)
+        result = json.dumps({'payment_skipped': True, 'purchase': purchase.serialize()}), 200
+    elif payment_method == "swish":
         result = "purchase not found", 404
         found_purchase = db_helper.get_purchase_by_id(purchase_id)
         if found_purchase:
