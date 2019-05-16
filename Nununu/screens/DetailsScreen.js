@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { connect } from 'react-redux'
 import { Button as PaperButton} from 'react-native-paper'
 import { Card } from 'react-native-paper'
 //import { createIconSetFromFontello } from 'react-native-vector-icons'
@@ -8,7 +9,7 @@ import { MaterialIcons, MaterialCommunityIcons, createIconSetFromFontello } from
 const Icon = createIconSetFromFontello(fontelloConfig)
 
 
-export default class DetailsScreen extends React.Component {
+class DetailsScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Details',
@@ -28,14 +29,14 @@ export default class DetailsScreen extends React.Component {
           </Card.Content>
         </Card>
 
-        <Text style={{fontSize: 30, marginTop: 100}}>{this.props.navigation.state.params[0].quantity}st {this.props.navigation.state.params[0].name}</Text>
-        <Text style={{fontSize: 25}}>Totalt: {this.props.navigation.state.params[0].price}</Text>
+        <Text style={{fontSize: 30, marginTop: 100}}>Status: {this.props.purchase.payment_status}</Text>
+        <Text style={{fontSize: 25}}>Totalt: {this.props.purchase.totalPrice}</Text>
 
         { /*
         <Text style={styles.rotate}>
-          <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>  
+          <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>
         </Text>
-      */}        
+      */}
 
         <Text style={newStyles.rotate}>
           <MaterialIcons style={styles.shadow} name="confirmation-number" size={200} color="#eddbbf"/>
@@ -47,6 +48,12 @@ export default class DetailsScreen extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  purchase: state.purchase.selected_purchase,
+})
+
+export default connect(mapStateToProps)(DetailsScreen)
 
 const styles = StyleSheet.create({
   shadow: {
