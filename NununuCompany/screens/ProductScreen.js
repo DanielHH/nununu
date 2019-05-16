@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { addProduct } from '../redux/actions'
 
 class ProductScreen extends React.Component {
-
   constructor(props) {
     super(props)
     let item = this.props.navigation.state.params.item
@@ -31,6 +30,7 @@ class ProductScreen extends React.Component {
     if (this.state.item) { // edit product
       this.props.navigation.state.params.editProduct(this.state.item.id, this.state.name, this.state.price, this.state.description, this.state.category)
     } else { // new product
+      console.log(this.props.token.token)
       this.props.navigation.state.params.addProduct(this.state.name, this.state.price, this.state.description, this.state.category)
       this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.state.category, this.props.token.token)
     }
@@ -85,7 +85,7 @@ class ProductScreen extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  addProduct: (id, name, price, description, token) => dispatch(addProduct(id, name, price, description, token))
+  addProduct: (id, name, price, description, category, token) => dispatch(addProduct(id, name, price, description, category, token))
 })
 
 const mapStateToProps = state => ({

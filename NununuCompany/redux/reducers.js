@@ -58,13 +58,20 @@ function authentication(state = initialAuthState, action) {
   }
 }
 
-const initialMenuState = []
+const initialMenuState = {
+  categories: {
+    Burgers: [{}, {}, {}],
+    Drinks: [],
+  },
+  categoriesOrder: ['Burgers', 'Drinks'],
+}
 
 function menu(state = initialMenuState, action) {
+  console.log(action.category)
   switch (action.type) {
   case ADD_PRODUCT_SUCCESS:
     return produce(state, draft => {
-      draft.push[action.new_product]
+      draft.categories[action.category].push[action.new_product]
     })
   case ADD_PRODUCT_FAILURE:
     return

@@ -89,17 +89,42 @@ export function signUpUser(email, password) {
   }
 }
 
-export function addProduct(id, name, price, description, token) {
-  let new_product = {'id': id, 'name': name, 'price': price, 'description': description}
+export function addProduct(id, name, price, description, category, token) {
+  let new_product = {'id': id, 'name': name, 'price': price, 'category': category, 'description': description}
   apiClient.defaults.headers.common['Authorization'] = token
   return function (dispatch) {
     apiClient.post('/product/create', new_product)
     .then(() => dispatch({ 
       type: ADD_PRODUCT_SUCCESS, 
       new_product,
+      category,
     })).catch(res => dispatch({
       type: ADD_PRODUCT_FAILURE,
       error: res,
     }))
   }
 }
+
+export function editProduct(id, name, price, description, token) {
+}
+
+export function reOrderProducts(category, newProductsOrder) {
+
+}
+
+export function reOrderCategory(newCategoriesOrder) {
+
+}
+
+export function addCategory(id, categoryName) {
+}
+
+export function changeProductCategory(id, name) {
+}
+
+export function removeProduct(id, name) {
+}
+
+export function removeCategory(id, name) {
+}
+

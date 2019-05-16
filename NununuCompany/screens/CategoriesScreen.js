@@ -12,10 +12,9 @@ export default class CategoriesScreen extends React.Component {
       {id: 2, category: 'Extras'}],
   }
 
-
   constructor(props) {
     super(props)
-    
+
   }
 
   addCategory = (category) => {
@@ -24,19 +23,7 @@ export default class CategoriesScreen extends React.Component {
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
-  /*
-  editProduct = (category) => {
-    let data_copy = [...this.state.data]
-    for (let i = 0; i < data_copy.length; i++) {
-      if (data_copy[i].id === id) {
-        data_copy[i].category = category
-        this.setState({data: data_copy})
-        break
-      }
-    }
-    this.props.navigation.goBack(null)
-  }
-    */
+
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
     return (
       <TouchableOpacity
