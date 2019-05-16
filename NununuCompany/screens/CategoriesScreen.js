@@ -3,7 +3,6 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
-import { connection } from '../feathersSetup'
 
 export default class CategoriesScreen extends React.Component {
   state = {
@@ -16,15 +15,7 @@ export default class CategoriesScreen extends React.Component {
 
   constructor(props) {
     super(props)
-    // query that retrieves ALL the categories
-    connection.productService.find({
-      query: { },
-    }).then((value) => {
-      this.setState({data: value.data})
-    }, (reason) => {
-      // rejection
-      console.log('error: ', reason)
-    })
+    
   }
 
   addCategory = (category) => {
@@ -57,7 +48,7 @@ export default class CategoriesScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditMenu', {editMenu: this.editMenu, item: item})}>
+        onPress={() => this.props.navigation.navigate('EditMenu', {category: item.category})}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.category}</Title>
