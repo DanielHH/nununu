@@ -1,7 +1,7 @@
 import { GET_COMPANIES_SUCCESS, GET_COMPANIES_FAILURE, SET_SELECTED_COMPANY,
   GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE, INCREASE_PRODUCT_QUANTITY,
   DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS, POST_PURCHASE_FAILURE,
-  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE, SET_SELECTED_PURCHASE } from './actions'
+  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE, PAYED_PURCHASE, SET_SELECTED_PURCHASE } from './actions'
 
 const initialStoreState = {
   companies: [],
@@ -82,6 +82,12 @@ function purchase(state = initialPurchaseState, action) {
     return {...state, swish_request_token: action.requestToken}
   case START_PAY_SWISH_FAILURE:
     return {...state, error: action.error}
+  case PAYED_PURCHASE: {
+    let new_purchases = [...state.purchases]
+    // add payed purchase to start of purchases
+    new_purchases.unshift(action.purchase)
+    return {...state, purchases: new_purchases, unpaid_purchase: null, paid_purchase: action.purchase}
+  }
   case SET_SELECTED_PURCHASE:
     return {...state, selected_purchase: action.purchase}
   default:

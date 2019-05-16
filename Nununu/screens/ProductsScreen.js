@@ -3,7 +3,7 @@ import { View, Text, SectionList, StyleSheet, Linking} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import { MaterialCommunityIcons} from '@expo/vector-icons'
 import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
-  postPurchase, startPaySwish } from '../redux/actions'
+  postPurchase, startPaySwish, setSelectedPurchase } from '../redux/actions'
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
 import RenderTitle from '../components/RenderTitle'
@@ -22,8 +22,9 @@ class ProductsScreen extends React.Component {
     headerTintColor: '#fff',
   }
 
-  navigateTo(screen) {
-    this.props.navigation.navigate(screen, this.prepareOrder())
+  purchasePaid() {
+    this.props.setSelectedPurchase(this.props.paidPurchase)
+    this.props.navigation.navigate('Details')
   }
 
   prepareOrder() {
@@ -87,6 +88,9 @@ class ProductsScreen extends React.Component {
     } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
       // retrieved a swish request token, open the swish app with it
       Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken)
+    } else if (this.props.paidPurchase !== prevProps.paidPurchase && this.props.paidPurchase !== null) {
+      // purchase paid for
+      this.purchasePaid()
     } else if (this.props.purchaseError !== prevProps.purchaseError) {
       DropDownHolder.getDropDown().alertWithType('error', 'Error', this.props.purchaseError)
     }
@@ -99,6 +103,7 @@ const mapStateToProps = state => ({
   swishRequestToken: state.purchase.swish_request_token,
   unpaidPurchase: state.purchase.unpaid_purchase,
   purchaseError: state.purchase.error,
+  paidPurchase: state.purchase.paid_purchase,
 })
 
 const mapDispatchToProps = {
@@ -107,6 +112,7 @@ const mapDispatchToProps = {
   decreaseProductQuantity,
   postPurchase,
   startPaySwish,
+  setSelectedPurchase,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsScreen)

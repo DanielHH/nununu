@@ -26,6 +26,8 @@ export const START_PAY_SWISH_SUCCESS = 'START_PAY_SWISH_SUCCESS'
 
 export const START_PAY_SWISH_FAILURE = 'START_PAY_SWISH_FAILURE'
 
+export const PAYED_PURCHASE = 'PAYED_PURCHASE'
+
 export const SET_SELECTED_PURCHASE = 'SET_SELECTED_PURCHASE'
 
 /*
@@ -87,10 +89,19 @@ export function postPurchase(purchaseItems) {
 export function startPaySwish(purchaseId) {
   return function (dispatch) {
     apiClient.post('/pay/swish/' + purchaseId)
-    .then((response) => dispatch({
-      type: START_PAY_SWISH_SUCCESS,
-      requestToken: response.data['request_token'],
-    })).catch((response) => dispatch({
+    .then((response) => {
+      if (response.data['payment_skipped'] === true) {
+        return dispatch({
+          type: PAYED_PURCHASE,
+          purchase: response.data['purchase'],
+        })
+      } else {
+        return dispatch({
+          type: START_PAY_SWISH_SUCCESS,
+          requestToken: response.data['request_token'],
+        })
+      }
+    }).catch((response) => dispatch({
       type: START_PAY_SWISH_FAILURE,
       error: response,
     }))
