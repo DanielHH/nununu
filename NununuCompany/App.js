@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 import { View } from 'react-native'
-
-import { connection } from './feathersSetup'
 import { PersistGate } from 'redux-persist/integration/react'
 import testExport from './configureStore'
 import { Provider } from 'react-redux'
@@ -13,7 +11,6 @@ export default class App extends Component<Props> {
 
   constructor(props) {
     super(props)
-    connection.setupConnection()
     this.conf = testExport()
     console.disableYellowBox = true // DISABLES YELLOW WARNING BOX
   }
