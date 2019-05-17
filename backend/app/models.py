@@ -85,8 +85,8 @@ class Purchase(db.Model):
     def createPurchaseMessage(self):
         result = ""
         for item in self.purchase_items:
-            str(item.quantity) + " " + item.product.name + ","
-        return result[:-1] # remove trailing comma
+            result += str(item.quantity) + " " + item.product.name + ", "
+        return result[:-2] # remove trailing comma
 
     def serialize(self):
         return {'id': self.id,
@@ -98,7 +98,8 @@ class Purchase(db.Model):
                 'errorMessage': self.error_message,
                 'additionalInformation': self.additional_information,
                 'company': self.company.serialize(),
-                'items': [item.serialize() for item in self.purchase_items]}
+                'items': [item.serialize() for item in self.purchase_items],
+                'purchaseMessage': self.createPurchaseMessage()}
 
 
 class PurchaseItem(db.Model):

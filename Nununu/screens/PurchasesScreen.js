@@ -24,8 +24,10 @@ class PurchasesScreen extends React.Component {
               <Card.Content style={styles.cardContentContainer}>
                 <View style={{flex:1, flexDirection: 'row'}}>
                   <View style={styles.foodInfo}>
-                    <Title>{item.name}</Title>
-                    <Paragraph>{item.distance}</Paragraph>
+                    <Title>{item.company.name}</Title>
+                    <Paragraph>{item.purchaseMessage}</Paragraph>
+                    <Paragraph>Totalpris: {item.totalPrice}</Paragraph>
+                    <Paragraph>Betald: {item.purchase_date}</Paragraph>
                   </View>
                 </View>
               </Card.Content>
