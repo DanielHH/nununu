@@ -162,7 +162,7 @@ def make_purchase_completed(purchase_id):
         # try to notify the person who purchased it
         push_notification_worker.queue_task(
             push_notification_worker.send_push_notification,
-            {'token': purchase.pushNotificationToken, 'message': 'Your purchase is done!'}) 
+            {'token': purchase.pushNotificationToken, 'message': 'Your purchase is done!'})
         result = json.dumps(purchase.serialize()), 200
     return result
 
