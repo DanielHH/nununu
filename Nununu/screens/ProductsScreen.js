@@ -50,7 +50,6 @@ class ProductsScreen extends React.Component {
   }
 
   prepareOrder() {
-    let pushNotificationToken = this.retrievePushNotificationsAsync()
     let selectedPurchaseItems = []
     let sections = [...this.props.sections]
     for (let i = 0; i < sections.length; i++) {
@@ -60,7 +59,12 @@ class ProductsScreen extends React.Component {
         }
       }
     }
-    return {'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken}
+    this.retrievePushNotificationsAsync().then((pushNotificationToken) => {
+      this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken})
+    }).catch((error) => {
+      console.warn(error)
+      this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': null})
+    })
   }
 
   componentDidMount() {
@@ -99,7 +103,7 @@ class ProductsScreen extends React.Component {
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
-        <Button onPress={() => this.props.postPurchase(this.prepareOrder())}> Checka ut </Button>
+        <Button onPress={() => this.prepareOrder()}> Checka ut </Button>
       </View>
     )
   }
