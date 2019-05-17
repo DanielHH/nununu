@@ -115,7 +115,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpUserScreen)
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

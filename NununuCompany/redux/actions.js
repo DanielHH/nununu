@@ -102,17 +102,3 @@ export function signUpUser(params){
     }
   }
 }
-
-export function createCompany(params){
-  let credentials = {companyName: params.companyName}
-  return function (dispatch) {
-    apiClient.post('/company/create', credentials)
-    .then(() => dispatch({
-      type: CREATE_COMPANY_SUCCESS,
-      showSuccessfulSignUp: true,
-    })).catch(res => dispatch({
-      type: CREATE_COMPANY_FAILURE,
-      error: res,
-    }))
-  }
-}
