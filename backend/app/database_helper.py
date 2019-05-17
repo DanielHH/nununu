@@ -1,5 +1,5 @@
 from app_config import db
-from models import User, Company, Product, Purchase, PurchaseItem
+from models import User, Company, Product, Purchase, PurchaseItem, Category
 
 ##############################
 ### User related functions ###
@@ -42,11 +42,25 @@ def get_all_companies():
     return Company.query.all()
 
 
+##################################
+### Category related functions ###
+##################################
+def create_category(name, position, company):
+    new_category = Category(name, position, company)
+    if new_category:
+        save_to_db(new_category)
+        return new_category
+
+
+def get_category_by_id(company_id):
+    return Company.query.filter_by(id=category_id).first()
+
+
 #################################
 ### Product related functions ###
 #################################
-def create_product(name, price, company, category):
-    new_product = Product(name, price, company, category)
+def create_product(name, price, company, position, category):
+    new_product = Product(name, price, company, position, category)
     if new_product:
         save_to_db(new_product)
         return new_product
@@ -129,8 +143,10 @@ def db_reset():
 def seed_database():
     test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
     test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
-    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'category': 'Mat'})
-    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'category': 'Mat'})
-    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'category': 'Mat'})
-    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'company': test_company, 'category': 'Dricka'})
-    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'company': test_company, 'category': 'Dricka'})
+    mat = create_category(**{'name': 'Mat', 'position': 1, 'company': test_company})
+    dryck = create_category(**{'name': 'Dryck', 'position': 2, 'company': test_company})
+    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'position': 1, 'category': mat})
+    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'position': 2, 'category': mat})
+    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'position': 3, 'category': mat})
+    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'company': test_company, 'position': 4, 'category': dryck})
+    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'company': test_company, 'position': 5, 'category': dryck})

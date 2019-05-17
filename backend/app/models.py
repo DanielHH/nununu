@@ -17,6 +17,8 @@ class Company(db.Model):
     products = db.relationship("Product", back_populates="company")
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
+    # a company has many categories
+    categories = db.relationship("Category", back_populates="company")
 
     def __init__(self, name, owner, swishNumber=None):
         self.name = name
@@ -31,26 +33,46 @@ class Company(db.Model):
         return {'id': self.id, 'name': self.name}
 
 
+class Category(db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    position = db.Column(db.Integer, nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
+    company = db.relationship("Company", back_populates="categories")
+    products = db.relationship("Product", back_populates="category")
+
+    def __init__(self, name, position, company):
+        self.name = name
+        self.position = position
+        self.company = company
+
+    def serialize(self):
+        return {'id': self.id, 'name': self.name, 'order': self.position}
+
+
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
-    category = db.Column(db.String(255), nullable=True)
     create_date = db.Column(db.DateTime)
+    position = db.Column(db.Integer, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship("Category", back_populates="products")
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="products")
 
-    def __init__(self, name, price, company, category=None):
+    def __init__(self, name, price, company, position, category):
         self.name = name
         self.price = price
         self.company = company
-        if category:
-            self.category = category
+        self.position = position
+        self.category = category
         self.create_date = datetime.utcnow()
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'category': self.category}
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'order': self.position, 'category': self.category}
 
 
 class Purchase(db.Model):
