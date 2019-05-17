@@ -5,6 +5,7 @@ from pathlib import Path
 import jwt, logging, json, os, swish, dateutil.parser
 from app_config import app
 import database_helper as db_helper
+from push_notification import push_notification_worker
 
 
 def verify_token(func):
@@ -158,6 +159,10 @@ def make_purchase_completed(purchase_id):
     if purchase:
         purchase.completed = True
         save_to_db(purchase)
+        # try to notify the person who purchased it
+        push_notification_worker.queue_task(
+            push_notification_worker.send_push_notification,
+            {'token': purchase.pushNotificationToken, 'message': 'Your purchase is done!'}) 
         result = json.dumps(purchase.serialize()), 200
     return result
 
@@ -193,6 +198,7 @@ def purchase():
                 abort(404) # a product was not found
         new_purchase.company = company
         new_purchase.setPrice()
+        new_purchase.pushNotificationToken = json_data['pushNotificationToken']
         db_helper.save_to_db(new_purchase)
         result = json.dumps(new_purchase.serialize()), 200
     return result
