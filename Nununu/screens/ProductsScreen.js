@@ -7,6 +7,7 @@ import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
 import RenderTitle from '../components/RenderTitle'
+import { Permissions, Notifications } from 'expo'
 
 let TitleContainer = connect(state => ({ title: state.store.selectedCompany.name }))(RenderTitle)
 
@@ -22,12 +23,34 @@ class ProductsScreen extends React.Component {
     headerTintColor: '#fff',
   }
 
+  async retrievePushNotificationsAsync() {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    )
+    let finalStatus = existingStatus
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+      finalStatus = status
+    }
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return
+    }
+    // Get the token that uniquely identifies this device
+    return await Notifications.getExpoPushTokenAsync()
+  }
+
   purchasePaid() {
     this.props.setSelectedPurchase(this.props.paidPurchase)
     this.props.navigation.replace('Details')
   }
 
   prepareOrder() {
+    let pushNotificationToken = this.retrievePushNotificationsAsync()
     let selectedPurchaseItems = []
     let sections = [...this.props.sections]
     for (let i = 0; i < sections.length; i++) {
@@ -37,7 +60,7 @@ class ProductsScreen extends React.Component {
         }
       }
     }
-    return selectedPurchaseItems
+    return {'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken}
   }
 
   componentDidMount() {

@@ -72,10 +72,9 @@ export function decreaseProductQuantity(index, sectionTitle) {
   return { type: DECREASE_PRODUCT_QUANTITY, index, sectionTitle}
 }
 
-export function postPurchase(purchaseItems) {
-  let products = {'products': purchaseItems}
+export function postPurchase(purchase) {
   return function (dispatch) {
-    apiClient.post('/purchase', products)
+    apiClient.post('/purchase', purchase)
     .then((response) => dispatch({
       type: POST_PURCHASE_SUCCESS,
       purchase: response.data,
