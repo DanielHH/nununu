@@ -69,7 +69,7 @@ class Purchase(db.Model):
     error_code = db.Column(db.String(255))
     error_message = db.Column(db.String(255))
     additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
-    completed = db.Column(db.Boolean)
+    completed = db.Column(db.Boolean, default=False)
 
     def __init__(self):
         self.purchase_date = datetime.utcnow()

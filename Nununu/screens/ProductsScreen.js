@@ -24,7 +24,7 @@ class ProductsScreen extends React.Component {
 
   purchasePaid() {
     this.props.setSelectedPurchase(this.props.paidPurchase)
-    this.props.navigation.navigate('Details')
+    this.props.navigation.replace('Details')
   }
 
   prepareOrder() {

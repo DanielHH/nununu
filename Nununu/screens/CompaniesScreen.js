@@ -7,15 +7,6 @@ import { MaterialCommunityIcons} from '@expo/vector-icons'
 
 class CompaniesScreen extends React.Component {
 
-  componentDidMount() {
-    this.props.getCompanies()
-  }
-
-  displayCompany = (company) => {
-    this.props.setSelectedCompany(company)
-    this.props.navigation.navigate('Products')
-  }
-
   static navigationOptions = {
     title: 'Restaurants',
     headerRight: (
@@ -26,6 +17,15 @@ class CompaniesScreen extends React.Component {
     },
     headerTintColor: '#fff',
   };
+
+  componentDidMount() {
+    this.props.getCompanies()
+  }
+
+  displayCompany = (company) => {
+    this.props.setSelectedCompany(company)
+    this.props.navigation.navigate('Products')
+  }
 
   render() {
     return (

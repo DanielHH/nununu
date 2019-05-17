@@ -1,13 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import { Button as PaperButton} from 'react-native-paper'
-import { Card } from 'react-native-paper'
-//import { createIconSetFromFontello } from 'react-native-vector-icons'
-import fontelloConfig from '../config.json'
-import { MaterialIcons, MaterialCommunityIcons, createIconSetFromFontello } from '@expo/vector-icons'
-const Icon = createIconSetFromFontello(fontelloConfig)
-
+import { Card, Title, Paragraph } from 'react-native-paper'
 
 class DetailsScreen extends React.Component {
 
@@ -25,25 +20,23 @@ class DetailsScreen extends React.Component {
           style={{marginTop: 10}}
           flexDirection='row'>
           <Card.Content>
-            <Text style={{fontSize: 30}}>Status: Tillagas</Text>
+            <Text style={{fontSize: 30}}>{this.props.purchase.company.name}</Text>
+            <Text style={{fontSize: 25}}>#{this.props.purchase.id}</Text>
+            <Text style={{fontSize: 25}}>Completed: {String(this.props.purchase.completed)}</Text>
+            <FlatList
+              data={this.props.purchase.items}
+              renderItem={({item}) => (
+                <View style={{flex:1, flexDirection: 'row'}}>
+                  <Paragraph>{item.quantity}</Paragraph>
+                  <Paragraph>{item.name}</Paragraph>
+                  <Paragraph>{item.pricePerItem}</Paragraph>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}/>
+            <Text style={{fontSize: 15}}>Totaltpris: {this.props.purchase.totalPrice}</Text>
+            <Text style={{fontSize: 15}}>Betald: {this.props.purchase.purchase_date}</Text>
           </Card.Content>
         </Card>
-
-        <Text style={{fontSize: 30, marginTop: 100}}>Status: {this.props.purchase.payment_status}</Text>
-        <Text style={{fontSize: 25}}>Totalt: {this.props.purchase.totalPrice}</Text>
-
-        { /*
-        <Text style={styles.rotate}>
-          <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>
-        </Text>
-      */}
-
-        <Text style={newStyles.rotate}>
-          <MaterialIcons style={styles.shadow} name="confirmation-number" size={200} color="#eddbbf"/>
-        </Text>
-
-        <Text style={{position: 'absolute', bottom: 100, fontSize: 70}}>#{Math.floor(Math.random()*10 + 1)}</Text>
-
       </View>
     )
   }
@@ -67,20 +60,5 @@ const styles = StyleSheet.create({
       {rotate: '270deg'},
       {scaleX: 2},
       {scaleY: 2}]
- },
-})
-
-const newStyles = StyleSheet.create({
-  shadow: {
-    textShadowOffset:{width:1, height:0},
-    shadowOpacity:0.7
-  },
-  rotate: {
-    position:'absolute',
-    bottom: -60,
-    transform: [
-      {rotate: '90deg'},
-      {scaleX: 2.5},
-      {scaleY: 2.5}]
  },
 })
