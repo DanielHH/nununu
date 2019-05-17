@@ -21,6 +21,10 @@ export const SIGN_UP_USER_FAILURE = 'SIGN_UP_USER_FAILURE'
 
 export const START_NEW_SIGNUP = 'START_NEW_SIGNUP'
 
+export const CREATE_COMPANY_SUCCESS = 'CREATE_COMPANY_SUCCESS'
+
+export const CREATE_COMPANY_FAILURE= 'CREATE_COMPANY_FAILURE'
+
 /*
  * other constants
  */
@@ -67,13 +71,47 @@ export function signInUser(email, password){
 
 export function signUpUser(params){
   let credentials = params
+  return async function (dispatch) {
+    try {
+      await apiClient.post('user/sign-up', credentials)
+      try {
+        const signInResponse = await apiClient.post('/user/sign-in', credentials)
+        try {
+          await apiClient.post('/company/create', credentials, {headers: { Authorization: signInResponse.data.token }})
+          return dispatch({
+            type: CREATE_COMPANY_SUCCESS,
+            showSuccessfulSignUp: true,
+          })
+        } catch(error) {
+          return dispatch({
+            type: CREATE_COMPANY_FAILURE,
+            error: error,
+          })
+        }
+      } catch(error) {
+        return dispatch({
+          type: SIGN_IN_USER_FAILURE,
+          error: error,
+        })
+      }
+    } catch(error) {
+      return dispatch({
+        type: SIGN_UP_USER_FAILURE,
+        error: error,
+      })
+    }
+  }
+}
+
+export function createCompany(params){
+  let credentials = {companyName: params.companyName}
   return function (dispatch) {
-    apiClient.post('/user/sign-up', credentials)
+    apiClient.post('/company/create', credentials)
     .then(() => dispatch({
-      type: SIGN_UP_USER_SUCCESS,
+      type: CREATE_COMPANY_SUCCESS,
       showSuccessfulSignUp: true,
     })).catch(res => dispatch({
-      type: SIGN_UP_USER_FAILURE,
+      type: CREATE_COMPANY_FAILURE,
       error: res,
     }))
   }

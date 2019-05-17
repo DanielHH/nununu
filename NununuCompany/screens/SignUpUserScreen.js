@@ -105,7 +105,7 @@ class SignUpUserScreen extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  signUpUser: (email, password) => dispatch(signUpUser(email,password))
+  signUpUser: (email, password) => dispatch(signUpUser(email,password)),
 })
 
 const mapStateToProps = state => ({
