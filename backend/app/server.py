@@ -108,14 +108,26 @@ def get_products(company_id):
     return result
 
 
+@app.route("/category/create", methods=['POST'])
+@verify_token
+def create_category():
+    result = "category not created", 400
+    json_data = request.get_json()
+    category_name = json_data['category']
+    company = g.user.company
+    category = db_helper.get_category_by_name_and_company(category_name, company.id)
+    if (company and category):
+        new_category = db_helper.create_category(json_data['name'], json_data['position'], company, category)
+        result = json.dumps(new_category.serialize()), 200
+    return result
+
+
 @app.route("/product/create", methods=['POST'])
 @verify_token
 def create_product():
     result = "product not created", 400
     json_data = request.get_json()
-    category = None
-    if 'category' in json_data: # category is optional
-        category = json_data['category']
+    category = json_data['category']
     company = g.user.company
     if company:
         new_product = db_helper.create_product(json_data['name'], json_data['price'], company, category)

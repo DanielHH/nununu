@@ -52,8 +52,9 @@ def create_category(name, position, company):
         return new_category
 
 
-def get_category_by_id(company_id):
-    return Company.query.filter_by(id=category_id).first()
+def get_category_by_name_and_company(category_name, company_id):
+    return Category.query.filter(Category.name == category_name, 
+            Category.company_id == company_id).first()
 
 
 #################################
@@ -142,9 +143,15 @@ def db_reset():
 
 def seed_database():
     test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
+    test_user_2 = create_user(**{'email': 'test2@test.test', 'password': '1234'})
+    test_user_3 = create_user(**{'email': 'test3@test.test', 'password': '1234'})
     test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
+    test_company_2 = create_company(**{'name': 'Feta Burgers', 'owner': test_user_2, 'swishNumber': 1234512345})
+    test_company_3 = create_company(**{'name': 'Chok najs', 'owner': test_user_3, 'swishNumber': 6789067891})
     mat = create_category(**{'name': 'Mat', 'position': 1, 'company': test_company})
+    mat = create_category(**{'name': 'Mat', 'position': 1, 'company': test_company_2})
     dryck = create_category(**{'name': 'Dryck', 'position': 2, 'company': test_company})
+    dryck = create_category(**{'name': 'Dryck', 'position': 2, 'company': test_company_3})
     product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'position': 1, 'category': mat})
     product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'position': 2, 'category': mat})
     product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'position': 3, 'category': mat})
