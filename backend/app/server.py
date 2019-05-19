@@ -28,6 +28,10 @@ def hello():
     return "helooo", 200
 
 
+#############################
+### User related requests ###
+#############################
+
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
     result = "user not created", 400
@@ -66,6 +70,10 @@ def change_password():
     return result
 
 
+################################
+### Company related requests ###
+################################
+
 @app.route("/company/create", methods=['POST'])
 @verify_token
 def create_company():
@@ -98,15 +106,9 @@ def get_companies():
     return json.dumps({'companies': serialized_companies}), 200
 
 
-@app.route("/company/<company_id>/products", methods=['GET'])
-def get_products(company_id):
-    result = "company not found", 404
-    company = db_helper.get_company_by_id(company_id)
-    if company:
-        product_json = [product.serialize() for product in company.products]
-        result = json.dumps({'products': product_json}), 200
-    return result
-
+#################################
+### Category related requests ###
+#################################
 
 @app.route("/category/create", methods=['POST'])
 @verify_token
@@ -122,14 +124,29 @@ def create_category():
     return result
 
 
+################################
+### Product related requests ###
+################################
+
+@app.route("/company/<company_id>/products", methods=['GET'])
+def get_products(company_id):
+    result = "company not found", 404
+    company = db_helper.get_company_by_id(company_id)
+    if company:
+        product_json = [product.serialize() for product in company.products]
+        result = json.dumps({'products': product_json}), 200
+    return result
+
+
 @app.route("/product/create", methods=['POST'])
 @verify_token
 def create_product():
     result = "product not created", 400
     json_data = request.get_json()
-    category = json_data['category']
+    category_name = json_data['category']
     company = g.user.company
-    if company:
+    category = db_helper.get_category_by_name_and_company(category_name, company.id)
+    if (company and category):
         new_product = db_helper.create_product(json_data['name'], json_data['price'], company, category)
         result = json.dumps(new_product.serialize()), 200
     return result
@@ -153,6 +170,10 @@ def delete_product(product_id):
         result = "product deleted", 200
     return result
 
+
+#################################
+### Purchase related requests ###
+#################################
 
 @app.route("/purchases/active", methods=['GET'])
 @verify_token
