@@ -72,7 +72,7 @@ class Product(db.Model):
         self.create_date = datetime.utcnow()
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'order': self.position, 'category': self.category}
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'order': self.position, 'category': self.category.name}
 
 
 class Purchase(db.Model):

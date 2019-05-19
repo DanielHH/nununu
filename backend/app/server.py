@@ -115,6 +115,17 @@ def get_companies():
 def create_category():
     result = "category not created", 400
     json_data = request.get_json()
+    company = g.user.company
+    if (company):
+        new_category = db_helper.create_category(json_data['name'], json_data['position'], company)
+        result = json.dumps(new_category.serialize()), 200
+    return result
+
+@app.route("/category/position", methods=['POST'])
+@verify_token
+def edit_category_position():
+    result = "category position not changed", 400
+    json_data = request.get_json()
     category_name = json_data['category']
     company = g.user.company
     category = db_helper.get_category_by_name_and_company(category_name, company.id)
