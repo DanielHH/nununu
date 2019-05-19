@@ -27,9 +27,19 @@ export const ADD_PRODUCT_FAILURE = 'ADD_PRODUCT_FAILURE'
 
 export const REMOVE_PRODUCT = 'REMOVE_PRODUCT'
 
-export const EDIT_PRODUCT_INFO = 'EDIT_PRODUCT_INFO'
+export const EDIT_PRODUCT_SUCCESS = 'EDIT_PRODUCT_SUCCESS'
+
+export const EDIT_PRODUCT_FAILURE = 'EDIT_PRODUCT_FAILURE'
 
 export const CHANGE_PRODUCT_ORDER = 'CHANGE_PRODUCT_ORDER'
+
+export const ADD_CATEGORY_SUCCESS = 'ADD_CATEGORY_SUCCESS'
+
+export const ADD_CATEGORY_FAILURE = 'ADD_CATEGORY_FAILURE'
+
+export const GET_COMPANY_PRODUCTS_SUCCESS = 'GET_COMPANY_PRODUCTS_SUCCESS'
+
+export const GET_COMPANY_PRODUCTS_FAILURE = 'GET_COMPANY_PRODUCTS_FAILURE'
 
 /*
  * other constants
@@ -105,7 +115,35 @@ export function addProduct(id, name, price, description, category, token) {
   }
 }
 
-export function editProduct(id, name, price, description, token) {
+export function editProduct(id, name, price, description, category, token) {
+  let edited_product = {'id': id, 'name': name, 'price': price, 'category': category, 'description': description}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/product/edit/' + id, edited_product)
+    .then(() => dispatch({ 
+      type: EDIT_PRODUCT_SUCCESS, 
+      edited_product,
+      category,
+      id,
+    })).catch(res => dispatch({
+      type: EDIT_PRODUCT_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function getCompanyProducts(companyId) {
+  return function (dispatch) {
+    apiClient.get('/company/'+companyId+'/products')
+    .then((response) => dispatch({
+      type: GET_COMPANY_PRODUCTS_SUCCESS,
+      categories: response.data.categories,
+      products: response.data.products,
+    })).catch((response) => dispatch({
+      type: GET_COMPANY_PRODUCTS_FAILURE,
+      error: response,
+    }))
+  }
 }
 
 export function reOrderProducts(category, newProductsOrder) {
@@ -117,6 +155,7 @@ export function reOrderCategory(newCategoriesOrder) {
 }
 
 export function addCategory(id, categoryName) {
+
 }
 
 export function changeProductCategory(id, name) {
