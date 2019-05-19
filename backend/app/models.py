@@ -48,7 +48,7 @@ class Category(db.Model):
         self.company = company
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'order': self.position}
+        return {'id': self.id, 'name': self.name, 'position': self.position}
 
 
 class Product(db.Model):
@@ -72,7 +72,7 @@ class Product(db.Model):
         self.create_date = datetime.utcnow()
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'order': self.position, 'category': self.category.name}
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'position': self.position, 'category': self.category.name}
 
 
 class Purchase(db.Model):
