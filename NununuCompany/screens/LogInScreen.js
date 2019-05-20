@@ -3,7 +3,7 @@ import {  StyleSheet, View, Text, Image, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
 import { connect } from 'react-redux'
-import { signInUser, startNewSignUp } from '../redux/actions'
+import { signInUser, startNewSignUp, recoverPassword} from '../redux/actions'
 
 class LogInScreen extends Component {
 
@@ -48,7 +48,7 @@ class LogInScreen extends Component {
                   secureTextEntry={true}
                   ref={'txtPassword'}
                 />
-                <Text onPress={() => this.props.navigation.navigate('ForgotPSW')} style={styles.forgotPswText}>Forgot Password</Text>
+                <Text onPress={() => {this.props.recoverPassword(), this.props.navigation.navigate('ForgotPSW')}} style={styles.forgotPswText}>Forgot Password</Text>
                 <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.signInUser(this.state.email, this.state.password)}>
                   <Text style={styles.buttonText}>SIGN IN</Text>
                 </TouchableOpacity>
@@ -77,7 +77,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   signInUser: (email, password) => dispatch(signInUser(email,password)),
-  startNewSignUp: () => dispatch(startNewSignUp())
+  startNewSignUp: () => dispatch(startNewSignUp()),
+  recoverPassword: () => dispatch(recoverPassword())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogInScreen)

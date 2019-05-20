@@ -29,6 +29,8 @@ export const RESET_PASSWORD_EMAIL_SENT = 'RESET_PASSWORD_EMAIL_SENT'
 
 export const RESET_PASSWORD_EMAIL_FAILURE = 'RESET_PASSWORD_EMAIL_FAILURE'
 
+export const START_RECOVER_PASSWORD = 'START_RECOVER_PASSWORD'
+
 /*
  * other constants
  */
@@ -56,6 +58,10 @@ export function removeToken() {
 
 export function startNewSignUp() {
   return { type: START_NEW_SIGNUP }
+}
+
+export function recoverPassword() {
+  return { type: START_RECOVER_PASSWORD }
 }
 
 export function signInUser(email, password){

@@ -11,7 +11,8 @@ import {
   CREATE_COMPANY_SUCCESS,
   CREATE_COMPANY_FAILURE,
   RESET_PASSWORD_EMAIL_SENT,
-  RESET_PASSWORD_EMAIL_FAILURE} from './actions'
+  RESET_PASSWORD_EMAIL_FAILURE,
+  START_RECOVER_PASSWORD} from './actions'
 
 
 const initialOrderState = {
@@ -72,6 +73,8 @@ function authentication(state = initialAuthState, action) {
     return {...state, resetPasswordEmailSent: true}
   case RESET_PASSWORD_EMAIL_FAILURE:
     return {...state, error: {createCompanyError: action.error}}
+  case START_RECOVER_PASSWORD:
+      return {...state, resetPasswordEmailSent: false, error: {}}
   default:
     return state
   }
