@@ -104,7 +104,6 @@ def reset_password(token):
     return render_template('reset_password.html', title='Reset Password', form=form)
 
 
-
 @app.route("/company/create", methods=['POST'])
 @verify_token
 def create_company():
