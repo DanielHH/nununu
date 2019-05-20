@@ -71,7 +71,6 @@ export function signInUser(email, password){
     .then(res => dispatch({
       type: SIGN_IN_USER_SUCCESS,
       token: res.data,
-      showSuccessfulSignUp: false,
     })).catch(res => dispatch({
       type: SIGN_IN_USER_FAILURE,
       error: res,

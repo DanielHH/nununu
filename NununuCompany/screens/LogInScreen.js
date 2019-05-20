@@ -27,7 +27,8 @@ class LogInScreen extends Component {
                 <Image style={styles.logo} source={require('../images/nununu.png')}/>
                 <Text style={styles.title}> Company </Text>
               </View>
-              {this.props.showSuccessfulSignUp && (<Text style={styles.successfulSignup}>  Successfully signed up </Text>)}
+              {this.props.showSuccessfulSignUp && (<Text style={styles.noticeMessage}>  Successfully signed up </Text>)}
+              {this.props.resetPasswordEmailSent && (<Text style={styles.noticeMessage}>  Password reset intructions has been sent to your email </Text>)}
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Enter username/email'
@@ -73,6 +74,7 @@ class LogInScreen extends Component {
 
 const mapStateToProps = state => ({
   showSuccessfulSignUp: state.authentication.showSuccessfulSignUp,
+  resetPasswordEmailSent: state.authentication.resetPasswordEmailSent,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     opacity: 0.75,
   },
-  successfulSignup: {
+  noticeMessage: {
     alignSelf: 'center',
     color: '#FFF',
   },

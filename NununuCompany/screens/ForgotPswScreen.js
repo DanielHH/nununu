@@ -19,7 +19,6 @@ class ForgotPswScreen extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.resetPasswordEmailSent !== prevProps.resetPasswordEmailSent &&
     this.props.resetPasswordEmailSent) {
-      console.log('EMAIL SENT')
       this.props.navigation.navigate('Login')
     }
   }

@@ -54,7 +54,7 @@ const initialAuthState = {
 function authentication(state = initialAuthState, action) {
   switch (action.type) {
   case SIGN_IN_USER_SUCCESS:
-    return {...state, token: action.token, showSuccessfulSignUp: action.showSuccessfulSignUp}
+    return {...state, token: action.token, showSuccessfulSignUp: false, resetPasswordEmailSent: false}
   case SIGN_IN_USER_FAILURE:
     return {...state, error: action.error}
   case REMOVE_TOKEN:
