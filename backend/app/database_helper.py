@@ -38,6 +38,10 @@ def get_company_by_id(company_id):
     return Company.query.filter_by(id=company_id).first()
 
 
+def get_company_by_user(user):
+    return Company.query.filter_by(owner_id=user.id).first()  
+
+
 def get_all_companies():
     return Company.query.all()
 
