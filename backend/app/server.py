@@ -68,10 +68,10 @@ def change_password():
     return result
 
 
-def send_reset_password_email(token):
+def send_reset_password_email(user, token):
     msg = Message('Password Reset Request',
-                  sender='noreply@demo.com',
-                  recipients=['mastega.nu@gmail.com'])
+                  sender='noreply@mastega.nu',
+                  recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
 {url_for('reset_password', token=token, _external=True)}
 
@@ -87,15 +87,18 @@ def reset_password_reqeust():
     user = db_helper.get_user_by_email(json_data['email'])
     if user:
         token = user.generate_token(1800)
-        send_reset_password_email(token)
+        send_reset_password_email(user, token)
         result = "reset email has been sent", 200
     return result
+
 
 @app.route("/user/reset-password/<token>", methods=['GET', 'POST'])
 def reset_password(token):
     form = ResetPasswordForm()
     user = verify_user_token(token)
-    if form.validate_on_submit():
+    if not user:
+        flash('Token has expired or is otherwise invalid', 'danger' )
+    if form.validate_on_submit() and user:
         flash('Password has been reset!', 'success')
         db_helper.reset_password(user, form.password.data)
     return render_template('reset_password.html', title='Reset Password', form=form)
