@@ -23,6 +23,9 @@ def change_password(user, password, new_password):
     else:
         return False
 
+def reset_password(user, password):
+    user.password = password
+    save_to_db(user)
 
 #################################
 ### Company related functions ###

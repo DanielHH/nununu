@@ -1,4 +1,4 @@
-from flask import request, g, abort
+from flask import request, g, abort, render_template, url_for, flash
 from functools import wraps
 from datetime import datetime
 from pathlib import Path
@@ -6,6 +6,8 @@ import jwt, logging, json, os, swish, dateutil.parser
 from app_config import app, mail
 import database_helper as db_helper
 from flask_mail import Message
+
+from forms import ResetPasswordForm
 
 def verify_token(func):
     """
@@ -66,11 +68,12 @@ def change_password():
     return result
 
 
-def send_reset_password_email():
+def send_reset_password_email(token):
     msg = Message('Password Reset Request',
                   sender='noreply@demo.com',
                   recipients=['mastega.nu@gmail.com'])
     msg.body = f'''To reset your password, visit the following link:
+{url_for('reset_password', token=token, _external=True)}
 
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
@@ -81,16 +84,21 @@ If you did not make this request then simply ignore this email and no changes wi
 def reset_password_reqeust():
     result = "email is not registered", 400
     json_data = request.get_json()
-    print(json_data, "asd")
     user = db_helper.get_user_by_email(json_data['email'])
     if user:
         token = user.generate_token(1800)
-        send_reset_password_email()
+        send_reset_password_email(token)
         result = "reset email has been sent", 200
     return result
 
-#@app.route("/user/reset-password/<token>", methods=['POST'])
-#def reset_password(token):
+@app.route("/user/reset-password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    form = ResetPasswordForm()
+    user = verify_user_token(token)
+    if form.validate_on_submit():
+        flash('Password has been reset!', 'success')
+        db_helper.reset_password(user, form.password.data)
+    return render_template('reset_password.html', title='Reset Password', form=form)
 
 
 
