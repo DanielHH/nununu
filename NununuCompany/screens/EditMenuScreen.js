@@ -3,17 +3,9 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
+import { connect } from 'react-redux'
 
-export default class EditMenuScreen extends React.Component {
-  state = {
-    data: [
-      {id: 0, name: 'La Mejicana', price: '79', description: 'bmb', category: 'burger'},
-      {id: 1, name: 'Sukaldari', price: '95', description: 'bmb', category: 'burger'},
-      {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb', category: 'burger'},
-      {id: 3, name: 'The Original', price: '89', description: 'bmb', category: 'burger'},
-      {id: 4, name: 'Angus', price: '89', description: 'bmb', category: 'burger'}],
-  }
-
+class EditMenuScreen extends React.Component {
 
   constructor(props) {
     super(props)
@@ -21,7 +13,8 @@ export default class EditMenuScreen extends React.Component {
 
   addProduct = (name, price, description, category) => {
     let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, price: price, description: description, category: category})
+    data_copy.push({id: data_copy.length, name: name, 
+      price: price, description: description, category: category})
     this.setState({data: data_copy})
     this.props.navigation.goBack(null)
   }
@@ -52,7 +45,8 @@ export default class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditProduct', {editProduct: this.editProduct, item: item})}>
+        onPress={() => this.props.navigation.navigate('EditProduct', 
+          {editProduct: this.editProduct, item: item})}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
@@ -68,8 +62,7 @@ export default class EditMenuScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <DraggableFlatList
-          data={this.state.data}
-          extraData={this.state}
+          data={this.props.categories[this.props.category]}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
@@ -85,6 +78,16 @@ export default class EditMenuScreen extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  categories: state.menu.categories,
+  category: state.menu.currentCategory,
+})
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditMenuScreen)
 
 const styles = StyleSheet.create({
   actionButtonIcon: {

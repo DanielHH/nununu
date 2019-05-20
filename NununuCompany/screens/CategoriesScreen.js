@@ -3,8 +3,10 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
+import { connect } from 'react-redux'
+import { getCompanyProducts } from '../redux/actions'
 
-export default class CategoriesScreen extends React.Component {
+class CategoriesScreen extends React.Component {
   state = {
     data: [
       {id: 0, category: 'Burgers'},
@@ -14,7 +16,7 @@ export default class CategoriesScreen extends React.Component {
 
   constructor(props) {
     super(props)
-
+    this.props.getCompanyProducts('1')
   }
 
   addCategory = (category) => {
@@ -66,6 +68,18 @@ export default class CategoriesScreen extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  categories: state.menu.categories,
+  category: state.menu.currentCategory,
+})
+
+const mapDispatchToProps = dispatch => ({
+  getCompanyProducts: (companyId) => dispatch(getCompanyProducts(companyId)),
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CategoriesScreen)
 
 const styles = StyleSheet.create({
   actionButtonIcon: {

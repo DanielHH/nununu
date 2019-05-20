@@ -2,6 +2,7 @@ import React from 'react'
 import {View, Text, TextInput, Button, Picker} from 'react-native'
 import { connect } from 'react-redux'
 import { addProduct } from '../redux/actions'
+import { editProduct } from '../redux/actions'
 
 class ProductScreen extends React.Component {
   constructor(props) {
@@ -28,11 +29,11 @@ class ProductScreen extends React.Component {
 
   saveFunc = () => {
     if (this.state.item) { // edit product
-      this.props.navigation.state.params.editProduct(this.state.item.id, this.state.name, this.state.price, this.state.description, this.state.category)
+      this.props.editProduct(this.state.item.id, this.state.name, 
+        this.state.price, this.state.description, this.state.category, this.props.token.token)
     } else { // new product
-      console.log(this.props.token.token)
-      this.props.navigation.state.params.addProduct(this.state.name, this.state.price, this.state.description, this.state.category)
-      this.props.addProduct(8, this.state.name, this.state.price, this.state.description, this.state.category, this.props.token.token)
+      this.props.addProduct(0, this.state.name, this.state.price, 
+        this.state.description, this.state.category, this.props.token.token)
     }
   }
 
@@ -85,7 +86,8 @@ class ProductScreen extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  addProduct: (id, name, price, description, category, token) => dispatch(addProduct(id, name, price, description, category, token))
+  editProduct: (id, name, price, description, category, token) => dispatch(editProduct(id, name, price, description, category, token)),
+  addProduct: (id, name, price, description, category, token) => dispatch(addProduct(id, name, price, description, category, token)),
 })
 
 const mapStateToProps = state => ({
