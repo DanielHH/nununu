@@ -66,6 +66,23 @@ def change_password():
     return result
 
 
+@app.route("/user/reset-paassword-request", methods=['POST'])
+def reset_password_reqeust():
+    result = "email is not registered", 400
+    json_data = request.get_json()
+    user = db_helper.get_user_by_email(json_data[email])
+    if user:
+        token = user.generate_token(1800)
+
+
+
+
+@app.route("/user/reset-password", methods=['POST'])
+@verify_token
+def reset_password():
+
+
+
 @app.route("/company/create", methods=['POST'])
 @verify_token
 def create_company():
