@@ -98,10 +98,11 @@ def reset_password(token):
     user = verify_user_token(token)
     if not user:
         flash('Token has expired or is otherwise invalid', 'danger' )
+        return render_template('reset_password.html', invalid=True, form=form)
     if form.validate_on_submit() and user:
         flash('Password has been reset!', 'success')
         db_helper.reset_password(user, form.password.data)
-    return render_template('reset_password.html', title='Reset Password', form=form)
+    return render_template('reset_password.html', invalid=False, form=form)
 
 
 @app.route("/company/create", methods=['POST'])
