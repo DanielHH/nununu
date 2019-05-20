@@ -72,7 +72,7 @@ function authentication(state = initialAuthState, action) {
   case RESET_PASSWORD_EMAIL_SENT:
     return {...state, resetPasswordEmailSent: true}
   case RESET_PASSWORD_EMAIL_FAILURE:
-    return {...state, error: {createCompanyError: action.error}}
+    return {...state, error: {resetPasswordError: action.error}}
   case START_RECOVER_PASSWORD:
       return {...state, resetPasswordEmailSent: false, error: {}}
   default:

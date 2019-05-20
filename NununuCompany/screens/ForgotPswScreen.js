@@ -34,6 +34,9 @@ class ForgotPswScreen extends Component {
                 <Text style={styles.pswTitle}>Forgot your password?</Text>
                 <Text style={styles.description}> Please submit your email and {'\n'} we will reset your password.</Text>
               </View>
+
+              {this.props.error.resetPasswordError && (<Text style={styles.resetPasswordError}> Email is not registered </Text>)}
+
               <View style={styles.infoContainer}>
                 <TextInput style={styles.input}
                   placeholder='Enter email'
@@ -58,6 +61,7 @@ class ForgotPswScreen extends Component {
 
 const mapStateToProps = state => ({
   resetPasswordEmailSent: state.authentication.resetPasswordEmailSent,
+  error: state.authentication.error,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -122,5 +126,10 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     color: '#FFF'
+  },
+  resetPasswordError: {
+    alignSelf: 'center',
+    color: '#F00',
+    paddingVertical: 10,
   },
 })
