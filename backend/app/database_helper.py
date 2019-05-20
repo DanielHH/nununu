@@ -60,8 +60,8 @@ def get_category_by_name_and_company(category_name, company_id):
 #################################
 ### Product related functions ###
 #################################
-def create_product(name, price, company, position, category):
-    new_product = Product(name, price, company, position, category)
+def create_product(name, price, description, company, position, category):
+    new_product = Product(name, price, description, company, position, category)
     if new_product:
         save_to_db(new_product)
         return new_product
@@ -152,8 +152,8 @@ def seed_database():
     indisk = create_category(**{'name': 'Indiskt', 'position': 0, 'company': test_company_2})
     dryck = create_category(**{'name': 'Dryck', 'position': 1, 'company': test_company})
     extra = create_category(**{'name': 'Extra', 'position': 0, 'company': test_company_3})
-    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'position': 0, 'category': burgare})
-    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'position': 1, 'category': burgare})
-    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'company': test_company, 'position': 2, 'category': burgare})
-    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'company': test_company, 'position': 0, 'category': dryck})
-    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'company': test_company, 'position': 1, 'category': dryck})
+    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'description': 'bla bla bla', 'company': test_company, 'position': 0, 'category': burgare})
+    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'description': 'bla bla bla', 'company': test_company, 'position': 1, 'category': burgare})
+    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'description': 'bla bla bla', 'company': test_company, 'position': 2, 'category': burgare})
+    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'description': 'bla bla bla', 'company': test_company, 'position': 0, 'category': dryck})
+    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'description': 'bla bla bla', 'company': test_company, 'position': 1, 'category': dryck})

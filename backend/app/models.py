@@ -56,6 +56,7 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
+    description = db.Column(db.String, nullable=False)
     create_date = db.Column(db.DateTime)
     position = db.Column(db.Integer, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
@@ -63,16 +64,17 @@ class Product(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="products")
 
-    def __init__(self, name, price, company, position, category):
+    def __init__(self, name, price, description, company, position, category):
         self.name = name
         self.price = price
+        self.description = description
         self.company = company
         self.position = position
         self.category = category
         self.create_date = datetime.utcnow()
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'position': self.position, 'category': self.category.name}
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'description': self.description, 'position': self.position, 'category': self.category.name}
 
 
 class Purchase(db.Model):

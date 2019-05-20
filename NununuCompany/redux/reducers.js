@@ -92,7 +92,6 @@ function menu(state = initialMenuState, action) {
           }
         }
       }
-
     })
   case GET_COMPANY_PRODUCTS_FAILURE: 
     console.log("FAILUREEEEEEEEE")
