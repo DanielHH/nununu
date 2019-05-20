@@ -72,7 +72,6 @@ const initialMenuState = {
 function menu(state = initialMenuState, action) {
   switch (action.type) {
   case GET_COMPANY_PRODUCTS_SUCCESS:
-    console.log("SUCCESSFULLLLLL!!!")
     return produce(state, draft => {
       var i
       var categoryObj
@@ -94,17 +93,16 @@ function menu(state = initialMenuState, action) {
       }
     })
   case GET_COMPANY_PRODUCTS_FAILURE: 
-    console.log("FAILUREEEEEEEEE")
     return {...state, error: action.error}
   case ADD_PRODUCT_SUCCESS:
+    console.log("SUCCESSFULLLLLL!!!")
     return produce(state, draft => {
-      draft.categories[action.category].push[action.new_product]
+      draft.categories[action.category].push(action.new_product)
       draft.currentCategory = action.category
     })
   case ADD_PRODUCT_FAILURE:
-    return produce(state, draft => {
-      draft.error.action.error
-    })
+    console.log("Failure!!!")
+    return {...state, error: action.error}
   case REMOVE_PRODUCT:
     return produce(state, draft => {
       draft.splice(draft.findIndex(product => product.id === action.id), 1)

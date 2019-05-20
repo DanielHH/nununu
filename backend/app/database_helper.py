@@ -91,6 +91,10 @@ def delete_product(product_id, owner):
             delete_from_db(product)
             return product
 
+def get_product_position(category):
+    return category.products[-1].position + 1
+
+
 
 ##################################
 ### Purchase related functions ###

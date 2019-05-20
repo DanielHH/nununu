@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.orderinglist import ordering_list
 from datetime import datetime, timedelta
 from decimal import Decimal
 import jwt, logging
@@ -40,7 +41,8 @@ class Category(db.Model):
     position = db.Column(db.Integer, nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="categories")
-    products = db.relationship("Product", back_populates="category")
+    products = db.relationship("Product", back_populates="category", order_by="Product.position", 
+                                collection_class=ordering_list('position'))
 
     def __init__(self, name, position, company):
         self.name = name

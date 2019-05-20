@@ -159,7 +159,8 @@ def create_product():
     company = g.user.company
     category = db_helper.get_category_by_name_and_company(category_name, company.id)
     if (company and category):
-        new_product = db_helper.create_product(json_data['name'], json_data['price'], json_data['description'], company, category)
+        position = db_helper.get_product_position(category)
+        new_product = db_helper.create_product(json_data['name'], json_data['price'], json_data['description'], company, position, category)
         result = json.dumps(new_product.serialize()), 200
     return result
 

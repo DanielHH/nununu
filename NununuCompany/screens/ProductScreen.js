@@ -76,8 +76,8 @@ class ProductScreen extends React.Component {
           onValueChange={(itemValue, itemIndex) =>
             this.setState({category: itemValue})
           }>
-          <Picker.Item label="Burgers" value="Burgers" />
-          <Picker.Item label="Drinks" value="Drinks" />
+          <Picker.Item label="Burgare" value="Burgare" />
+          <Picker.Item label="Dryck" value="Dryck" />
         </Picker>
         <Button title="Spara" onPress={() => this.saveFunc()}/>
       </View>
@@ -92,6 +92,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => ({
   token: state.authentication.token,
+  
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductScreen)

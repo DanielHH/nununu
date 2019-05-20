@@ -99,6 +99,20 @@ export function signUpUser(email, password) {
   }
 }
 
+export function getCompanyProducts(companyId) {
+  return function (dispatch) {
+    apiClient.get('/company/'+companyId+'/products')
+    .then((response) => dispatch({
+      type: GET_COMPANY_PRODUCTS_SUCCESS,
+      categories: response.data.categories,
+      products: response.data.products,
+    })).catch((response) => dispatch({
+      type: GET_COMPANY_PRODUCTS_FAILURE,
+      error: response,
+    }))
+  }
+}
+
 export function addProduct(id, name, price, description, category, token) {
   let new_product = {'id': id, 'name': name, 'price': price, 'category': category, 'description': description}
   apiClient.defaults.headers.common['Authorization'] = token
@@ -128,20 +142,6 @@ export function editProduct(id, name, price, description, category, token) {
     })).catch(res => dispatch({
       type: EDIT_PRODUCT_FAILURE,
       error: res,
-    }))
-  }
-}
-
-export function getCompanyProducts(companyId) {
-  return function (dispatch) {
-    apiClient.get('/company/'+companyId+'/products')
-    .then((response) => dispatch({
-      type: GET_COMPANY_PRODUCTS_SUCCESS,
-      categories: response.data.categories,
-      products: response.data.products,
-    })).catch((response) => dispatch({
-      type: GET_COMPANY_PRODUCTS_FAILURE,
-      error: response,
     }))
   }
 }
