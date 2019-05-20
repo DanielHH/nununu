@@ -3,9 +3,9 @@ from functools import wraps
 from datetime import datetime
 from pathlib import Path
 import jwt, logging, json, os, swish, dateutil.parser
-from app_config import app
+from app_config import app, mail
 import database_helper as db_helper
-
+from flask_mail import Message
 
 def verify_token(func):
     """
@@ -66,20 +66,31 @@ def change_password():
     return result
 
 
-@app.route("/user/reset-paassword-request", methods=['POST'])
+def send_reset_password_email():
+    msg = Message('Password Reset Request',
+                  sender='noreply@demo.com',
+                  recipients=['mastega.nu@gmail.com'])
+    msg.body = f'''To reset your password, visit the following link:
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
+
+@app.route("/user/reset-password-request", methods=['POST'])
 def reset_password_reqeust():
     result = "email is not registered", 400
     json_data = request.get_json()
-    user = db_helper.get_user_by_email(json_data[email])
+    print(json_data, "asd")
+    user = db_helper.get_user_by_email(json_data['email'])
     if user:
         token = user.generate_token(1800)
+        send_reset_password_email()
+        result = "reset email has been sent", 200
+    return result
 
-
-
-
-@app.route("/user/reset-password", methods=['POST'])
-@verify_token
-def reset_password():
+#@app.route("/user/reset-password/<token>", methods=['POST'])
+#def reset_password(token):
 
 
 

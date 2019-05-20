@@ -3,10 +3,17 @@ import {  StyleSheet, View, Text, TouchableWithoutFeedback, StatusBar,
   TextInput, SafeAreaView, Keyboard, TouchableOpacity,
   KeyboardAvoidingView} from 'react-native'
 
-export default class ForgotPswScreen extends Component {
+import { connect } from 'react-redux'
+import { resetPassword } from '../redux/actions'
+
+class ForgotPswScreen extends Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      email: '',
+    }
   }
 
   render() {
@@ -25,11 +32,12 @@ export default class ForgotPswScreen extends Component {
                   placeholder='Enter email'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='email-address'
-                  returnKeyType='go'
+                  returnKeyType='done'
                   autoCorrect={false}
-                  blurOnSubmit={false}
+                  onChangeText={(text) => this.setState({email:text})}
+                  onSubmitEditing={() => this.props.resetPassword(this.state.email)}
                 />
-                <TouchableOpacity style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() =>  this.props.resetPassword(this.state.email)}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
@@ -40,6 +48,16 @@ export default class ForgotPswScreen extends Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  resetPasswordEmailSent: state.authentication.resetPasswordEmailSent,
+})
+
+const mapDispatchToProps = dispatch => ({
+  resetPassword: (email) => dispatch(resetPassword(email))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPswScreen)
 
 const styles = StyleSheet.create({
   container: {

@@ -1,7 +1,17 @@
-import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
-  SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
-  , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, START_NEW_SIGNUP,
-CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE} from './actions'
+import {
+  COMPLETE_ORDER,
+  SET_ACTIVE_ORDERS,
+  SET_COMPLETED_ORDERS,
+  SIGN_IN_USER_SUCCESS,
+  SIGN_IN_USER_FAILURE,
+  REMOVE_TOKEN,
+  SIGN_UP_USER_SUCCESS,
+  SIGN_UP_USER_FAILURE,
+  START_NEW_SIGNUP,
+  CREATE_COMPANY_SUCCESS,
+  CREATE_COMPANY_FAILURE,
+  RESET_PASSWORD_EMAIL_SENT,
+  RESET_PASSWORD_EMAIL_FAILURE} from './actions'
 
 
 const initialOrderState = {
@@ -36,6 +46,7 @@ const initialAuthState = {
   token: null,
   signUpUserSuccess: false,
   showSuccessfulSignUp: false,
+  resetPasswordEmailSent: false,
   error: {},
 }
 
@@ -56,6 +67,10 @@ function authentication(state = initialAuthState, action) {
   case CREATE_COMPANY_SUCCESS:
     return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp, error: {}}
   case CREATE_COMPANY_FAILURE:
+    return {...state, error: {createCompanyError: action.error}}
+  case RESET_PASSWORD_EMAIL_SENT:
+    return {...state, resetPasswordEmailSent: true}
+  case RESET_PASSWORD_EMAIL_FAILURE:
     return {...state, error: {createCompanyError: action.error}}
   default:
     return state

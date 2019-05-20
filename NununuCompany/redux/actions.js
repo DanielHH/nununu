@@ -23,7 +23,11 @@ export const START_NEW_SIGNUP = 'START_NEW_SIGNUP'
 
 export const CREATE_COMPANY_SUCCESS = 'CREATE_COMPANY_SUCCESS'
 
-export const CREATE_COMPANY_FAILURE= 'CREATE_COMPANY_FAILURE'
+export const CREATE_COMPANY_FAILURE = 'CREATE_COMPANY_FAILURE'
+
+export const RESET_PASSWORD_EMAIL_SENT = 'RESET_PASSWORD_EMAIL_SENT'
+
+export const RESET_PASSWORD_EMAIL_FAILURE = 'RESET_PASSWORD_EMAIL_FAILURE'
 
 /*
  * other constants
@@ -100,5 +104,17 @@ export function signUpUser(params){
         error: error,
       })
     }
+  }
+}
+
+export function resetPassword(email){
+  return function (dispatch) {
+    apiClient.post('/user/reset-password-request', {'email': email})
+    .then(() => dispatch({
+      type: RESET_PASSWORD_EMAIL_SENT,
+    })).catch(res => dispatch({
+      type: RESET_PASSWORD_EMAIL_FAILURE,
+      error: res,
+    }))
   }
 }

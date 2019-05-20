@@ -128,6 +128,7 @@ def db_reset():
 
 def seed_database():
     test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
+    mastega = create_user(**{'email': 'mastega.nu@gmail.com', 'password': '1234'})
     test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
     product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'company': test_company, 'category': 'Mat'})
     product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'company': test_company, 'category': 'Mat'})
