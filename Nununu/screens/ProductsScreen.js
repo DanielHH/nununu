@@ -23,7 +23,7 @@ class ProductsScreen extends React.Component {
     headerTintColor: '#fff',
   }
 
-  async retrievePushNotificationsAsync() {
+  async retrievePushNotificationTokenAsync() {
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     )
@@ -59,7 +59,8 @@ class ProductsScreen extends React.Component {
         }
       }
     }
-    this.retrievePushNotificationsAsync().then((pushNotificationToken) => {
+    this.retrievePushNotificationTokenAsync().then((pushNotificationToken) => {
+      console.log(pushNotificationToken);
       this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken})
     }).catch((error) => {
       console.warn(error)

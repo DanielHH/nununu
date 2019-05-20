@@ -1,7 +1,7 @@
 // In App.js in a new project
 
 import React from 'react'
-import { View, StatusBar } from 'react-native'
+import { View, StatusBar, Platform } from 'react-native'
 import { createStackNavigator, createAppContainer, createMaterialTopTabNavigator} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
 import ProductsScreen from './screens/ProductsScreen'
@@ -14,6 +14,7 @@ import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
+import { Notifications } from 'expo'
 
 const TabNav = createMaterialTopTabNavigator(
   {
@@ -60,6 +61,36 @@ export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.conf = createPersistStore()
+  }
+
+  componentDidMount() {
+    // Handle notifications that are received or selected while the app
+    // is open. If the app was closed and then opened by tapping the
+    // notification (rather than just tapping the app icon to open it),
+    // this function will fire on the next tick after the app starts
+    // with the notification data.
+    this._notificationSubscription = Notifications.addListener(this._handleNotification)
+
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('purchase', {
+        name: 'Purchase',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      })
+    }
+  }
+
+  _handleNotification = (notification) => {
+    console.log(notification);
+    if (notification.origin === 'selected') {
+      // push notification selected
+      if (notification.data.type === 'purchase_completed') {
+        // display purchase
+        // TODO: fix so you can navigate to the purchase
+        this.props.navigation.navigate('Details')
+      }
+    }
   }
 
   render(){
