@@ -8,7 +8,7 @@ import constants from '../constants'
 class Authenticated extends Component {
 
   componentDidMount() {
-    this.props.wsConnect('ws://' + constants.DanielIpV4)
+    this.props.wsConnect('ws://' + constants.DanielIpV4 + '/ws/connect/company')
   }
 
   render() {
@@ -20,7 +20,7 @@ class Authenticated extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open && this.props.open !== false) {
       // websocket opened (or reopened)
-      this.props.send(JSON.stringify({'token': this.props.token}))
+      this.props.send({'token': this.props.token})
     }
   }
 }
