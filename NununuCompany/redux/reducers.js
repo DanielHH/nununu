@@ -56,7 +56,22 @@ function authentication(state = initialAuthState, action) {
   }
 }
 
+const initialWsState = {
+  open: false,
+}
+
+function websocket(state = initialWsState, action) {
+  switch (action.type) {
+  case 'REDUX_WEBSOCKET::OPEN': {
+    return {...state, open: action.meta.timestamp}
+  }
+  default:
+    return state
+  }
+}
+
 export const reducers = {
   order,
   authentication,
+  websocket,
 }
