@@ -40,8 +40,8 @@ class SwipeableList extends Component {
     return (
       <ListItem
         id={item.id}
-        content={item.content}
-        orderNumber={item.orderNumber}
+        content={item.purchaseMessage}
+        orderNumber={item.id}
         success={this.success}
         setScrollEnabled={enable => this.setScrollEnabled(enable)}
       />
@@ -55,7 +55,7 @@ class SwipeableList extends Component {
         data={this.props.active}
         backgroundColor={'#e9ebee'}
         renderItem={({item}) => this.renderItem(item)}
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={(item, index) => String(item.id)}
         scrollEnabled={this.state.enable}
       />
     )
@@ -64,7 +64,7 @@ class SwipeableList extends Component {
 
 export default connect((state) => {
   return {
-    active: state.order.active,
+    active: state.websocket.active_purchases,
   }
 })(SwipeableList)
 
