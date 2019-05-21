@@ -59,6 +59,7 @@ function authentication(state = initialAuthState, action) {
 const initialWsState = {
   open: false,
   active_purchases: [],
+  completed_purchases: [],
 }
 
 function websocket(state = initialWsState, action) {
@@ -71,7 +72,8 @@ function websocket(state = initialWsState, action) {
     switch (message.type) {
     case 'connect':
       if (message.status === 200) {
-        return {...state, active_purchases: message.active_purchases}
+        return {...state, active_purchases: message.active_purchases,
+          completed_purchases: message.completed_purchases}
       }
       else {
         // invalid, logout

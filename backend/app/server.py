@@ -37,6 +37,9 @@ def connect_company():
             if g.user:
                 result['status'] = 200
                 result['statusText'] = 'OK'
+                completed_purchases = db_helper.get_completed_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in completed_purchases]
+                result['completed_purchases'] = purchases
                 active_purchases = db_helper.get_active_purchases(g.user.company)
                 purchases = [purchase.serialize() for purchase in active_purchases]
                 result['active_purchases'] = purchases
