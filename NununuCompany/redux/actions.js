@@ -47,6 +47,8 @@ export const CREATE_COMPANY_FAILURE = 'CREATE_COMPANY_FAILURE'
 
 export const REMOVE_MENU = 'REMOVE_MENU'
 
+export const SET_CURRENT_CATEGORY = 'SET_CURRENT_CATEGORY'
+
 /*
  * other constants
  */
@@ -198,6 +200,10 @@ export function addCategory(categoryName, token) {
       error: res,
     }))
   }
+}
+
+export function showCategoryProducts(categoryName) {
+  return { type: SET_CURRENT_CATEGORY, category: categoryName}
 }
 
 export function changeProductCategory(id, name) {

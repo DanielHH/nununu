@@ -4,7 +4,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { getCompanyProductsWithToken } from '../redux/actions'
+import { getCompanyProductsWithToken, showCategoryProducts } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
   state = {
@@ -32,7 +32,7 @@ class CategoriesScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditMenu', {category: item.name})}>
+        onPress={() => {this.props.showCategoryProducts(item.name), this.props.navigation.navigate('EditMenu', {category: item.name})}}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
@@ -72,7 +72,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
-
+  showCategoryProducts: (categoryName) => dispatch(showCategoryProducts(categoryName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoriesScreen)

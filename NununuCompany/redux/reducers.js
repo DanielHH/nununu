@@ -5,7 +5,8 @@ import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   EDIT_PRODUCT_SUCCESS, EDIT_PRODUCT_FAILURE, CHANGE_PRODUCT_ORDER, 
   ADD_CATEGORY_SUCCESS, ADD_CATEGORY_FAILURE, GET_COMPANY_PRODUCTS_SUCCESS, 
   GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE, 
-  REMOVE_MENU} from './actions'
+  REMOVE_MENU,
+  SET_CURRENT_CATEGORY} from './actions'
 import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
 import produce from 'immer'
 
@@ -85,6 +86,10 @@ function menu(state = initialMenuState, action) {
       draft.currentCategory = ''
       draft.error = {}
     })
+  case SET_CURRENT_CATEGORY:
+    return produce(state, draft => {
+      draft.currentCategory = action.category
+    })
   case GET_COMPANY_PRODUCTS_SUCCESS:
     return produce(state, draft => {
       var i
@@ -112,7 +117,6 @@ function menu(state = initialMenuState, action) {
     console.log("SUCCESSFULLLLLL!!!")
     return produce(state, draft => {
       draft.categories[action.category].push(action.new_product)
-      draft.currentCategory = action.category
     })
   case ADD_PRODUCT_FAILURE:
     console.log("Failure!!!")
@@ -125,7 +129,6 @@ function menu(state = initialMenuState, action) {
     return produce(state, draft => {
       let index = draft.categories[action.category].findIndex(product => product.id == action.id)
       draft.categories[action.category][index] = action.edited.product
-      draft.currentCategory = action.category
     })
   case EDIT_PRODUCT_FAILURE:
     return 
