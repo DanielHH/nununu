@@ -7,18 +7,9 @@ import { connect } from 'react-redux'
 import { getCompanyProductsWithToken, showCategoryProducts } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
-  state = {
-  }
 
   constructor(props) {
     super(props)
-  }
-
-  addCategory = (category) => {
-    let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, category: category})
-    this.setState({data: data_copy})
-    this.props.navigation.goBack(null)
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
@@ -32,7 +23,7 @@ class CategoriesScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => {this.props.showCategoryProducts(item.name), this.props.navigation.navigate('EditMenu', {category: item.name})}}>
+        onPress={() => {this.props.showCategoryProducts(item.id), this.props.navigation.navigate('EditMenu')}}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
@@ -57,7 +48,7 @@ class CategoriesScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddCategory', {addCategory: this.addCategory})}
+          onPress={() => this.props.navigation.navigate('AddCategory')}
         />
       </View>
     )
@@ -66,13 +57,12 @@ class CategoriesScreen extends React.Component {
 
 const mapStateToProps = state => ({
   categories: state.menu.categoriesOrder,
-  category: state.menu.currentCategory,
   token: state.authentication.token,
 })
 
 const mapDispatchToProps = dispatch => ({
   getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
-  showCategoryProducts: (categoryName) => dispatch(showCategoryProducts(categoryName)),
+  showCategoryProducts: (categoryId) => dispatch(showCategoryProducts(categoryId)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoriesScreen)

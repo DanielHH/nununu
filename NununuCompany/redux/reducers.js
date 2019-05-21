@@ -5,8 +5,7 @@ import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   EDIT_PRODUCT_SUCCESS, EDIT_PRODUCT_FAILURE, CHANGE_PRODUCT_ORDER, 
   ADD_CATEGORY_SUCCESS, ADD_CATEGORY_FAILURE, GET_COMPANY_PRODUCTS_SUCCESS, 
   GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE, 
-  REMOVE_MENU,
-  SET_CURRENT_CATEGORY} from './actions'
+  REMOVE_MENU, GO_TO_CATEGORY, START_EDIT_PRODUCT, START_ADD_PRODUCT} from './actions'
 import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
 import produce from 'immer'
 
@@ -73,7 +72,8 @@ const initialMenuState = {
   categories: {
   },
   categoriesOrder: [],
-  currentCategory: '',
+  currentCategoryId: '',
+  productToEdit: null,
   error: {},
 }
 
@@ -83,12 +83,8 @@ function menu(state = initialMenuState, action) {
     return produce(state, draft => {
       draft.categories = {}
       draft.categoriesOrder = []
-      draft.currentCategory = ''
+      draft.currentCategoryId = ''
       draft.error = {}
-    })
-  case SET_CURRENT_CATEGORY:
-    return produce(state, draft => {
-      draft.currentCategory = action.category
     })
   case GET_COMPANY_PRODUCTS_SUCCESS:
     return produce(state, draft => {
@@ -97,43 +93,24 @@ function menu(state = initialMenuState, action) {
       for (i = 0; i < action.categories.length; i++) {
         categoryObj = action.categories.find(category => category.position == i)
         draft.categoriesOrder.push(categoryObj)
-        draft.categories[categoryObj.name] = []
+        draft.categories[categoryObj.id] = []
       }
       var productObj
       var j
       var k
       for (j=0; j < draft.categoriesOrder.length; j++) {
         for (k = 0; k < action.products.length; k++) { // TODO: This loop could be done more effectively, by specifying how many products there are of a certain category
-          productObj = action.products.find(product => ((product.position == k) && (product.category == draft.categoriesOrder[j].name)))
+          productObj = action.products.find(product => ((product.position == k) && (product.categoryId == draft.categoriesOrder[j].id)))
           if (productObj) {
-            draft.categories[draft.categoriesOrder[j].name].push(productObj)
+            draft.categories[draft.categoriesOrder[j].id].push(productObj)
           }
         }
       }
     })
   case GET_COMPANY_PRODUCTS_FAILURE: 
-    return {...state, error: action.error}
-  case ADD_PRODUCT_SUCCESS:
-    console.log("SUCCESSFULLLLLL!!!")
     return produce(state, draft => {
-      draft.categories[action.category].push(action.new_product)
+      draft.error = action.error
     })
-  case ADD_PRODUCT_FAILURE:
-    console.log("Failure!!!")
-    return {...state, error: action.error}
-  case REMOVE_PRODUCT:
-    return produce(state, draft => {
-      draft.splice(draft.findIndex(product => product.id === action.id), 1)
-    })
-  case EDIT_PRODUCT_SUCCESS:
-    return produce(state, draft => {
-      let index = draft.categories[action.category].findIndex(product => product.id == action.id)
-      draft.categories[action.category][index] = action.edited.product
-    })
-  case EDIT_PRODUCT_FAILURE:
-    return 
-  case CHANGE_PRODUCT_ORDER:
-    return
   case ADD_CATEGORY_SUCCESS:
     var categoryObj = action.category
     return produce(state, draft => {
@@ -141,7 +118,44 @@ function menu(state = initialMenuState, action) {
       draft.categories[categoryObj.name] = []
     })
   case ADD_CATEGORY_FAILURE:
-    return 
+    return produce(state, draft => {
+      draft.error = action.error
+    })
+  case GO_TO_CATEGORY:
+    return produce(state, draft => {
+      draft.currentCategoryId = action.categoryId
+    })
+  case START_EDIT_PRODUCT:
+    return produce(state, draft => {
+      draft.productToEdit = action.product
+    })
+  case START_ADD_PRODUCT:
+    return produce(state, draft => {
+      draft.productToEdit = null
+    })
+  case EDIT_PRODUCT_SUCCESS:
+    return produce(state, draft => {
+      let index = draft.categories[action.categoryId].findIndex(product => product.id == action.id)
+      draft.categories[action.categoryId][index] = action.editedProduct
+    })
+  case EDIT_PRODUCT_FAILURE:
+    return produce(state, draft => {
+      draft.error = action.error
+    })
+  case ADD_PRODUCT_SUCCESS:
+    return produce(state, draft => {
+      draft.categories[action.categoryId].push(action.newProduct)
+    })
+  case ADD_PRODUCT_FAILURE:
+    return produce(state, draft => {
+      draft.error = action.error
+    })
+  case REMOVE_PRODUCT:
+    return produce(state, draft => {
+      draft.splice(draft.findIndex(product => product.id === action.id), 1)
+    })
+  case CHANGE_PRODUCT_ORDER:
+    return
   default:
     return state
   }

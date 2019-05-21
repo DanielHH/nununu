@@ -47,7 +47,12 @@ export const CREATE_COMPANY_FAILURE = 'CREATE_COMPANY_FAILURE'
 
 export const REMOVE_MENU = 'REMOVE_MENU'
 
-export const SET_CURRENT_CATEGORY = 'SET_CURRENT_CATEGORY'
+export const GO_TO_CATEGORY = 'GO_TO_CATEGORY'
+
+export const START_EDIT_PRODUCT = 'START_EDIT_PRODUCT'
+
+export const START_ADD_PRODUCT = 'START_ADD_PRODUCT'
+
 
 /*
  * other constants
@@ -127,64 +132,23 @@ export function signUpUser(params){
   }
 }
 
-export function getCompanyProductsWithToken(token) {
-  apiClient.defaults.headers.common['Authorization'] = token
-  return function (dispatch) {
-    apiClient.get('/company/products')
-    .then((response) => dispatch({
-      type: GET_COMPANY_PRODUCTS_SUCCESS,
-      categories: response.data.categories,
-      products: response.data.products,
-    })).catch((response) => dispatch({
-      type: GET_COMPANY_PRODUCTS_FAILURE,
-      error: response,
-    }))
-  }
-}
-
-export function addProduct(id, name, price, description, category, token) {
-  let new_product = {'id': id, 'name': name, 'price': price, 'category': category, 'description': description}
-  apiClient.defaults.headers.common['Authorization'] = token
-  return function (dispatch) {
-    apiClient.post('/product/create', new_product)
-    .then(() => dispatch({ 
-      type: ADD_PRODUCT_SUCCESS, 
-      new_product,
-      category,
-    })).catch(res => dispatch({
-      type: ADD_PRODUCT_FAILURE,
-      error: res,
-    }))
-  }
-}
-
-export function editProduct(id, name, price, description, category, token) {
-  let edited_product = {'id': id, 'name': name, 'price': price, 'category': category, 'description': description}
-  apiClient.defaults.headers.common['Authorization'] = token
-  return function (dispatch) {
-    apiClient.post('/product/edit/' + id, edited_product)
-    .then(() => dispatch({ 
-      type: EDIT_PRODUCT_SUCCESS, 
-      edited_product,
-      category,
-      id,
-    })).catch(res => dispatch({
-      type: EDIT_PRODUCT_FAILURE,
-      error: res,
-    }))
-  }
-}
-
 export function emptyMenuState() {
   return { type: REMOVE_MENU }
 }
 
-export function reOrderProducts(category, newProductsOrder) {
-
-}
-
-export function reOrderCategory(newCategoriesOrder) {
-
+export function getCompanyProductsWithToken(token) {
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.get('/company/products')
+    .then(res => dispatch({
+      type: GET_COMPANY_PRODUCTS_SUCCESS,
+      categories: res.data.categories,
+      products: res.data.products,
+    })).catch((res) => dispatch({
+      type: GET_COMPANY_PRODUCTS_FAILURE,
+      error: res,
+    }))
+  }
 }
 
 export function addCategory(categoryName, token) {
@@ -202,8 +166,57 @@ export function addCategory(categoryName, token) {
   }
 }
 
-export function showCategoryProducts(categoryName) {
-  return { type: SET_CURRENT_CATEGORY, category: categoryName}
+export function showCategoryProducts(categoryId) {
+  return { type: GO_TO_CATEGORY, categoryId}
+}
+
+export function goToEditProduct(product) {
+  return {type: START_EDIT_PRODUCT, product}
+}
+
+export function goToAddProduct() {
+  return {type: START_ADD_PRODUCT }
+}
+
+export function editProduct(id, name, price, description, categoryId, token) {
+  let editedProduct = {'id': id, 'name': name, 'price': price, 'categoryId': categoryId, 'description': description}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/product/edit/' + id, editedProduct)
+    .then(res => dispatch({ 
+      type: EDIT_PRODUCT_SUCCESS, 
+      editedProduct: res.data,
+      categoryId: res.data.categoryId,
+      id: res.data.id,
+    })).catch(res => dispatch({
+      type: EDIT_PRODUCT_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function addProduct(name, price, description, categoryId, token) {
+  let newProduct = {'name': name, 'price': price, 'category': categoryId, 'description': description}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/product/create', newProduct)
+    .then(res => dispatch({ 
+      type: ADD_PRODUCT_SUCCESS, 
+      newProduct: res.data,
+      categoryId: res.data.categoryId,
+    })).catch(res => dispatch({
+      type: ADD_PRODUCT_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function reOrderProducts(category, newProductsOrder) {
+
+}
+
+export function reOrderCategory(newCategoriesOrder) {
+
 }
 
 export function changeProductCategory(id, name) {

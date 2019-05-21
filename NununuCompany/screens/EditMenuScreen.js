@@ -4,34 +4,12 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
+import { goToEditProduct, goToAddProduct } from '../redux/actions'
 
 class EditMenuScreen extends React.Component {
 
   constructor(props) {
     super(props)
-  }
-
-  addProduct = (name, price, description, category) => {
-    let data_copy = [...this.state.data]
-    data_copy.push({id: data_copy.length, name: name, 
-      price: price, description: description, category: category})
-    this.setState({data: data_copy})
-    this.props.navigation.goBack(null)
-  }
-
-  editProduct = (id, name, price, description, category) => {
-    let data_copy = [...this.state.data]
-    for (let i = 0; i < data_copy.length; i++) {
-      if (data_copy[i].id === id) {
-        data_copy[i].name = name
-        data_copy[i].price = price
-        data_copy[i].description = description
-        data_copy[i].category = category
-        this.setState({data: data_copy})
-        break
-      }
-    }
-    this.props.navigation.goBack(null)
   }
 
   renderItem = ({ item, index, move, moveEnd, isActive }) => {
@@ -45,8 +23,7 @@ class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditProduct', 
-          {editProduct: this.editProduct, item: item})}>
+        onPress={() => {this.props.goToEditProduct(item), this.props.navigation.navigate('EditProduct')}}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
@@ -62,7 +39,7 @@ class EditMenuScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <DraggableFlatList
-          data={this.props.categories[this.props.category]}
+          data={this.props.categories[this.props.categoryId]}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
@@ -72,7 +49,7 @@ class EditMenuScreen extends React.Component {
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => this.props.navigation.navigate('AddProduct', {addProduct: this.addProduct})}
+          onPress={() => {this.props.goToAddProduct(), this.props.navigation.navigate('AddProduct')}}
         />
       </View>
     )
@@ -81,10 +58,12 @@ class EditMenuScreen extends React.Component {
 
 const mapStateToProps = state => ({
   categories: state.menu.categories,
-  category: state.menu.currentCategory,
+  categoryId: state.menu.currentCategoryId,
 })
 
 const mapDispatchToProps = dispatch => ({
+  goToEditProduct: (product) => dispatch(goToEditProduct(product)),
+  goToAddProduct: () => dispatch(goToAddProduct()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditMenuScreen)

@@ -56,6 +56,9 @@ def create_category(name, position, company):
         return new_category
 
 
+def get_category_by_id(category_id):
+    return Category.query.filter_by(id=category_id).first()
+
 
 def get_category_by_name_and_company(category_name, company_id):
     return Category.query.filter(Category.name == category_name, 
@@ -84,11 +87,11 @@ def edit_product(product_id, owner, json_data):
     product = get_product_by_id(product_id)
     if product:
         if owner == product.company.owner:
-            if 'category' in json_data: # category is optional
-                product.category = json_data['category']
-            if 'name' in json_data and 'price' in json_data:
-                product.name = json_data['name']
-                product.price = json_data['price']
+            product.name = json_data['name']
+            product.price = json_data['price']
+            product.description = json_data['description']
+            category = get_category_by_id(json_data['categoryId'])
+            product.category = category
             save_to_db(product)
             return product
 

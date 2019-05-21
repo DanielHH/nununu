@@ -169,9 +169,9 @@ def get_products_with_token():
 def create_product():
     result = "product not created", 400
     json_data = request.get_json()
-    category_name = json_data['category']
+    category_id = json_data['category']
     company = g.user.company
-    category = db_helper.get_category_by_name_and_company(category_name, company.id)
+    category = db_helper.get_category_by_id(category_id)
     if (company and category):
         position = db_helper.get_product_position(category)
         new_product = db_helper.create_product(json_data['name'], json_data['price'], json_data['description'], company, position, category)

@@ -7,14 +7,14 @@ import { editProduct } from '../redux/actions'
 class ProductScreen extends React.Component {
   constructor(props) {
     super(props)
-    let item = this.props.navigation.state.params.item
+    let item = this.props.product
     if (item) {
       this.state = {
+        id: item.id,
         name: item.name,
         price: item.price,
         description: item.description,
-        category: item.category,
-        item: item,
+        categoryId: item.categoryId,
       }
     }
     else {
@@ -22,18 +22,18 @@ class ProductScreen extends React.Component {
         name: '',
         price: '',
         description: '',
-        category: '',
+        categoryId: this.props.currentCategoryId,
       }
     }
   }
 
   saveFunc = () => {
-    if (this.state.item) { // edit product
-      this.props.editProduct(this.state.item.id, this.state.name, 
-        this.state.price, this.state.description, this.state.category, this.props.token.token)
+    if (this.state.id) { // edit product
+      this.props.editProduct(this.state.id, this.state.name, 
+        this.state.price, this.state.description, this.state.categoryId, this.props.token.token)
     } else { // new product
-      this.props.addProduct(0, this.state.name, this.state.price, 
-        this.state.description, this.state.category, this.props.token.token)
+      this.props.addProduct(this.state.name, this.state.price, 
+        this.state.description, this.state.categoryId, this.props.token.token)
     }
   }
 
@@ -55,8 +55,9 @@ class ProductScreen extends React.Component {
         <TextInput
           style={{height: 40}}
           placeholder="Skriv pris här"
+          keyboardType="numeric"
           onChangeText={(price) => this.setState({price})}
-          value={this.state.price.toString()}
+          value={this.state.price}
         />
         <Text>
           Beskrivning
@@ -71,13 +72,13 @@ class ProductScreen extends React.Component {
           Kategori
         </Text>
         <Picker
-          selectedValue={this.state.category}
+          selectedValue={this.state.categoryId}
           style={{height: 40}}
           onValueChange={(itemValue, itemIndex) =>
-            this.setState({category: itemValue})
-          }>
-          <Picker.Item label="Burgare" value="Burgare" />
-          <Picker.Item label="Dryck" value="Dryck" />
+            this.setState({categoryId: itemValue})}>
+          {this.props.categories.map((item, index) => {
+            return (<Picker.Item label={item.name} value={item.id} key={index}/>) 
+          })}
         </Picker>
         <Button title="Spara" onPress={() => {this.saveFunc(), this.props.navigation.navigate('EditMenu')}}/>
       </View>
@@ -85,14 +86,16 @@ class ProductScreen extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  editProduct: (id, name, price, description, category, token) => dispatch(editProduct(id, name, price, description, category, token)),
-  addProduct: (id, name, price, description, category, token) => dispatch(addProduct(id, name, price, description, category, token)),
-})
-
 const mapStateToProps = state => ({
   token: state.authentication.token,
-  
+  categories: state.menu.categoriesOrder,
+  product: state.menu.productToEdit,
+  currentCategoryId: state.menu.currentCategoryId,
+})
+
+const mapDispatchToProps = dispatch => ({
+  editProduct: (id, name, price, description, category, token) => dispatch(editProduct(id, name, price, description, category, token)),
+  addProduct: (name, price, description, category, token) => dispatch(addProduct(name, price, description, category, token)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductScreen)
