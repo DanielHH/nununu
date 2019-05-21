@@ -8,7 +8,7 @@ import reduxWebsocket from '@giantmachines/redux-websocket'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['order', 'authentication'],
+  whitelist: ['authentication'],
 }
 
 const persistedReducer = persistCombineReducers(persistConfig, reducers)
@@ -22,11 +22,9 @@ export default function createPersistStore () {
   )
   // subscribe to store for debbuging, logs all the changes
   // note that logging all the changes is performance demanding
-  /*
   store.subscribe(() => {
     console.log(store.getState())
   })
-  */
   let persistor = persistStore(store)
   return { store, persistor }
 }

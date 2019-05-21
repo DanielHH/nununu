@@ -198,7 +198,7 @@ def make_purchase_completed(purchase_id):
     purchase = db_helper.get_purchase_by_id(purchase_id)
     if purchase:
         purchase.completed = True
-        save_to_db(purchase)
+        db_helper.save_to_db(purchase)
         # try to notify the person who purchased it
         push_notification_worker.queue_task(
             push_notification_worker.send_push_notification,

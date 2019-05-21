@@ -3,11 +3,9 @@ import { apiClient } from '../apiClient'
  * action types
  */
 
-export const SET_ACTIVE_ORDERS = 'SET_ACTIVE_ORDERS'
+export const COMPLETE_PURCHASE_SUCCESS = 'COMPLETE_PURCHASE_SUCCESS'
 
-export const SET_COMPLETED_ORDERS = 'SET_COMPLETED_ORDERS'
-
-export const COMPLETE_ORDER = 'COMPLETE_ORDER'
+export const COMPLETE_PURCHASE_FAILURE = 'COMPLETE_PURCHASE_FAILURE'
 
 export const REMOVE_TOKEN = 'REMOVE_TOKEN'
 
@@ -30,16 +28,19 @@ export const START_NEW_SIGNUP = 'START_NEW_SIGNUP'
  * action creators
  */
 
-export function setActiveOrders(orders) {
-  return { type: SET_ACTIVE_ORDERS, orders}
-}
-
-export function setCompletedOrders(orders) {
-  return { type: SET_COMPLETED_ORDERS, orders}
-}
-
-export function completeOrder(orderId) {
-  return { type: COMPLETE_ORDER, orderId}
+export function completePurchase(purchaseId, token) {
+  return function(dispatch) {
+    apiClient.post('/purchase/makecompleted/' + String(purchaseId), null, {
+      headers: { 'Authorization': token },
+    })
+    .then(res => dispatch({
+      type: COMPLETE_PURCHASE_SUCCESS,
+      purchase: res.data,
+    })).catch(res => dispatch({
+      type: COMPLETE_PURCHASE_FAILURE,
+      error: res,
+    }))
+  }
 }
 
 export function removeToken() {
