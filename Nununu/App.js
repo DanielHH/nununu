@@ -1,13 +1,6 @@
-// In App.js in a new project
-
 import React from 'react'
 import { View, StatusBar, Platform } from 'react-native'
-import { createStackNavigator, createAppContainer, createMaterialTopTabNavigator} from 'react-navigation'
 import { Provider as PaperProvider } from 'react-native-paper'
-import ProductsScreen from './screens/ProductsScreen'
-import DetailsScreen from './screens/DetailsScreen'
-import CompaniesScreen from './screens/CompaniesScreen'
-import PurchasesScreen from './screens/PurchasesScreen'
 import { AppLoading, Asset, Font, Icon } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
@@ -15,43 +8,7 @@ import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
 import { Notifications } from 'expo'
-
-const TabNav = createMaterialTopTabNavigator(
-  {
-    Restaurants: CompaniesScreen,
-    Purchases: PurchasesScreen,
-  },
-  {
-    initialRouteName: 'Restaurants',
-    tabBarOptions: {
-      labelStyle: {
-        fontSize: 12,
-      },
-      style: {
-        backgroundColor: 'green',
-        paddingTop: StatusBar.currentHeight,
-      },
-    },
-  }
-)
-
-const StackNav = createStackNavigator(
-  {
-    TabNav: {
-      screen: TabNav,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    Products: ProductsScreen,
-    Details: DetailsScreen,
-  },
-  {
-    initialRouteName: 'TabNav',
-  }
-)
-
-const AppContainer = createAppContainer(StackNav)
+import { AppContainer } from './navigation'
 
 export default class App extends React.Component {
   state = {
@@ -88,7 +45,7 @@ export default class App extends React.Component {
       if (notification.data.type === 'purchase_completed') {
         // display purchase
         // TODO: fix so you can navigate to the purchase
-        this.props.navigation.navigate('Details')
+        //this.props.navigation.navigate('Details')
       }
     }
   }
