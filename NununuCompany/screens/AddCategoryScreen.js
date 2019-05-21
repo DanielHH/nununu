@@ -29,7 +29,7 @@ class AddCategoryScreen extends React.Component {
           onChangeText={(name) => this.setState({name})}
           value={this.state.category}
         />
-        <Button title="Spara" onPress={() => this.saveFunc()}/>
+        <Button title="Spara" onPress={() => {this.saveFunc(), this.props.navigation.navigate('Categories')}}/>
       </View>
     )
   }

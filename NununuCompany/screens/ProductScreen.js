@@ -79,7 +79,7 @@ class ProductScreen extends React.Component {
           <Picker.Item label="Burgare" value="Burgare" />
           <Picker.Item label="Dryck" value="Dryck" />
         </Picker>
-        <Button title="Spara" onPress={() => this.saveFunc()}/>
+        <Button title="Spara" onPress={() => {this.saveFunc(), this.props.navigation.navigate('EditMenu')}}/>
       </View>
     )
   }
