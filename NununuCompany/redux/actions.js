@@ -41,6 +41,10 @@ export const GET_COMPANY_PRODUCTS_SUCCESS = 'GET_COMPANY_PRODUCTS_SUCCESS'
 
 export const GET_COMPANY_PRODUCTS_FAILURE = 'GET_COMPANY_PRODUCTS_FAILURE'
 
+export const CREATE_COMPANY_SUCCESS = 'CREATE_COMPANY_SUCCESS'
+
+export const CREATE_COMPANY_FAILURE= 'CREATE_COMPANY_FAILURE'
+
 /*
  * other constants
  */
@@ -85,17 +89,37 @@ export function signInUser(email, password) {
   }
 }
 
-export function signUpUser(email, password) {
-  let credentials = {'email': email, 'password': password}
-  return function (dispatch) {
-    apiClient.post('/user/sign-up', credentials)
-    .then(() => dispatch({
-      type: SIGN_UP_USER_SUCCESS,
-      showSuccessfulSignUp: true,
-    })).catch(res => dispatch({
-      type: SIGN_UP_USER_FAILURE,
-      error: res,
-    }))
+export function signUpUser(params){
+  let credentials = params
+  return async function (dispatch) {
+    try {
+      await apiClient.post('user/sign-up', credentials)
+      try {
+        const signInResponse = await apiClient.post('/user/sign-in', credentials)
+        try {
+          await apiClient.post('/company/create', credentials, {headers: { Authorization: signInResponse.data.token }})
+          return dispatch({
+            type: CREATE_COMPANY_SUCCESS,
+            showSuccessfulSignUp: true,
+          })
+        } catch(error) {
+          return dispatch({
+            type: CREATE_COMPANY_FAILURE,
+            error: error,
+          })
+        }
+      } catch(error) {
+        return dispatch({
+          type: SIGN_IN_USER_FAILURE,
+          error: error,
+        })
+      }
+    } catch(error) {
+      return dispatch({
+        type: SIGN_UP_USER_FAILURE,
+        error: error,
+      })
+    }
   }
 }
 
