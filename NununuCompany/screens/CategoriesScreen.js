@@ -4,7 +4,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { getCompanyProducts } from '../redux/actions'
+import { getCompanyProductsWithToken } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
   state = {
@@ -16,7 +16,6 @@ class CategoriesScreen extends React.Component {
 
   constructor(props) {
     super(props)
-    this.props.getCompanyProducts('1')
   }
 
   addCategory = (category) => {
@@ -72,10 +71,11 @@ class CategoriesScreen extends React.Component {
 const mapStateToProps = state => ({
   categories: state.menu.categories,
   category: state.menu.currentCategory,
+  token: state.authentication.token,
 })
 
 const mapDispatchToProps = dispatch => ({
-  getCompanyProducts: (companyId) => dispatch(getCompanyProducts(companyId)),
+  getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
 
 })
 

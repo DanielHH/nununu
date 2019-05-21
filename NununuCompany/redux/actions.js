@@ -88,6 +88,30 @@ export function signInUser(email, password) {
     }))
   }
 }
+/*
+export function signInUser(email, password) {
+  let credentials = {'email': email, 'password': password}
+  return async function (dispatch) {
+    try {
+      const signInResponse = await apiClient.post('/user/sign-in', credentials)
+      try {
+        await apiClient.get('/company/email/'+email+'/products')
+        return dispatch({
+          type: GET_COMPANY_PRODUCTS_SUCCESS,
+
+        })
+      }
+    } catch(error) {
+      return dispatch({
+        type: SIGN_IN_USER_FAILURE,
+        error: res,
+      })
+    }
+  }
+}
+*/
+
+
 
 export function signUpUser(params){
   let credentials = params
@@ -123,9 +147,10 @@ export function signUpUser(params){
   }
 }
 
-export function getCompanyProducts(companyId) {
+export function getCompanyProductsWithToken(token) {
+  apiClient.defaults.headers.common['Authorization'] = token
   return function (dispatch) {
-    apiClient.get('/company/'+companyId+'/products')
+    apiClient.get('/company/products')
     .then((response) => dispatch({
       type: GET_COMPANY_PRODUCTS_SUCCESS,
       categories: response.data.categories,

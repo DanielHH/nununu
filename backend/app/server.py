@@ -148,13 +148,13 @@ def get_products(company_id):
         product_json = [product.serialize() for product in company.products]
         result = json.dumps({'categories': category_json, 'products': product_json}), 200
     return result
+    
 
-
-@app.route("/company/email/<email>/products", methods=['GET'])
-def get_products_with_email(email):
+@app.route("/company/products", methods=['GET'])
+@verify_token
+def get_products_with_token():
     result = "company not found", 404
-    user = db_helper.get_user_by_email(email)
-    company = db_helper.get_company_by_user(user)
+    company = db_helper.get_company_by_user(g.user)
     if company:
         category_json = [category.serialize() for category in company.categories]
         product_json = [product.serialize() for product in company.products]
