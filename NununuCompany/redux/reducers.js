@@ -58,12 +58,29 @@ function authentication(state = initialAuthState, action) {
 
 const initialWsState = {
   open: false,
+  active_purchases: [],
 }
 
 function websocket(state = initialWsState, action) {
   switch (action.type) {
   case 'REDUX_WEBSOCKET::OPEN': {
     return {...state, open: action.meta.timestamp}
+  }
+  case 'REDUX_WEBSOCKET::MESSAGE': {
+    let message = JSON.parse(action.payload.message)
+    switch (message.type) {
+    case 'connect':
+      if (message.status === 200) {
+        return {...state, active_purchases: message.active_purchases}
+      }
+      else {
+        // invalid, logout
+        break
+      }
+    default:
+      break
+    }
+    break
   }
   default:
     return state
