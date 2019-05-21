@@ -77,6 +77,11 @@ function websocket(state = initialWsState, action) {
         // invalid, logout
         break
       }
+    case 'new_purchase': {
+      let new_active_purchases = [...state.active_purchases]
+      new_active_purchases.push(message.purchase)
+      return {...state, active_purchases: new_active_purchases}
+    }
     default:
       break
     }

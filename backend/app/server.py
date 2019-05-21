@@ -250,6 +250,9 @@ def pay(payment_method, purchase_id):
         purchase.payment_date = datetime.utcnow()
         db_helper.save_to_db(purchase)
         result = json.dumps({'payment_skipped': True, 'purchase': purchase.serialize()}), 200
+        if purchase.company.id in connected_companys:
+            websocket = connected_companys[purchase.company.id]
+            websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
     elif payment_method == "swish":
         result = "purchase not found", 404
         found_purchase = db_helper.get_purchase_by_id(purchase_id)
@@ -276,7 +279,10 @@ def swish_callback_payment_request():
                 purchase.payment_status = 'PAID'
                 purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
                 db_helper.save_to_db(purchase)
-                # (1) notify foodtruck they have a new order
+                if purchase.company.id in connected_companys:
+                    # notify foodtruck they have a new order
+                    websocket = connected_companys[purchase.company.id]
+                    websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
                 # (2) notify the one that purchased it that the payment has gone through
             elif json_data['status'] == 'DECLINED':
                 # The payer declined to make the payment
