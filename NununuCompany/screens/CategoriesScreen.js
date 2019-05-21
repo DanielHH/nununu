@@ -7,17 +7,11 @@ import { connect } from 'react-redux'
 import { getCompanyProductsWithToken } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
-  state = {/*
-    data: [
-      {id: 0, category: 'Burgers'},
-      {id: 1,  category: 'Drinks'},
-      {id: 2, category: 'Extras'}],
-      */
+  state = {
   }
 
   constructor(props) {
     super(props)
-    // this.props.getCompanyProductsWithToken(this.props.token.token)
   }
 
   addCategory = (category) => {

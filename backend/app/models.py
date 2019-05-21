@@ -19,7 +19,9 @@ class Company(db.Model):
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
     # a company has many categories
-    categories = db.relationship("Category", back_populates="company")
+    categories = db.relationship("Category", back_populates="company", order_by="Category.position", 
+                                collection_class=ordering_list('position'))
+
 
     def __init__(self, name, owner, swishNumber=None):
         self.name = name

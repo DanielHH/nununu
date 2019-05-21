@@ -117,9 +117,11 @@ def create_category():
     json_data = request.get_json()
     company = g.user.company
     if (company):
-        new_category = db_helper.create_category(json_data['name'], json_data['position'], company)
+        position = db_helper.get_category_position(company)
+        new_category = db_helper.create_category(json_data['name'], position, company)
         result = json.dumps(new_category.serialize()), 200
     return result
+
 
 @app.route("/category/position", methods=['POST'])
 @verify_token
@@ -148,7 +150,7 @@ def get_products(company_id):
         product_json = [product.serialize() for product in company.products]
         result = json.dumps({'categories': category_json, 'products': product_json}), 200
     return result
-    
+
 
 @app.route("/company/products", methods=['GET'])
 @verify_token

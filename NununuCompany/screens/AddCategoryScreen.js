@@ -1,28 +1,20 @@
 import React from 'react'
 import {View, Text, TextInput, Button} from 'react-native'
 import { connect } from 'react-redux'
-import { addProduct } from '../redux/actions'
+import { addCategory } from '../redux/actions'
 
-export default class AddCategoryScreen extends React.Component {
+class AddCategoryScreen extends React.Component {
+
+  state = {
+    name: '',
+  }
 
   constructor(props) {
     super(props)
-    let item = this.props.navigation.state.params.item
-    if (item) {
-      this.state = {
-        category: item.category,
-        item: item,
-      }
-    }
-    else {
-      this.state = {
-        category: '',
-      }
-    }
   }
 
   saveFunc = () => {
-    this.props.navigation.state.params.addCategory(this.state.category)
+    this.props.addCategory(this.state.name, this.props.token.token)
   }
 
   render() {
@@ -34,7 +26,7 @@ export default class AddCategoryScreen extends React.Component {
         <TextInput
           style={{height: 40}}
           placeholder="Skriv namn på kategori här"
-          onChangeText={(category) => this.setState({category})}
+          onChangeText={(name) => this.setState({name})}
           value={this.state.category}
         />
         <Button title="Spara" onPress={() => this.saveFunc()}/>
@@ -43,15 +35,13 @@ export default class AddCategoryScreen extends React.Component {
   }
 }
 
-/*
-const mapDispatchToProps = dispatch => ({
-  addProduct: (id, name, price, description, token) => dispatch(addProduct(id, name, price, description, token))
-})
-
 const mapStateToProps = state => ({
   token: state.authentication.token,
 })
 
+const mapDispatchToProps = dispatch => ({
+  addCategory: (name, token) => dispatch(addCategory(name, token)),
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductScreen)
-*/
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddCategoryScreen)

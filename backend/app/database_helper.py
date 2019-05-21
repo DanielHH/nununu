@@ -56,9 +56,14 @@ def create_category(name, position, company):
         return new_category
 
 
+
 def get_category_by_name_and_company(category_name, company_id):
     return Category.query.filter(Category.name == category_name, 
             Category.company_id == company_id).first()
+
+
+def get_category_position(company):
+    return company.categories[-1].position + 1
 
 
 #################################

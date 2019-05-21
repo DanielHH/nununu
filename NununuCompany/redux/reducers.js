@@ -128,11 +128,15 @@ function menu(state = initialMenuState, action) {
       draft.currentCategory = action.category
     })
   case EDIT_PRODUCT_FAILURE:
-    return
+    return 
   case CHANGE_PRODUCT_ORDER:
     return
   case ADD_CATEGORY_SUCCESS:
-    return
+    var categoryObj = action.category
+    return produce(state, draft => {
+      draft.categoriesOrder.push(categoryObj)
+      draft.categories[categoryObj.name] = []
+    })
   case ADD_CATEGORY_FAILURE:
     return 
   default:

@@ -90,30 +90,6 @@ export function signInUser(email, password) {
     }))
   }
 }
-/*
-export function signInUser(email, password) {
-  let credentials = {'email': email, 'password': password}
-  return async function (dispatch) {
-    try {
-      const signInResponse = await apiClient.post('/user/sign-in', credentials)
-      try {
-        await apiClient.get('/company/email/'+email+'/products')
-        return dispatch({
-          type: GET_COMPANY_PRODUCTS_SUCCESS,
-
-        })
-      }
-    } catch(error) {
-      return dispatch({
-        type: SIGN_IN_USER_FAILURE,
-        error: res,
-      })
-    }
-  }
-}
-*/
-
-
 
 export function signUpUser(params){
   let credentials = params
@@ -209,8 +185,19 @@ export function reOrderCategory(newCategoriesOrder) {
 
 }
 
-export function addCategory(id, categoryName) {
-
+export function addCategory(categoryName, token) {
+  let params = {'name': categoryName}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/category/create', params)
+    .then(res => dispatch({
+      type: ADD_CATEGORY_SUCCESS,
+      category: res.data,
+    })).catch(res => dispatch({
+      type: ADD_CATEGORY_FAILURE,
+      error: res,
+    }))
+  }
 }
 
 export function changeProductCategory(id, name) {
