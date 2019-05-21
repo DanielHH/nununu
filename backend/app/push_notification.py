@@ -31,7 +31,7 @@ class PushNotificationWorker(object):
         asyncio.set_event_loop(loop)
         loop.run_forever()
 
-    def send_push_notification(token, message, extra=None):
+    def send_push_notification(self, token, message, extra=None):
         # Basic arguments. You should extend this function with the push features you
         # want to use, or simply pass in a `PushMessage` object.
         try:
@@ -81,13 +81,13 @@ class PushNotificationWorker(object):
         for token in tokens:
             self.send_push_notification(token, *args, **kwargs)
 
-    def queue_task(self, func, kwargs):
+    def queue_task(self, func, args):
         """
         Used to queue a task for the worker.
         @param: func is a function that the worker should execute when it can
         @param: args is a tuple with all the arguments that func needs
         """
-        self.worker_loop.call_soon_threadsafe(func, kwargs)
+        self.worker_loop.call_soon_threadsafe(func, *args)
 
 
 push_notification_worker = PushNotificationWorker()

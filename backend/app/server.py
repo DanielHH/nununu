@@ -200,9 +200,10 @@ def make_purchase_completed(purchase_id):
         purchase.completed = True
         db_helper.save_to_db(purchase)
         # try to notify the person who purchased it
+        extradata = {'type': 'purchase_completed', 'purchaseId': purchase_id}
         push_notification_worker.queue_task(
             push_notification_worker.send_push_notification,
-            {'token': purchase.pushNotificationToken, 'message': 'Your purchase is done!'})
+            (purchase.pushNotificationToken, 'Your purchase is done!', extradata))
         result = json.dumps(purchase.serialize()), 200
     return result
 
