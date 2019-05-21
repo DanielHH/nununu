@@ -6,6 +6,41 @@ import jwt, logging, json, os, swish, dateutil.parser
 from app_config import app
 import database_helper as db_helper
 from push_notification import push_notification_worker
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
+
+
+connected_companys = {}
+
+
+@app.route("/ws/connect/company")
+def connect_company():
+    """
+    Connect a company to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 401, 'statusText': 'Unauthorized', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_companys.items():
+                    if ws == socket:
+                        connected_companys.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            g.user = verify_user_token(message['token'])
+            if g.user:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                active_purchases = db_helper.get_active_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in active_purchases]
+                result['active_purchases'] = purchases
+                connected_companys[g.user.id] = ws
+            ws.send(json.dumps(result))
+        return ''
 
 
 def verify_token(func):
@@ -347,7 +382,14 @@ def verify_user_token(token):
         logging.warning("Faulty token: " + repr(e))
 
 
-if __name__ == "__main__": # pragma: no cover
+def start_server(): # pragma: no cover
     db_helper.db_reset()
     db_helper.seed_database()
-    app.run(host='0.0.0.0')
+    """Start the server."""
+    print('STARTING SERVER...')
+    http_server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler)
+    print("SERVER STARTED")
+    http_server.serve_forever()
+
+if __name__ == '__main__':
+    start_server()
