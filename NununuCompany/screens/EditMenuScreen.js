@@ -3,7 +3,6 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native'
 import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
-import { connection } from '../feathersSetup'
 
 export default class EditMenuScreen extends React.Component {
   state = {
@@ -13,20 +12,6 @@ export default class EditMenuScreen extends React.Component {
       {id: 2, name: 'BBQ Cheese', price: '89', description: 'bmb'},
       {id: 3, name: 'The Original', price: '89', description: 'bmb'},
       {id: 4, name: 'Angus', price: '89', description: 'bmb'}],
-  }
-
-
-  constructor(props) {
-    super(props)
-    // query that retrieves ALL the prodcts
-    connection.productService.find({
-      query: { },
-    }).then((value) => {
-      this.setState({data: value.data})
-    }, (reason) => {
-      // rejection
-      console.log('error: ', reason)
-    })
   }
 
   addArticle = (name, price, description) => {

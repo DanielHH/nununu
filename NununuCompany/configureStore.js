@@ -15,15 +15,18 @@ const persistedReducer = persistCombineReducers(persistConfig, reducers)
 
 const reduxWebsocketMiddleware = reduxWebsocket()
 
-export default function testExport () {
-  let store = createStore(persistedReducer, applyMiddleware(thunk, reduxWebsocketMiddleware))
+export default function createPersistStore () {
+  let store = createStore(
+    persistedReducer,
+    applyMiddleware(thunk, reduxWebsocketMiddleware)
+  )
   // subscribe to store for debbuging, logs all the changes
   // note that logging all the changes is performance demanding
-
-  /*store.subscribe(() => {
+  /*
+  store.subscribe(() => {
     console.log(store.getState())
-  })*/
-
+  })
+  */
   let persistor = persistStore(store)
   return { store, persistor }
 }
