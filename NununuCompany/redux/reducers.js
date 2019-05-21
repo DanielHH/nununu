@@ -4,7 +4,8 @@ import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   ADD_PRODUCT_SUCCESS, ADD_PRODUCT_FAILURE, REMOVE_PRODUCT, 
   EDIT_PRODUCT_SUCCESS, EDIT_PRODUCT_FAILURE, CHANGE_PRODUCT_ORDER, 
   ADD_CATEGORY_SUCCESS, ADD_CATEGORY_FAILURE, GET_COMPANY_PRODUCTS_SUCCESS, 
-  GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE} from './actions'
+  GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE, 
+  REMOVE_MENU} from './actions'
 import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
 import produce from 'immer'
 
@@ -77,6 +78,13 @@ const initialMenuState = {
 
 function menu(state = initialMenuState, action) {
   switch (action.type) {
+  case REMOVE_MENU:
+    return produce(state, draft => {
+      draft.categories = {}
+      draft.categoriesOrder = []
+      draft.currentCategory = ''
+      draft.error = {}
+    })
   case GET_COMPANY_PRODUCTS_SUCCESS:
     return produce(state, draft => {
       var i

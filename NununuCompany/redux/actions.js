@@ -43,7 +43,9 @@ export const GET_COMPANY_PRODUCTS_FAILURE = 'GET_COMPANY_PRODUCTS_FAILURE'
 
 export const CREATE_COMPANY_SUCCESS = 'CREATE_COMPANY_SUCCESS'
 
-export const CREATE_COMPANY_FAILURE= 'CREATE_COMPANY_FAILURE'
+export const CREATE_COMPANY_FAILURE = 'CREATE_COMPANY_FAILURE'
+
+export const REMOVE_MENU = 'REMOVE_MENU'
 
 /*
  * other constants
@@ -193,6 +195,10 @@ export function editProduct(id, name, price, description, category, token) {
       error: res,
     }))
   }
+}
+
+export function emptyMenuState() {
+  return { type: REMOVE_MENU }
 }
 
 export function reOrderProducts(category, newProductsOrder) {

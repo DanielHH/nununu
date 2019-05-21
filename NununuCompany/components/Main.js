@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Drawer from '../navigation'
 import { connect } from 'react-redux'
 import { AuthenticationStack } from '../navigation'
-import { getCompanyProductsWithToken } from '../redux/actions'
+import { getCompanyProductsWithToken, emptyMenuState } from '../redux/actions'
 
 class Main extends Component {
   render() {
@@ -21,8 +21,11 @@ class Main extends Component {
     if (this.props.token !== prevProps.token &&
     this.props.token) {
       this.props.getCompanyProductsWithToken(this.props.token.token)
+    } else if (this.props.token !== prevProps.token &&
+      !this.props.token) {
+      this.props.emptyMenuState() 
     }
-  }
+  } 
 }
 
 const mapStateToProps = state => ({
@@ -31,6 +34,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
+  emptyMenuState: () => dispatch(emptyMenuState()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)

@@ -7,15 +7,17 @@ import { connect } from 'react-redux'
 import { getCompanyProductsWithToken } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
-  state = {
+  state = {/*
     data: [
       {id: 0, category: 'Burgers'},
       {id: 1,  category: 'Drinks'},
       {id: 2, category: 'Extras'}],
+      */
   }
 
   constructor(props) {
     super(props)
+    // this.props.getCompanyProductsWithToken(this.props.token.token)
   }
 
   addCategory = (category) => {
@@ -36,10 +38,10 @@ class CategoriesScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => this.props.navigation.navigate('EditMenu', {category: item.category})}>
+        onPress={() => this.props.navigation.navigate('EditMenu', {category: item.name})}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
-            <Title>{item.category}</Title>
+            <Title>{item.name}</Title>
           </Card.Content>
         </Card>
       </TouchableOpacity>
@@ -50,8 +52,8 @@ class CategoriesScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <DraggableFlatList
-          data={this.state.data}
-          extraData={this.state}
+          data={this.props.categories}
+          extraData={this.props}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
@@ -69,7 +71,7 @@ class CategoriesScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  categories: state.menu.categories,
+  categories: state.menu.categoriesOrder,
   category: state.menu.currentCategory,
   token: state.authentication.token,
 })
