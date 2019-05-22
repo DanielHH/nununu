@@ -25,13 +25,13 @@ function store(state = initialStoreState, action) {
       products_copy[i].quantity = 0
       let added_to_section = false
       for (let j = 0; j<new_sections.length; j++) {
-        if (new_sections[j].title == products_copy[i].category) {
+        if (new_sections[j].title == products_copy[i].categoryName) {
           new_sections[j].data.push(products_copy[i])
           added_to_section = true
         }
       }
       if (!added_to_section) {
-        new_sections.push({'title': products_copy[i].category, 'data': [products_copy[i]]})
+        new_sections.push({'title': products_copy[i].categoryName, 'data': [products_copy[i]]})
       }
     }
     return {...state, sections: new_sections}
