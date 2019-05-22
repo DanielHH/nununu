@@ -10,6 +10,13 @@ class DetailsScreen extends React.Component {
   }
 
   render() {
+    let id = parseInt(this.props.navigation.getParam('purchaseId'))
+    let purchase = null
+    for (let i = 0; i < this.props.purchases.length; i++) {
+      if (this.props.purchases[i].id === id) {
+        purchase = this.props.purchases[i]
+      }
+    }
     return (
       <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#e9ebee', padding:10}}>
 
@@ -17,11 +24,11 @@ class DetailsScreen extends React.Component {
           style={{marginTop: 10}}
           flexDirection='row'>
           <Card.Content>
-            <Text style={{fontSize: 30}}>{this.props.purchase.company.name}</Text>
-            <Text style={{fontSize: 25}}>#{this.props.purchase.id}</Text>
-            <Text style={{fontSize: 25}}>Completed: {String(this.props.purchase.completed)}</Text>
+            <Text style={{fontSize: 30}}>{purchase.company.name}</Text>
+            <Text style={{fontSize: 25}}>#{purchase.id}</Text>
+            <Text style={{fontSize: 25}}>Completed: {String(purchase.completed)}</Text>
             <FlatList
-              data={this.props.purchase.items}
+              data={purchase.items}
               renderItem={({item}) => (
                 <View style={{flex:1, flexDirection: 'row'}}>
                   <Paragraph>{item.quantity}</Paragraph>
@@ -30,8 +37,8 @@ class DetailsScreen extends React.Component {
                 </View>
               )}
               keyExtractor={(item, index) => index.toString()}/>
-            <Text style={{fontSize: 15}}>Totaltpris: {this.props.purchase.totalPrice}</Text>
-            <Text style={{fontSize: 15}}>Betald: {this.props.purchase.purchase_date}</Text>
+            <Text style={{fontSize: 15}}>Totaltpris: {purchase.totalPrice}</Text>
+            <Text style={{fontSize: 15}}>Betald: {purchase.purchase_date}</Text>
           </Card.Content>
         </Card>
       </View>
@@ -39,16 +46,9 @@ class DetailsScreen extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  let id = parseInt(ownProps.navigation.getParam('purchaseId'))
-  for (let i = 0; i < state.purchase.purchases.length; i++) {
-    if (state.purchase.purchases[i].id === id) {
-      return {
-        purchase: state.purchase.purchases[i],
-      }
-    }
-  }
-}
+const mapStateToProps = state => ({
+  purchases: state.purchase.purchases,
+})
 
 export default connect(mapStateToProps)(DetailsScreen)
 

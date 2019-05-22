@@ -1,14 +1,14 @@
 import React from 'react'
 import { View, StatusBar, Platform } from 'react-native'
 import { Provider as PaperProvider } from 'react-native-paper'
-import { AppLoading, Asset, Font, Icon, Linking } from 'expo'
+import { AppLoading, Asset, Font, Icon, Linking, Notifications } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
-import { Notifications } from 'expo'
 import { AppContainer } from './navigation'
+import { makePurchaseCompleted } from './redux/actions'
 
 const prefix = Linking.makeUrl('/')
 
@@ -29,7 +29,6 @@ export default class App extends React.Component {
     // this function will fire on the next tick after the app starts
     // with the notification data.
     this._notificationSubscription = Notifications.addListener(this._handleNotification)
-
     if (Platform.OS === 'android') {
       Notifications.createChannelAndroidAsync('purchase', {
         name: 'Purchase',
@@ -41,10 +40,13 @@ export default class App extends React.Component {
   }
 
   _handleNotification = (notification) => {
-    if (notification.origin === 'selected') {
-      // push notification selected
-      if (notification.data.type === 'purchase_completed') {
-        // display purchase
+    if (notification.data.type === 'purchase_completed') {
+      if (notification.origin === 'received') {
+        // change purchase to completed
+        this.conf.store.dispatch(makePurchaseCompleted(parseInt(notification.data.purchaseId)))
+      }
+      else if (notification.origin === 'selected') {
+      // push notification selected, display purchase
         let url = Linking.makeUrl('details', {purchaseId: notification.data.purchaseId})
         Linking.openURL(url)
       }

@@ -28,6 +28,8 @@ export const START_PAY_SWISH_FAILURE = 'START_PAY_SWISH_FAILURE'
 
 export const PAYED_PURCHASE = 'PAYED_PURCHASE'
 
+export const MAKE_PURCHASE_COMPLETED = 'MAKE_PURCHASE_COMPLETED'
+
 /*
  * action creators
  */
@@ -103,4 +105,8 @@ export function startPaySwish(purchaseId) {
       error: response,
     }))
   }
+}
+
+export function makePurchaseCompleted(purchaseId) {
+  return { type: MAKE_PURCHASE_COMPLETED, purchaseId: purchaseId}
 }
