@@ -8,7 +8,7 @@ import constants from '../constants'
 class Authenticated extends Component {
 
   componentDidMount() {
-    this.props.wsConnect('ws://' + constants.DanielIpV4 + '/ws/connect/company')
+    this.props.wsConnect('ws://' + constants.SERVER_ADDRESS + '/ws/connect/company')
   }
 
   render() {
