@@ -142,8 +142,9 @@ def get_products(company_id):
     result = "company not found", 404
     company = db_helper.get_company_by_id(company_id)
     if company:
+        category_json = [category.serialize() for category in company.categories]
         product_json = [product.serialize() for product in company.products]
-        result = json.dumps({'products': product_json}), 200
+        result = json.dumps({'categories': category_json, 'products': product_json}), 200
     return result
 
 

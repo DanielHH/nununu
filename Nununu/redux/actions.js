@@ -52,7 +52,8 @@ export function getCompanyProducts(companyId) {
     apiClient.get('/company/'+companyId+'/products')
     .then((response) => dispatch({
       type: GET_COMPANY_PRODUCTS_SUCCESS,
-      data: response.data.products,
+      categories: response.data.categories,
+      products: response.data.products,
     })).catch((response) => dispatch({
       type: GET_COMPANY_PRODUCTS_FAILURE,
       error: response,

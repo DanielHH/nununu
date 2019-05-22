@@ -2,6 +2,7 @@ import { GET_COMPANIES_SUCCESS, GET_COMPANIES_FAILURE, SET_SELECTED_COMPANY,
   GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE, INCREASE_PRODUCT_QUANTITY,
   DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS, POST_PURCHASE_FAILURE,
   START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE } from './actions'
+import produce from 'immer'
 
 const initialStoreState = {
   companies: [],
@@ -18,24 +19,26 @@ function store(state = initialStoreState, action) {
     return {...state, companies: action.error}
   case SET_SELECTED_COMPANY:
     return {...state, selectedCompany: action.company}
-  case GET_COMPANY_PRODUCTS_SUCCESS: {
-    let products_copy = [...action.data]
-    let new_sections = []
-    for (let i = 0; i<products_copy.length; i++) {
-      products_copy[i].quantity = 0
-      let added_to_section = false
-      for (let j = 0; j<new_sections.length; j++) {
-        if (new_sections[j].title == products_copy[i].categoryName) {
-          new_sections[j].data.push(products_copy[i])
-          added_to_section = true
+  case GET_COMPANY_PRODUCTS_SUCCESS:
+    return produce(state, draft => {
+      draft.sections = []
+      let category
+      let categoryObj
+      let productObj
+      for (let i = 0; i < action.categories.length; i++) {
+        category = {'title': '', 'data': []}
+        categoryObj = action.categories.find(category => category.position == i)
+        category.title = categoryObj.name
+        for (let k = 0; k < action.products.length; k++) { // TODO: This loop could be done more effectively, by specifying how many products there are of a certain category
+          productObj = action.products.find(product => ((product.position == k) && (product.categoryId == categoryObj.id)))
+          if (productObj) {
+            productObj.quantity = 0
+            category.data.push(productObj)
+          }
         }
+        draft.sections.push(category)
       }
-      if (!added_to_section) {
-        new_sections.push({'title': products_copy[i].categoryName, 'data': [products_copy[i]]})
-      }
-    }
-    return {...state, sections: new_sections}
-  }
+    })
   case GET_COMPANY_PRODUCTS_FAILURE:
     return {...state, error: action.error}
   case INCREASE_PRODUCT_QUANTITY: {

@@ -90,18 +90,15 @@ function menu(state = initialMenuState, action) {
     })
   case GET_COMPANY_PRODUCTS_SUCCESS:
     return produce(state, draft => {
-      var i
       var categoryObj
-      for (i = 0; i < action.categories.length; i++) {
+      for (let i = 0; i < action.categories.length; i++) {
         categoryObj = action.categories.find(category => category.position == i)
         draft.categoriesOrder.push(categoryObj)
         draft.categories[categoryObj.id] = []
       }
       var productObj
-      var j
-      var k
-      for (j=0; j < draft.categoriesOrder.length; j++) {
-        for (k = 0; k < action.products.length; k++) { // TODO: This loop could be done more effectively, by specifying how many products there are of a certain category
+      for (let j=0; j < draft.categoriesOrder.length; j++) {
+        for (let k = 0; k < action.products.length; k++) { // TODO: This loop could be done more effectively, by specifying how many products there are of a certain category
           productObj = action.products.find(product => ((product.position == k) && (product.categoryId == draft.categoriesOrder[j].id)))
           if (productObj) {
             draft.categories[draft.categoriesOrder[j].id].push(productObj)
