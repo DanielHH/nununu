@@ -31,14 +31,15 @@ class PushNotificationWorker(object):
         asyncio.set_event_loop(loop)
         loop.run_forever()
 
-    def send_push_notification(self, token, message, extra=None):
+    def send_push_notification(self, token, message, channel_id, extra=None):
         # Basic arguments. You should extend this function with the push features you
         # want to use, or simply pass in a `PushMessage` object.
         try:
             response = PushClient().publish(
                 PushMessage(to=token,
                             body=message,
-                            data=extra))
+                            data=extra,
+                            channel_id=channel_id))
         except PushServerError as exc:
             # Encountered some likely formatting/validation error.
             rollbar.report_exc_info(

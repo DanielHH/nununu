@@ -203,7 +203,7 @@ def make_purchase_completed(purchase_id):
         extradata = {'type': 'purchase_completed', 'purchaseId': purchase_id}
         push_notification_worker.queue_task(
             push_notification_worker.send_push_notification,
-            (purchase.pushNotificationToken, 'Your purchase is done!', extradata))
+            (purchase.pushNotificationToken, 'Your purchase is done!', 'purchase', extradata))
         result = json.dumps(purchase.serialize()), 200
     return result
 
