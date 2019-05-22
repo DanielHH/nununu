@@ -68,7 +68,7 @@ class ProductScreen extends React.Component {
           onChangeText={(description) => this.setState({description})}
           value={this.state.description}
         />
-        <Text>
+        {/*}  <Text>
           Kategori
         </Text>
         <Picker
@@ -79,7 +79,7 @@ class ProductScreen extends React.Component {
           {this.props.categories.map((item, index) => {
             return (<Picker.Item label={item.name} value={item.id} key={index}/>) 
           })}
-        </Picker>
+        </Picker>*/}
         <Button title="Spara" onPress={() => {this.saveFunc(), this.props.navigation.navigate('EditMenu')}}/>
       </View>
     )
