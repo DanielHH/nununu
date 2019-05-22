@@ -115,7 +115,7 @@ function menu(state = initialMenuState, action) {
     var categoryObj = action.category
     return produce(state, draft => {
       draft.categoriesOrder.push(categoryObj)
-      draft.categories[categoryObj.name] = []
+      draft.categories[categoryObj.id] = []
     })
   case ADD_CATEGORY_FAILURE:
     return produce(state, draft => {

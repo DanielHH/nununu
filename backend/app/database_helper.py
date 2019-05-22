@@ -104,8 +104,10 @@ def delete_product(product_id, owner):
             return product
 
 def get_product_position(category):
-    return category.products[-1].position + 1
-
+    position = 0
+    if category.products:
+        position = category.products[-1].position + 1
+    return position
 
 
 ##################################
