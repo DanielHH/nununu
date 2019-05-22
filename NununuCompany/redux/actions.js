@@ -53,6 +53,13 @@ export const START_EDIT_PRODUCT = 'START_EDIT_PRODUCT'
 
 export const START_ADD_PRODUCT = 'START_ADD_PRODUCT'
 
+export const REORDER_PRODUCTS_SUCCESS = 'REORDER_PRODUCTS_SUCCESS'
+
+export const REORDER_PRODUCTS_FAILURE = 'REORDER_PRODUCTS_FAILURE'
+
+
+
+
 
 /*
  * other constants
@@ -170,6 +177,26 @@ export function showCategoryProducts(categoryId) {
   return { type: GO_TO_CATEGORY, categoryId}
 }
 
+export function reorderProducts(categoryId, reorderedProducts, token) {
+  var i
+  for (i = 0; i < reorderedProducts.length; i++) {
+    reorderedProducts[i].position = i
+  }
+  let params = {'products': reorderedProducts}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/product/reorder', params)
+    .then(() => dispatch({ 
+      type: REORDER_PRODUCTS_SUCCESS, 
+      reorderedProducts,
+      categoryId,
+    })).catch(res => dispatch({
+      type: REORDER_PRODUCTS_FAILURE,
+      error: res,
+    }))
+  }
+}
+
 export function goToEditProduct(product) {
   return {type: START_EDIT_PRODUCT, product}
 }
@@ -211,11 +238,7 @@ export function addProduct(name, price, description, categoryId, token) {
   }
 }
 
-export function reOrderProducts(category, newProductsOrder) {
-
-}
-
-export function reOrderCategory(newCategoriesOrder) {
+export function reorderCategory(newCategoriesOrder) {
 
 }
 

@@ -92,9 +92,18 @@ def edit_product(product_id, owner, json_data):
             product.description = json_data['description']
             category = get_category_by_id(json_data['categoryId'])
             product.category = category
-            save_to_db(product)
+            db.session.commit()
             return product
 
+
+def reorder_products(products):
+    for product in products:
+        product_in_db = get_product_by_id(product['id'])
+        if product_in_db == None:
+            return "product id does not map to product in db", 400
+        product_in_db.position = product['position']           
+    db.session.commit()
+    return "products reordered", 200
 
 def delete_product(product_id, owner):
     product = get_product_by_id(product_id)

@@ -4,7 +4,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { goToEditProduct, goToAddProduct } from '../redux/actions'
+import { goToEditProduct, goToAddProduct, reorderProducts } from '../redux/actions'
 
 class EditMenuScreen extends React.Component {
 
@@ -43,7 +43,7 @@ class EditMenuScreen extends React.Component {
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
-          onMoveEnd={({ data }) => this.setState({ data })}
+          onMoveEnd={({ data }) => this.props.reorderProducts(this.props.categoryId, data, this.props.token.token)}
         />
         {/* Rest of the app comes ABOVE the action button component !*/}
         <ActionButton
@@ -59,11 +59,13 @@ class EditMenuScreen extends React.Component {
 const mapStateToProps = state => ({
   categories: state.menu.categories,
   categoryId: state.menu.currentCategoryId,
+  token: state.authentication.token,
 })
 
 const mapDispatchToProps = dispatch => ({
   goToEditProduct: (product) => dispatch(goToEditProduct(product)),
   goToAddProduct: () => dispatch(goToAddProduct()),
+  reorderProducts: (categoryId, products, token) => dispatch(reorderProducts(categoryId, products, token)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditMenuScreen)

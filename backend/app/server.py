@@ -188,6 +188,17 @@ def edit_product(product_id):
         result = json.dumps(edited_product.serialize()), 200
     return result
 
+@app.route("/product/reorder", methods=['POST'])
+@verify_token
+def reorder_products():
+    result = "products not reordered", 400
+    json_data = request.get_json()
+    products = json_data['products']
+    if products:
+        result = db_helper.reorder_products(products)
+    return result
+
+
 
 @app.route("/product/delete/<product_id>", methods=['POST'])
 @verify_token
