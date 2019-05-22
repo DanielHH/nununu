@@ -123,19 +123,15 @@ def create_category():
     return result
 
 
-@app.route("/category/position", methods=['POST'])
+@app.route("/category/reorder", methods=['POST'])
 @verify_token
-def edit_category_position():
-    result = "category position not changed", 400
+def reorder_categories():
+    result = "categories not reordered", 400
     json_data = request.get_json()
-    category_name = json_data['category']
-    company = g.user.company
-    category = db_helper.get_category_by_name_and_company(category_name, company.id)
-    if (company and category):
-        new_category = db_helper.create_category(json_data['name'], json_data['position'], company, category)
-        result = json.dumps(new_category.serialize()), 200
+    categories = json_data['categories']
+    if categories:
+        result = db_helper.reorder_categories(categories)
     return result
-
 
 ################################
 ### Product related requests ###
@@ -197,7 +193,6 @@ def reorder_products():
     if products:
         result = db_helper.reorder_products(products)
     return result
-
 
 
 @app.route("/product/delete/<product_id>", methods=['POST'])

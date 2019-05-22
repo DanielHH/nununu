@@ -6,7 +6,8 @@ import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   ADD_CATEGORY_SUCCESS, ADD_CATEGORY_FAILURE, GET_COMPANY_PRODUCTS_SUCCESS, 
   GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE, 
   REMOVE_MENU, GO_TO_CATEGORY, START_EDIT_PRODUCT, START_ADD_PRODUCT, 
-  REORDER_PRODUCTS_SUCCESS, REORDER_PRODUCTS_FAILURE} from './actions'
+  REORDER_PRODUCTS_SUCCESS, REORDER_PRODUCTS_FAILURE, 
+  REORDER_CATEGORIES_SUCCESS, REORDER_CATEGORIES_FAILURE} from './actions'
 import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
 import produce from 'immer'
 
@@ -109,6 +110,14 @@ function menu(state = initialMenuState, action) {
       }
     })
   case GET_COMPANY_PRODUCTS_FAILURE: 
+    return produce(state, draft => {
+      draft.error = action.error
+    })
+  case REORDER_CATEGORIES_SUCCESS:
+    return produce(state, draft => {
+      draft.categoriesOrder = action.reorderedCategories
+    })
+  case REORDER_CATEGORIES_FAILURE:
     return produce(state, draft => {
       draft.error = action.error
     })

@@ -57,6 +57,12 @@ export const REORDER_PRODUCTS_SUCCESS = 'REORDER_PRODUCTS_SUCCESS'
 
 export const REORDER_PRODUCTS_FAILURE = 'REORDER_PRODUCTS_FAILURE'
 
+export const REORDER_CATEGORIES_SUCCESS = 'REORDER_CATEGORIES_SUCCESS'
+
+export const REORDER_CATEGORIES_FAILURE = 'REORDER_CATEGORIES_FAILURE'
+
+
+
 
 
 
@@ -153,6 +159,25 @@ export function getCompanyProductsWithToken(token) {
       products: res.data.products,
     })).catch((res) => dispatch({
       type: GET_COMPANY_PRODUCTS_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function reorderCategories(reorderedCategories, token) {
+  var i
+  for (i = 0; i < reorderedCategories.length; i++) {
+    reorderedCategories[i].position = i
+  }
+  let params = {'categories': reorderedCategories}
+  apiClient.defaults.headers.common['Authorization'] = token
+  return function (dispatch) {
+    apiClient.post('/category/reorder', params)
+    .then(() => dispatch({ 
+      type: REORDER_CATEGORIES_SUCCESS, 
+      reorderedCategories,
+    })).catch(res => dispatch({
+      type: REORDER_CATEGORIES_FAILURE,
       error: res,
     }))
   }

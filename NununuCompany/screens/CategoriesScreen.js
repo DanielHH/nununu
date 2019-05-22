@@ -4,7 +4,7 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { getCompanyProductsWithToken, showCategoryProducts } from '../redux/actions'
+import { getCompanyProductsWithToken, showCategoryProducts, reorderCategories } from '../redux/actions'
 
 class CategoriesScreen extends React.Component {
 
@@ -42,7 +42,7 @@ class CategoriesScreen extends React.Component {
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
-          onMoveEnd={({ data }) => this.setState({ data })}
+          onMoveEnd={({ data }) => this.props.reorderCategories(data, this.props.token.token)}
         />
         {/* Rest of the app comes ABOVE the action button component !*/}
         <ActionButton
@@ -63,6 +63,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
   showCategoryProducts: (categoryId) => dispatch(showCategoryProducts(categoryId)),
+  reorderCategories: (categories, token) => dispatch(reorderCategories(categories, token)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoriesScreen)

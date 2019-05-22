@@ -65,6 +65,16 @@ def get_category_by_name_and_company(category_name, company_id):
             Category.company_id == company_id).first()
 
 
+def reorder_categories(categories):
+    for category in categories:
+        category_in_db = get_category_by_id(category['id'])
+        if category_in_db == None:
+            return "product id does not map to product in db", 400
+        category_in_db.position = category['position']           
+    db.session.commit()
+    return "categories reordered", 200
+
+
 def get_category_position(company):
     return company.categories[-1].position + 1
 
