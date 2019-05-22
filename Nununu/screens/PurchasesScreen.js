@@ -7,8 +7,7 @@ import { setSelectedPurchase } from '../redux/actions'
 class PurchasesScreen extends React.Component {
 
   displayPurchase = (purchase) => {
-    this.props.setSelectedPurchase(purchase)
-    this.props.navigation.navigate('Details')
+    this.props.navigation.navigate('Details', {purchaseId: purchase.id})
   }
 
   render() {

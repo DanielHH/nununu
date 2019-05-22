@@ -33,7 +33,10 @@ const StackNav = createStackNavigator(
       },
     },
     Products: ProductsScreen,
-    Details: DetailsScreen,
+    Details: {
+      screen: DetailsScreen,
+      path: 'details',
+    },
   },
   {
     initialRouteName: 'TabNav',

@@ -1,8 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { connect } from 'react-redux'
-import { Button as PaperButton} from 'react-native-paper'
-import { Card, Title, Paragraph } from 'react-native-paper'
+import { Card, Paragraph } from 'react-native-paper'
 
 class DetailsScreen extends React.Component {
 
@@ -11,8 +10,6 @@ class DetailsScreen extends React.Component {
   }
 
   render() {
-
-
     return (
       <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#e9ebee', padding:10}}>
 
@@ -42,9 +39,16 @@ class DetailsScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  purchase: state.purchase.selected_purchase,
-})
+const mapStateToProps = (state, ownProps) => {
+  let id = parseInt(ownProps.navigation.getParam('purchaseId'))
+  for (let i = 0; i < state.purchase.purchases.length; i++) {
+    if (state.purchase.purchases[i].id === id) {
+      return {
+        purchase: state.purchase.purchases[i],
+      }
+    }
+  }
+}
 
 export default connect(mapStateToProps)(DetailsScreen)
 

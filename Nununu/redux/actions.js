@@ -28,8 +28,6 @@ export const START_PAY_SWISH_FAILURE = 'START_PAY_SWISH_FAILURE'
 
 export const PAYED_PURCHASE = 'PAYED_PURCHASE'
 
-export const SET_SELECTED_PURCHASE = 'SET_SELECTED_PURCHASE'
-
 /*
  * action creators
  */
@@ -105,8 +103,4 @@ export function startPaySwish(purchaseId) {
       error: response,
     }))
   }
-}
-
-export function setSelectedPurchase(purchase) {
-  return { type: SET_SELECTED_PURCHASE, purchase}
 }

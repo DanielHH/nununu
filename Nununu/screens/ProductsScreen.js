@@ -3,7 +3,7 @@ import { View, Text, SectionList, StyleSheet, Linking} from 'react-native'
 import { IconButton, Button, Card, Title, Paragraph} from 'react-native-paper'
 import { MaterialCommunityIcons} from '@expo/vector-icons'
 import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
-  postPurchase, startPaySwish, setSelectedPurchase } from '../redux/actions'
+  postPurchase, startPaySwish } from '../redux/actions'
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
 import RenderTitle from '../components/RenderTitle'
@@ -45,8 +45,7 @@ class ProductsScreen extends React.Component {
   }
 
   purchasePaid() {
-    this.props.setSelectedPurchase(this.props.paidPurchase)
-    this.props.navigation.replace('Details')
+    this.props.navigation.replace('Details', {purchaseId: this.props.paidPurchase.id})
   }
 
   prepareOrder() {
@@ -60,7 +59,6 @@ class ProductsScreen extends React.Component {
       }
     }
     this.retrievePushNotificationTokenAsync().then((pushNotificationToken) => {
-      console.log(pushNotificationToken);
       this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken})
     }).catch((error) => {
       console.warn(error)
@@ -140,7 +138,6 @@ const mapDispatchToProps = {
   decreaseProductQuantity,
   postPurchase,
   startPaySwish,
-  setSelectedPurchase,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsScreen)

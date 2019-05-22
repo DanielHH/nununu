@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StatusBar, Platform } from 'react-native'
 import { Provider as PaperProvider } from 'react-native-paper'
-import { AppLoading, Asset, Font, Icon } from 'expo'
+import { AppLoading, Asset, Font, Icon, Linking } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
@@ -9,6 +9,8 @@ import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
 import { Notifications } from 'expo'
 import { AppContainer } from './navigation'
+
+const prefix = Linking.makeUrl('/')
 
 export default class App extends React.Component {
   state = {
@@ -39,13 +41,12 @@ export default class App extends React.Component {
   }
 
   _handleNotification = (notification) => {
-    console.log(notification);
     if (notification.origin === 'selected') {
       // push notification selected
       if (notification.data.type === 'purchase_completed') {
         // display purchase
-        // TODO: fix so you can navigate to the purchase
-        //this.props.navigation.navigate('Details')
+        let url = Linking.makeUrl('details', {purchaseId: notification.data.purchaseId})
+        Linking.openURL(url)
       }
     }
   }
@@ -65,7 +66,7 @@ export default class App extends React.Component {
         <Provider store={this.conf.store}>
           <PersistGate loading={null} persistor={this.conf.persistor}>
             <PaperProvider>
-              <AppContainer />
+              <AppContainer uriPrefix={prefix} />
             </PaperProvider>
           </PersistGate>
         </Provider>
