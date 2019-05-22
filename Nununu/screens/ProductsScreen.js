@@ -52,7 +52,7 @@ class ProductsScreen extends React.Component {
           <View style={{flex:1, flexDirection: 'row'}}>
             <View style={styles.foodInfo}>
               <Title>{item.name + ' ' + Math.round(item.price * 100) / 100}</Title>
-              <Paragraph>Sallad, tomat, picklad rödlök, cheddarost & tuggdressing.</Paragraph>
+              <Paragraph>{item.description}</Paragraph>
             </View>
             <View style={styles.verticalDivider}/>
             <View style={styles.quantity}>
