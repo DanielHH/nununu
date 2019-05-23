@@ -127,6 +127,8 @@ function purchase(state = initialPurchaseState, action) {
     }
     break
   }
+  case 'REDUX_WEBSOCKET::ERROR':
+    return {...state, error: [action.meta, action.payload]}
   default:
     return state
   }
