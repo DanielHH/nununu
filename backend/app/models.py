@@ -68,7 +68,6 @@ class Purchase(db.Model):
     payment_date = db.Column(db.DateTime)
     error_code = db.Column(db.String(255))
     error_message = db.Column(db.String(255))
-    additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
     completed = db.Column(db.Boolean, default=False)
     pushNotificationToken = db.Column(db.String(255))
     purchaser_id = db.Column(db.String(255))
@@ -98,7 +97,6 @@ class Purchase(db.Model):
                 'totalPrice': str(self.total_price),
                 'errorCode': self.error_code,
                 'errorMessage': self.error_message,
-                'additionalInformation': self.additional_information,
                 'company': self.company.serialize(),
                 'items': [item.serialize() for item in self.purchase_items],
                 'purchaseMessage': self.createPurchaseMessage()}
