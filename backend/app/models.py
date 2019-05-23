@@ -71,6 +71,7 @@ class Purchase(db.Model):
     additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
     completed = db.Column(db.Boolean, default=False)
     pushNotificationToken = db.Column(db.String(255))
+    purchaser_id = db.Column(db.String(255))
 
     def __init__(self):
         self.purchase_date = datetime.utcnow()

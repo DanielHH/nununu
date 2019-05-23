@@ -13,6 +13,7 @@ logging.basicConfig(filename='server.log', filemode='w', format='%(name)s - %(le
 
 
 connected_companys = {}
+connected_purchasers = {}
 
 
 @app.route("/ws/connect/company")
@@ -44,6 +45,32 @@ def connect_company():
                 purchases = [purchase.serialize() for purchase in active_purchases]
                 result['active_purchases'] = purchases
                 connected_companys[g.user.id] = ws
+            ws.send(json.dumps(result))
+        return ''
+
+
+@app.route("/ws/connect/purchaser")
+def connect_purchaser():
+    """
+    Connect a purchaser to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 400, 'statusText': 'not connected', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_purchasers.items():
+                    if ws == socket:
+                        connected_purchasers.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            if 'purchaser_id' in message:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                connected_purchasers[message['purchaser_id']] = ws
             ws.send(json.dumps(result))
         return ''
 
@@ -240,6 +267,7 @@ def purchase():
         new_purchase.company = company
         new_purchase.setPrice()
         new_purchase.pushNotificationToken = json_data['pushNotificationToken']
+        new_purchase.purchaser_id = json_data['purchaserId']
         db_helper.save_to_db(new_purchase)
         result = json.dumps(new_purchase.serialize()), 200
     return result
@@ -253,10 +281,13 @@ def pay(payment_method, purchase_id):
         purchase.payment_status = 'PAID'
         purchase.payment_date = datetime.utcnow()
         db_helper.save_to_db(purchase)
-        result = json.dumps({'payment_skipped': True, 'purchase': purchase.serialize()}), 200
+        result = json.dumps({'payment_skipped': True}), 200
         if purchase.company.id in connected_companys:
             websocket = connected_companys[purchase.company.id]
             websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
+        if purchase.purchaser_id in connected_purchasers:
+            websocket = connected_purchasers[purchase.purchaser_id]
+            websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
     elif payment_method == "swish":
         result = "purchase not found", 404
         found_purchase = db_helper.get_purchase_by_id(purchase_id)
@@ -284,10 +315,13 @@ def swish_callback_payment_request():
                 purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
                 db_helper.save_to_db(purchase)
                 if purchase.company.id in connected_companys:
-                    # notify foodtruck they have a new order
+                    # notify company they have a new order
                     websocket = connected_companys[purchase.company.id]
                     websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
-                # (2) notify the one that purchased it that the payment has gone through
+                if purchase.purchaser_id in connected_purchasers:
+                    # notify the purchaser that the payment has gone through
+                    websocket = connected_purchasers[purchase.purchaser_id]
+                    websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
             elif json_data['status'] == 'DECLINED':
                 # The payer declined to make the payment
                 pass
