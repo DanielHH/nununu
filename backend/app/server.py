@@ -342,11 +342,11 @@ def start_pay_swish(purchase):
         # check if files exist
         result = "certificates not found for the company", 404
         if Path(path_cert_pem).is_file() and Path(path_key_pem).is_file() and Path(path_swish_pem).is_file():
-            environment = swish.Production
+            environment = swish.Environment.Production
             if purchase.company.name == "test":
                 environment = swish.Environment.Test
             swish_client = swish.SwishClient(
-                environment=swish.Environment.Test,
+                environment=environment,
                 merchant_swish_number=purchase.company.swish_number,
                 cert=(path_cert_pem, path_key_pem),
                 verify=path_swish_pem
