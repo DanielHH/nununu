@@ -26,7 +26,6 @@ services:
     volumes:
       - ${CADDYFILE}:/etc/Caddyfile
       - ./caddy/.caddy:/root/.caddy
-      - ./app/server.log:./app/server.log
     depends_on:
       - web
     links:
