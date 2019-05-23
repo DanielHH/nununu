@@ -26,9 +26,9 @@ export const START_PAY_SWISH_SUCCESS = 'START_PAY_SWISH_SUCCESS'
 
 export const START_PAY_SWISH_FAILURE = 'START_PAY_SWISH_FAILURE'
 
-export const PAYED_PURCHASE = 'PAYED_PURCHASE'
-
 export const MAKE_PURCHASE_COMPLETED = 'MAKE_PURCHASE_COMPLETED'
+
+export const SET_PURCHASER_ID = 'SET_PURCHASER_ID'
 
 /*
  * action creators
@@ -90,10 +90,7 @@ export function startPaySwish(purchaseId) {
     apiClient.post('/pay/swish/' + purchaseId)
     .then((response) => {
       if (response.data['payment_skipped'] === true) {
-        return dispatch({
-          type: PAYED_PURCHASE,
-          purchase: response.data['purchase'],
-        })
+        return
       } else {
         return dispatch({
           type: START_PAY_SWISH_SUCCESS,
@@ -109,4 +106,8 @@ export function startPaySwish(purchaseId) {
 
 export function makePurchaseCompleted(purchaseId) {
   return { type: MAKE_PURCHASE_COMPLETED, purchaseId: purchaseId}
+}
+
+export function setPurchaserId(purchaserId) {
+  return { type: SET_PURCHASER_ID, purchaserId: purchaserId}
 }

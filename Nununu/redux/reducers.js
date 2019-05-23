@@ -1,7 +1,8 @@
 import { GET_COMPANIES_SUCCESS, GET_COMPANIES_FAILURE, SET_SELECTED_COMPANY,
   GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE, INCREASE_PRODUCT_QUANTITY,
   DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS, POST_PURCHASE_FAILURE,
-  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE, PAYED_PURCHASE, MAKE_PURCHASE_COMPLETED } from './actions'
+  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE, MAKE_PURCHASE_COMPLETED,
+  SET_PURCHASER_ID } from './actions'
 
 const initialStoreState = {
   companies: [],
@@ -15,7 +16,7 @@ function store(state = initialStoreState, action) {
   case GET_COMPANIES_SUCCESS:
     return {...state, companies: action.data}
   case GET_COMPANIES_FAILURE:
-    return {...state, companies: action.error}
+    return {...state, error: action.error}
   case SET_SELECTED_COMPANY:
     return {...state, selectedCompany: action.company}
   case GET_COMPANY_PRODUCTS_SUCCESS: {
@@ -64,11 +65,14 @@ function store(state = initialStoreState, action) {
 }
 
 const initialPurchaseState = {
+  ws_open: false,
+  ws_connected: false,
   unpaid_purchase: null,
+  paid_purchase_id: null,
   purchases: [],
-  selected_purchase: null,
   swish_request_token: null,
   error: '',
+  purchaser_id: null,
 }
 
 function purchase(state = initialPurchaseState, action) {
@@ -82,12 +86,6 @@ function purchase(state = initialPurchaseState, action) {
     return {...state, swish_request_token: action.requestToken}
   case START_PAY_SWISH_FAILURE:
     return {...state, error: action.error}
-  case PAYED_PURCHASE: {
-    let new_purchases = [...state.purchases]
-    // add payed purchase to start of purchases
-    new_purchases.unshift(action.purchase)
-    return {...state, purchases: new_purchases, unpaid_purchase: null, paid_purchase: action.purchase}
-  }
   case MAKE_PURCHASE_COMPLETED: {
     let new_purchases = [...state.purchases]
     for (let i = 0; i < new_purchases.length; i++) {
@@ -97,6 +95,37 @@ function purchase(state = initialPurchaseState, action) {
       }
     }
     return {...state, purchases: new_purchases}
+  }
+  case SET_PURCHASER_ID:
+    return {...state, purchaser_id: action.purchaserId}
+  case 'REDUX_WEBSOCKET::OPEN': {
+    return {...state, ws_open: action.meta.timestamp}
+  }
+  case 'REDUX_WEBSOCKET::MESSAGE': {
+    let message = JSON.parse(action.payload.message)
+    switch (message.type) {
+    case 'connect':
+      if (message.status === 200) {
+        return {...state, ws_connected: true}
+      }
+      else {
+        // invalid, not connected
+        break
+      }
+    case 'purchase_paid': {
+      let new_purchases = [...state.purchases]
+      // add payed purchase to start of purchases
+      let new_paid_purchase_id = state.paid_purchase_id
+      if (message['purchase_id'] === state.unpaid_purchase.id) {
+        new_purchases.unshift(state.unpaid_purchase)
+        new_paid_purchase_id = message['purchase_id']
+      }
+      return {...state, purchases: new_purchases, unpaid_purchase: null, paid_purchase_id: new_paid_purchase_id}
+    }
+    default:
+      break
+    }
+    break
   }
   default:
     return state
