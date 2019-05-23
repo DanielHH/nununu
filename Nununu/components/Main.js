@@ -5,7 +5,9 @@ import constants from '../constants'
 import { AppContainer } from '../navigation'
 import uuidv4 from 'uuid/v4'
 import { setPurchaserId } from '../redux/actions'
+import { Linking } from 'expo'
 
+const prefix = Linking.makeUrl('/')
 
 class Main extends Component {
 
@@ -24,7 +26,7 @@ class Main extends Component {
   }
 
   render() {
-    return <AppContainer />
+    return <AppContainer uriPrefix={prefix}/>
   }
 
   componentDidUpdate(prevProps) {

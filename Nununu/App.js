@@ -10,8 +10,6 @@ import DropDownHolder from './components/DropDownHolder'
 import { makePurchaseCompleted } from './redux/actions'
 import Main from './components/Main'
 
-const prefix = Linking.makeUrl('/')
-
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
@@ -68,7 +66,7 @@ export default class App extends React.Component {
         <Provider store={this.conf.store}>
           <PersistGate loading={null} persistor={this.conf.persistor}>
             <PaperProvider>
-              <Main uriPrefix={prefix}/>
+              <Main />
             </PaperProvider>
           </PersistGate>
         </Provider>
