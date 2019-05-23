@@ -9,7 +9,7 @@ from push_notification import push_notification_worker
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 
-logging.basicConfig(filename='server.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='server.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
 
 
 connected_companys = {}
