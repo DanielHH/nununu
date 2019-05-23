@@ -22,7 +22,7 @@ class Company(db.Model):
         self.name = name
         self.owner = owner
         self.reg_date = datetime.utcnow()
-        if swishNumber and name == "test":
+        if swishNumber:
             # TODO: Change,should NOT be done like this. This is ONLY for testing/dev purpose.
             # Certificates and swish number should be installed by us in contact with the company.
             self.swish_number = swishNumber
