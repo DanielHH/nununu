@@ -7,8 +7,8 @@ import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
-import { AppContainer } from './navigation'
 import { makePurchaseCompleted } from './redux/actions'
+import Main from './components/Main'
 
 const prefix = Linking.makeUrl('/')
 
@@ -68,7 +68,7 @@ export default class App extends React.Component {
         <Provider store={this.conf.store}>
           <PersistGate loading={null} persistor={this.conf.persistor}>
             <PaperProvider>
-              <AppContainer uriPrefix={prefix} />
+              <Main uriPrefix={prefix}/>
             </PaperProvider>
           </PersistGate>
         </Provider>
