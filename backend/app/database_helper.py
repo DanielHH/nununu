@@ -83,7 +83,7 @@ def delete_product(product_id, owner):
 def create_purchase():
     purchase = Purchase()
     save_to_db(purchase)
-    return Purchase()
+    return purchase
 
 
 def get_purchase_by_id(purchase_id):
