@@ -5,6 +5,7 @@ import os
 app = Flask(__name__)
 if 'DOCKER' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@db/testdb'
+    app.config['SKIP_PAY'] = False
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config['SKIP_PAY'] = True
