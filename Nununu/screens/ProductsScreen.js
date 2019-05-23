@@ -45,7 +45,7 @@ class ProductsScreen extends React.Component {
   }
 
   purchasePaid() {
-    this.props.navigation.replace('Details', {purchaseId: this.props.paidPurchase.id})
+    this.props.navigation.replace('Details', {purchaseId: this.props.paidPurchaseId})
   }
 
   prepareOrder() {
@@ -59,10 +59,18 @@ class ProductsScreen extends React.Component {
       }
     }
     this.retrievePushNotificationTokenAsync().then((pushNotificationToken) => {
-      this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': pushNotificationToken})
+      this.props.postPurchase({
+        'products': selectedPurchaseItems,
+        'pushNotificationToken': pushNotificationToken,
+        'purchaserId': this.props.purchaserId,
+      })
     }).catch((error) => {
       console.warn(error)
-      this.props.postPurchase({'products': selectedPurchaseItems, 'pushNotificationToken': null})
+      this.props.postPurchase({
+        'products': selectedPurchaseItems,
+        'pushNotificationToken': null,
+        'purchaserId': this.props.purchaserId,
+      })
     })
   }
 
@@ -114,7 +122,7 @@ class ProductsScreen extends React.Component {
     } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
       // retrieved a swish request token, open the swish app with it
       Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken)
-    } else if (this.props.paidPurchase !== prevProps.paidPurchase && this.props.paidPurchase !== null) {
+    } else if (this.props.paidPurchaseId !== prevProps.paidPurchaseId && this.props.paidPurchaseId !== null) {
       // purchase paid for
       this.purchasePaid()
     } else if (this.props.purchaseError !== prevProps.purchaseError) {
@@ -129,7 +137,8 @@ const mapStateToProps = state => ({
   swishRequestToken: state.purchase.swish_request_token,
   unpaidPurchase: state.purchase.unpaid_purchase,
   purchaseError: state.purchase.error,
-  paidPurchase: state.purchase.paid_purchase,
+  paidPurchaseId: state.purchase.paid_purchase_id,
+  purchaserId: state.purchase.purchaser_id,
 })
 
 const mapDispatchToProps = {
