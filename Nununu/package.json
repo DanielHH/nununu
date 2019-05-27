@@ -19,6 +19,7 @@
     "@giantmachines/redux-websocket": "^1.1.2",
     "axios": "^0.18.0",
     "expo": "^32.0.0",
+    "moment": "^2.24.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-dropdownalert": "^3.10.0",

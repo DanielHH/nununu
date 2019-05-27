@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import { connect } from 'react-redux'
 import { Card, Paragraph } from 'react-native-paper'
+import moment from 'moment'
 
 class DetailsScreen extends React.Component {
 
@@ -32,13 +33,13 @@ class DetailsScreen extends React.Component {
               renderItem={({item}) => (
                 <View style={{flex:1, flexDirection: 'row'}}>
                   <Paragraph>{item.quantity}</Paragraph>
-                  <Paragraph>{item.name}</Paragraph>
-                  <Paragraph>{item.pricePerItem}</Paragraph>
+                  <Paragraph> {item.name}</Paragraph>
+                  <Paragraph> {Math.round(item.pricePerItem * 100) / 100}</Paragraph>
                 </View>
               )}
               keyExtractor={(item, index) => index.toString()}/>
-            <Text style={{fontSize: 15}}>Totaltpris: {purchase.totalPrice}</Text>
-            <Text style={{fontSize: 15}}>Betald: {purchase.purchase_date}</Text>
+            <Text style={{fontSize: 15}}>Totaltpris: {Math.round(purchase.totalPrice * 100) / 100}</Text>
+            <Text style={{fontSize: 15}}>Betald: {moment(purchase.purchase_date).format('YYYY-MM-DD HH:mm')}</Text>
           </Card.Content>
         </Card>
       </View>

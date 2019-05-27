@@ -3,6 +3,7 @@ import { View, FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
 import { setSelectedPurchase } from '../redux/actions'
+import moment from 'moment'
 
 class PurchasesScreen extends React.Component {
 
@@ -26,7 +27,7 @@ class PurchasesScreen extends React.Component {
                     <Title>{item.company.name}</Title>
                     <Paragraph>{item.purchaseMessage}</Paragraph>
                     <Paragraph>Totalpris: {item.totalPrice}</Paragraph>
-                    <Paragraph>Betald: {item.purchase_date}</Paragraph>
+                    <Paragraph>Betald: {moment(item.purchase_date).format('YYYY-MM-DD HH:mm')}</Paragraph>
                   </View>
                 </View>
               </Card.Content>
