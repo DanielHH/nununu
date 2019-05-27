@@ -14,7 +14,7 @@ class SignUpUserScreen extends Component {
       name: '',
       email: '',
       password: '',
-      company: '',
+      companyName: '',
       orgnumber: '',
     }
   }
@@ -67,11 +67,11 @@ class SignUpUserScreen extends Component {
                 />
                 <TextInput style={styles.input}
                   ref={(input) => { this.companyInput = input }}
-                  placeholder='Company'
+                  placeholder='Company Name'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='default'
                   returnKeyType='next'
-                  onChangeText={(text) => this.setState({company:text})}
+                  onChangeText={(text) => this.setState({companyName:text})}
                   onSubmitEditing={() => { this.organisationInput.focus() }}
                   autoCorrect={false}
                   blurOnSubmit={false}
@@ -81,13 +81,12 @@ class SignUpUserScreen extends Component {
                   placeholder='Organisation number'
                   placenholderTextColor='rgba(255,255,255,0.8)'
                   keyboardType='numeric'
-                  returnKeyType='go'
+                  returnKeyType='done'
                   onChangeText={(text) => this.setState({orgnumber:text})}
-                  // onSubmitEditing={() => { Keyboard.dismiss}}
                   autoCorrect={false}
-                  blurOnSubmit={false}
+                  onSubmitEditing={() => this.props.signUpUser(this.state)}
                 />
-                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state.email, this.state.password)}>
+                <TouchableOpacity  style={styles.buttonContainer} onPress={() => this.props.signUpUser(this.state)}>
                   <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
               </View>
@@ -106,7 +105,7 @@ class SignUpUserScreen extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  signUpUser: (email, password) => dispatch(signUpUser(email,password))
+  signUpUser: (email, password) => dispatch(signUpUser(email,password)),
 })
 
 const mapStateToProps = state => ({
@@ -115,7 +114,6 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpUserScreen)
-
 
 const styles = StyleSheet.create({
   container: {
