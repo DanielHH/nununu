@@ -263,10 +263,6 @@ export function addProduct(name, price, description, categoryId, token) {
   }
 }
 
-export function reorderCategory(newCategoriesOrder) {
-
-}
-
 export function changeProductCategory(id, name) {
 }
 
