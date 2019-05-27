@@ -167,7 +167,7 @@ function menu(state = initialMenuState, action) {
     })
   case REMOVE_PRODUCT:
     return produce(state, draft => {
-      draft.splice(draft.findIndex(product => product.id === action.id), 1)
+      draft.splice(draft.findIndex(product => product.id === action.id), 1) // Old code. This will probably not work.
     })
   case CHANGE_PRODUCT_ORDER:
     return
