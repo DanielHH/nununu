@@ -81,7 +81,7 @@ If you did not make this request then simply ignore this email and no changes wi
 
 
 @app.route("/user/reset-password-request", methods=['POST'])
-def reset_password_reqeust():
+def reset_password_request():
     result = "email is not registered", 400
     json_data = request.get_json()
     user = db_helper.get_user_by_email(json_data['email'])
