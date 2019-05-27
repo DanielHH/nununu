@@ -43,7 +43,7 @@ class EditMenuScreen extends React.Component {
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
-          onMoveEnd={({ data }) => this.props.reorderProducts(this.props.categoryId, data, this.props.token.token)}
+          onMoveEnd={({ data }) => this.props.reorderProducts(this.props.categoryId, data, this.props.token)}
         />
         {/* Rest of the app comes ABOVE the action button component !*/}
         <ActionButton

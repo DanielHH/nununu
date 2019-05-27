@@ -30,10 +30,10 @@ class ProductScreen extends React.Component {
   saveFunc = () => {
     if (this.state.id) { // edit product
       this.props.editProduct(this.state.id, this.state.name, 
-        this.state.price, this.state.description, this.state.categoryId, this.props.token.token)
+        this.state.price, this.state.description, this.state.categoryId, this.props.token)
     } else { // new product
       this.props.addProduct(this.state.name, this.state.price, 
-        this.state.description, this.state.categoryId, this.props.token.token)
+        this.state.description, this.state.categoryId, this.props.token)
     }
   }
 

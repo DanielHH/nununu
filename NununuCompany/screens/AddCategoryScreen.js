@@ -14,7 +14,7 @@ class AddCategoryScreen extends React.Component {
   }
 
   saveFunc = () => {
-    this.props.addCategory(this.state.name, this.props.token.token)
+    this.props.addCategory(this.state.name, this.props.token)
   }
 
   render() {

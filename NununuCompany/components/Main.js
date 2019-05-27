@@ -20,7 +20,7 @@ class Main extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.token !== prevProps.token &&
     this.props.token) {
-      this.props.getCompanyProductsWithToken(this.props.token.token)
+      this.props.getCompanyProductsWithToken(this.props.token)
     } else if (this.props.token !== prevProps.token &&
       !this.props.token) {
       this.props.emptyMenuState() 
