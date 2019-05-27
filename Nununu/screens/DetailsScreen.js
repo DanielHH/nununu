@@ -1,22 +1,23 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { Button as PaperButton} from 'react-native-paper'
-import { Card } from 'react-native-paper'
-//import { createIconSetFromFontello } from 'react-native-vector-icons'
-import fontelloConfig from '../config.json'
-import { MaterialIcons, MaterialCommunityIcons, createIconSetFromFontello } from '@expo/vector-icons'
-const Icon = createIconSetFromFontello(fontelloConfig)
+import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { connect } from 'react-redux'
+import { Card, Paragraph } from 'react-native-paper'
+import moment from 'moment'
 
-
-export default class DetailsScreen extends React.Component {
+class DetailsScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Details',
   }
 
   render() {
-
-
+    let id = parseInt(this.props.navigation.getParam('purchaseId'))
+    let purchase = null
+    for (let i = 0; i < this.props.purchases.length; i++) {
+      if (this.props.purchases[i].id === id) {
+        purchase = this.props.purchases[i]
+      }
+    }
     return (
       <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#e9ebee', padding:10}}>
 
@@ -24,29 +25,33 @@ export default class DetailsScreen extends React.Component {
           style={{marginTop: 10}}
           flexDirection='row'>
           <Card.Content>
-            <Text style={{fontSize: 30}}>Status: Tillagas</Text>
+            <Text style={{fontSize: 30}}>{purchase.company.name}</Text>
+            <Text style={{fontSize: 25}}>#{purchase.id}</Text>
+            <Text style={{fontSize: 25}}>Completed: {String(purchase.completed)}</Text>
+            <FlatList
+              data={purchase.items}
+              renderItem={({item}) => (
+                <View style={{flex:1, flexDirection: 'row'}}>
+                  <Paragraph>{item.quantity}</Paragraph>
+                  <Paragraph> {item.name}</Paragraph>
+                  <Paragraph> {Math.round(item.pricePerItem * 100) / 100}</Paragraph>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}/>
+            <Text style={{fontSize: 15}}>Totaltpris: {Math.round(purchase.totalPrice * 100) / 100}</Text>
+            <Text style={{fontSize: 15}}>Betald: {moment(purchase.purchase_date).format('YYYY-MM-DD HH:mm')}</Text>
           </Card.Content>
         </Card>
-
-        <Text style={{fontSize: 30, marginTop: 100}}>{this.props.navigation.state.params[0].quantity}st {this.props.navigation.state.params[0].name}</Text>
-        <Text style={{fontSize: 25}}>Totalt: {this.props.navigation.state.params[0].price}</Text>
-
-        { /*
-        <Text style={styles.rotate}>
-          <Icon style={styles.shadow} name="ticketblack" size={200} color="#eddbbf"/>  
-        </Text>
-      */}        
-
-        <Text style={newStyles.rotate}>
-          <MaterialIcons style={styles.shadow} name="confirmation-number" size={200} color="#eddbbf"/>
-        </Text>
-
-        <Text style={{position: 'absolute', bottom: 100, fontSize: 70}}>#{Math.floor(Math.random()*10 + 1)}</Text>
-
       </View>
     )
   }
 }
+
+const mapStateToProps = state => ({
+  purchases: state.purchase.purchases,
+})
+
+export default connect(mapStateToProps)(DetailsScreen)
 
 const styles = StyleSheet.create({
   shadow: {
@@ -60,20 +65,5 @@ const styles = StyleSheet.create({
       {rotate: '270deg'},
       {scaleX: 2},
       {scaleY: 2}]
- },
-})
-
-const newStyles = StyleSheet.create({
-  shadow: {
-    textShadowOffset:{width:1, height:0},
-    shadowOpacity:0.7
-  },
-  rotate: {
-    position:'absolute',
-    bottom: -60,
-    transform: [
-      {rotate: '90deg'},
-      {scaleX: 2.5},
-      {scaleY: 2.5}]
  },
 })

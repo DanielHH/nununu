@@ -26,6 +26,10 @@ export const START_PAY_SWISH_SUCCESS = 'START_PAY_SWISH_SUCCESS'
 
 export const START_PAY_SWISH_FAILURE = 'START_PAY_SWISH_FAILURE'
 
+export const MAKE_PURCHASE_COMPLETED = 'MAKE_PURCHASE_COMPLETED'
+
+export const SET_PURCHASER_ID = 'SET_PURCHASER_ID'
+
 /*
  * action creators
  */
@@ -69,10 +73,9 @@ export function decreaseProductQuantity(index, sectionTitle) {
   return { type: DECREASE_PRODUCT_QUANTITY, index, sectionTitle}
 }
 
-export function postPurchase(purchaseItems) {
-  let products = {'products': purchaseItems}
+export function postPurchase(purchase) {
   return function (dispatch) {
-    apiClient.post('/purchase', products)
+    apiClient.post('/purchase', purchase)
     .then((response) => dispatch({
       type: POST_PURCHASE_SUCCESS,
       purchase: response.data,
@@ -86,12 +89,26 @@ export function postPurchase(purchaseItems) {
 export function startPaySwish(purchaseId) {
   return function (dispatch) {
     apiClient.post('/pay/swish/' + purchaseId)
-    .then((response) => dispatch({
-      type: START_PAY_SWISH_SUCCESS,
-      requestToken: response.data['request_token'],
-    })).catch((response) => dispatch({
+    .then((response) => {
+      if (response.data['payment_skipped'] === true) {
+        return
+      } else {
+        return dispatch({
+          type: START_PAY_SWISH_SUCCESS,
+          requestToken: response.data['request_token'],
+        })
+      }
+    }).catch((response) => dispatch({
       type: START_PAY_SWISH_FAILURE,
       error: response,
     }))
   }
+}
+
+export function makePurchaseCompleted(purchaseId) {
+  return { type: MAKE_PURCHASE_COMPLETED, purchaseId: purchaseId}
+}
+
+export function setPurchaserId(purchaserId) {
+  return { type: SET_PURCHASER_ID, purchaserId: purchaserId}
 }

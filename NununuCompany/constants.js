@@ -1,4 +1,9 @@
+const ADDRESSES = {
+  EmulatorIp: '10.0.2.2:5000',
+  DanielIpV4: '192.168.1.2:5000',
+  Website: 'swish.mastega.nu',
+}
+
 export default {
-  EmulatorUrl: 'http://10.0.2.2:5000',
-  DanielIpV4: 'http://192.168.1.2:5000'
+  SERVER_ADDRESS: ADDRESSES.DanielIpV4,
 }

@@ -1,5 +1,5 @@
 import {
-  COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
+  COMPLETE_PURCHASE_SUCCESS, COMPLETE_PURCHASE_FAILURE, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
   SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN, 
   SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, START_NEW_SIGNUP,
   ADD_PRODUCT_SUCCESS, ADD_PRODUCT_FAILURE, REMOVE_PRODUCT, 
@@ -11,34 +11,6 @@ import {
   REORDER_CATEGORIES_SUCCESS, REORDER_CATEGORIES_FAILURE, RESET_PASSWORD_EMAIL_SENT,
   RESET_PASSWORD_EMAIL_FAILURE, START_RECOVER_PASSWORD} from './actions'
 import produce from 'immer'
-
-
-const initialOrderState = {
-  active: [],
-  completed: [],
-}
-
-function order(state = initialOrderState, action) {
-  switch (action.type) {
-  case SET_ACTIVE_ORDERS:
-    return {...state, active: action.orders}
-  case SET_COMPLETED_ORDERS:
-    return {...state, completed: action.orders}
-  case COMPLETE_ORDER: {
-    let new_active = [...state.active] // clone data
-    let new_completed = [...state.completed]
-    for (var i = 0; i < new_active.length; i++) {
-      if (new_active[i].id === action.orderId) {
-        new_completed.unshift(new_active[i]) // add order to beginning of completed
-        new_active.splice(i, 1) // remove order from active
-      }
-    }
-    return {...state, active: new_active, completed: new_completed}
-  }
-  default:
-    return state
-  }
-}
 
 
 const initialAuthState = {
@@ -184,8 +156,59 @@ function menu(state = initialMenuState, action) {
   }
 }
 
+const initialPurchaseState = {
+  open: false,
+  active_purchases: [],
+  completed_purchases: [],
+}
+
+function purchase(state = initialPurchaseState, action) {
+  switch (action.type) {
+  case 'REDUX_WEBSOCKET::OPEN': {
+    return {...state, open: action.meta.timestamp}
+  }
+  case 'REDUX_WEBSOCKET::MESSAGE': {
+    let message = JSON.parse(action.payload.message)
+    switch (message.type) {
+    case 'connect':
+      if (message.status === 200) {
+        return {...state, active_purchases: message.active_purchases,
+          completed_purchases: message.completed_purchases}
+      }
+      else {
+        // invalid, logout
+        break
+      }
+    case 'new_purchase': {
+      let new_active_purchases = [...state.active_purchases]
+      new_active_purchases.push(message.purchase)
+      return {...state, active_purchases: new_active_purchases}
+    }
+    default:
+      break
+    }
+    break
+  }
+  case COMPLETE_PURCHASE_SUCCESS: {
+    let new_active = [...state.active_purchases] // clone data
+    let new_completed = [...state.completed_purchases]
+    for (var i = 0; i < new_active.length; i++) {
+      if (new_active[i].id === action.purchase.id) {
+        new_completed.unshift(action.purchase) // add purchase to beginning of completed
+        new_active.splice(i, 1) // remove purchase from active
+      }
+    }
+    return {...state, active_purchases: new_active, completed_purchases: new_completed}
+  }
+  case COMPLETE_PURCHASE_FAILURE:
+    return {...state, error: action.error}
+  default:
+    return state
+  }
+}
+
 export const reducers = {
-  order,
   authentication,
   menu,
+  purchase,
 }

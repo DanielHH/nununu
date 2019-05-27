@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import Drawer from '../navigation'
 import { connect } from 'react-redux'
 import { AuthenticationStack } from '../navigation'
 import { getCompanyProductsWithToken, emptyMenuState } from '../redux/actions'
+import Authenticated from './Authenticated'
+
 
 class Main extends Component {
+
   render() {
     if (this.props.token == null) {
       // USER NOT SIGNED IN
@@ -13,7 +15,7 @@ class Main extends Component {
       )
     } else {
       return (
-        <Drawer />
+        <Authenticated />
       )
     }
   }

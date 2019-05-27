@@ -27,7 +27,7 @@ class Company(db.Model):
         self.name = name
         self.owner = owner
         self.reg_date = datetime.utcnow()
-        if swishNumber and name == "test":
+        if swishNumber:
             # TODO: Change,should NOT be done like this. This is ONLY for testing/dev purpose.
             # Certificates and swish number should be installed by us in contact with the company.
             self.swish_number = swishNumber
@@ -96,8 +96,9 @@ class Purchase(db.Model):
     payment_date = db.Column(db.DateTime)
     error_code = db.Column(db.String(255))
     error_message = db.Column(db.String(255))
-    additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
-    completed = db.Column(db.Boolean)
+    completed = db.Column(db.Boolean, default=False)
+    pushNotificationToken = db.Column(db.String(255))
+    purchaser_id = db.Column(db.String(255))
 
     def __init__(self):
         self.purchase_date = datetime.utcnow()
@@ -113,8 +114,8 @@ class Purchase(db.Model):
     def createPurchaseMessage(self):
         result = ""
         for item in self.purchase_items:
-            str(item.quantity) + " " + item.product.name + ","
-        return result[:-1] # remove trailing comma
+            result += str(item.quantity) + " " + item.product.name + ", "
+        return result[:-2] # remove trailing comma
 
     def serialize(self):
         return {'id': self.id,
@@ -124,9 +125,9 @@ class Purchase(db.Model):
                 'totalPrice': str(self.total_price),
                 'errorCode': self.error_code,
                 'errorMessage': self.error_message,
-                'additionalInformation': self.additional_information,
                 'company': self.company.serialize(),
-                'items': [item.serialize() for item in self.purchase_items]}
+                'items': [item.serialize() for item in self.purchase_items],
+                'purchaseMessage': self.createPurchaseMessage()}
 
 
 class PurchaseItem(db.Model):

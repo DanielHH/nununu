@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { View } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
-import testExport from './configureStore'
+import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
 import Main from './components/Main'
 
@@ -11,7 +11,7 @@ export default class App extends Component<Props> {
 
   constructor(props) {
     super(props)
-    this.conf = testExport()
+    this.conf = createPersistStore()
     console.disableYellowBox = true // DISABLES YELLOW WARNING BOX
   }
 

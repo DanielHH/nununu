@@ -6,6 +6,74 @@ import jwt, logging, json, os, swish, dateutil.parser
 from app_config import app, mail
 import database_helper as db_helper
 from flask_mail import Message
+from push_notification import push_notification_worker
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
+
+logging.basicConfig(filename='server.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+
+
+connected_companys = {}
+connected_purchasers = {}
+
+
+@app.route("/ws/connect/company")
+def connect_company():
+    """
+    Connect a company to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 401, 'statusText': 'Unauthorized', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_companys.items():
+                    if ws == socket:
+                        connected_companys.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            g.user = verify_user_token(message['token'])
+            if g.user:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                completed_purchases = db_helper.get_completed_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in completed_purchases]
+                result['completed_purchases'] = purchases
+                active_purchases = db_helper.get_active_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in active_purchases]
+                result['active_purchases'] = purchases
+                connected_companys[g.user.id] = ws
+            ws.send(json.dumps(result))
+        return ''
+
+
+@app.route("/ws/connect/purchaser")
+def connect_purchaser():
+    """
+    Connect a purchaser to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 400, 'statusText': 'not connected', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_purchasers.items():
+                    if ws == socket:
+                        connected_purchasers.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            if 'purchaser_id' in message:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                connected_purchasers[message['purchaser_id']] = ws
+            ws.send(json.dumps(result))
+        return ''
 
 from forms import ResetPasswordForm
 
@@ -262,7 +330,12 @@ def make_purchase_completed(purchase_id):
     purchase = db_helper.get_purchase_by_id(purchase_id)
     if purchase:
         purchase.completed = True
-        save_to_db(purchase)
+        db_helper.save_to_db(purchase)
+        # try to notify the person who purchased it
+        extradata = {'type': 'purchase_completed', 'purchaseId': purchase_id}
+        push_notification_worker.queue_task(
+            push_notification_worker.send_push_notification,
+            (purchase.pushNotificationToken, 'Your purchase is done!', 'purchase', extradata))
         result = json.dumps(purchase.serialize()), 200
     return result
 
@@ -298,6 +371,8 @@ def purchase():
                 abort(404) # a product was not found
         new_purchase.company = company
         new_purchase.setPrice()
+        new_purchase.pushNotificationToken = json_data['pushNotificationToken']
+        new_purchase.purchaser_id = json_data['purchaserId']
         db_helper.save_to_db(new_purchase)
         result = json.dumps(new_purchase.serialize()), 200
     return result
@@ -305,14 +380,25 @@ def purchase():
 
 @app.route("/pay/<string:payment_method>/<int:purchase_id>", methods=['POST'])
 def pay(payment_method, purchase_id):
-    result = "not a valid payment method", 400
-    if payment_method == "swish":
-        result = "purchase not found", 404
-        found_purchase = db_helper.get_purchase_by_id(purchase_id)
-        if found_purchase:
+    result = "purchase not found", 404
+    purchase = db_helper.get_purchase_by_id(purchase_id)
+    if purchase:
+        result = "not a valid payment method", 400
+        if app.config['SKIP_PAY'] or purchase.company.name == "test":
+            purchase.payment_status = 'PAID'
+            purchase.payment_date = datetime.utcnow()
+            db_helper.save_to_db(purchase)
+            result = json.dumps({'payment_skipped': True}), 200
+            if purchase.company.id in connected_companys:
+                websocket = connected_companys[purchase.company.id]
+                websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
+            if purchase.purchaser_id in connected_purchasers:
+                websocket = connected_purchasers[purchase.purchaser_id]
+                websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
+        elif payment_method == "swish":
             result = "purchase already paid for", 409
-            if found_purchase.payment_status != "PAID":
-                result = start_pay_swish(found_purchase)
+            if purchase.payment_status != "PAID":
+                result = start_pay_swish(purchase)
     return result
 
 
@@ -332,15 +418,20 @@ def swish_callback_payment_request():
                 purchase.payment_status = 'PAID'
                 purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
                 db_helper.save_to_db(purchase)
-                # (1) notify foodtruck they have a new order
-                # (2) notify the one that purchased it that the payment has gone through
+                if purchase.company.id in connected_companys:
+                    # notify company they have a new order
+                    websocket = connected_companys[purchase.company.id]
+                    websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
+                if purchase.purchaser_id in connected_purchasers:
+                    # notify the purchaser that the payment has gone through
+                    websocket = connected_purchasers[purchase.purchaser_id]
+                    websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
             elif json_data['status'] == 'DECLINED':
                 # The payer declined to make the payment
                 pass
             elif json_data['status'] == 'ERROR':
                 handle_swish_payment_request_error(
-                    json_data['errorCode'], json_data['errorMessage'],
-                    json_data['additionalInformation'], purchase)
+                    json_data['errorCode'], json_data['errorMessage'], purchase)
     return result
 
 
@@ -354,8 +445,11 @@ def start_pay_swish(purchase):
         # check if files exist
         result = "certificates not found for the company", 404
         if Path(path_cert_pem).is_file() and Path(path_key_pem).is_file() and Path(path_swish_pem).is_file():
+            environment = swish.Environment.Production
+            if purchase.company.name == "test":
+                environment = swish.Environment.Test
             swish_client = swish.SwishClient(
-                environment=swish.Environment.Test,
+                environment=environment,
                 merchant_swish_number=purchase.company.swish_number,
                 cert=(path_cert_pem, path_key_pem),
                 verify=path_swish_pem
@@ -374,12 +468,11 @@ def start_pay_swish(purchase):
     return result
 
 
-def handle_swish_payment_request_error(error_code, error_message, additional_information, purchase):
+def handle_swish_payment_request_error(error_code, error_message, purchase):
     # save info about the error
     purchase.payment_status = 'ERROR'
     purchase.error_code = 'ERROR'
     purchase.error_message = error_message
-    purchase.additional_information = additional_information
     db_helper.save_to_db(purchase)
     if error_code == 'ACMT03':
         # Payer not enrolled.
@@ -440,7 +533,14 @@ def verify_user_token(token):
         logging.warning("Faulty token: " + repr(e))
 
 
-if __name__ == "__main__": # pragma: no cover
+def start_server(): # pragma: no cover
     db_helper.db_reset()
     db_helper.seed_database()
-    app.run(host='0.0.0.0')
+    """Start the server."""
+    print('STARTING SERVER...')
+    http_server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler)
+    print("SERVER STARTED")
+    http_server.serve_forever()
+
+if __name__ == '__main__':
+    start_server()

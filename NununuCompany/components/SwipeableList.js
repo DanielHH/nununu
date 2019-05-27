@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {FlatList, StyleSheet, View} from 'react-native'
 import ListItem from './ListItem'
 import { connect } from 'react-redux'
-import { completeOrder, setActiveOrders } from '../redux/actions'
-import listData from '../components/ListData'
+import { completePurchase } from '../redux/actions'
 
 class SwipeableList extends Component {
 
@@ -12,7 +11,6 @@ class SwipeableList extends Component {
     this.renderSeparator = this.renderSeparator.bind(this)
     this.success = this.success.bind(this)
     this.setScrollEnabled = this.setScrollEnabled.bind(this)
-    this.props.dispatch(setActiveOrders(listData))
     this.state = {
       enable: true,
     }
@@ -27,7 +25,7 @@ class SwipeableList extends Component {
   }
 
   success(id) {
-    this.props.dispatch(completeOrder(id))
+    this.props.completePurchase(id, this.props.token)
   }
 
   setScrollEnabled(enable) {
@@ -40,8 +38,8 @@ class SwipeableList extends Component {
     return (
       <ListItem
         id={item.id}
-        content={item.content}
-        orderNumber={item.orderNumber}
+        content={item.purchaseMessage}
+        orderNumber={item.id}
         success={this.success}
         setScrollEnabled={enable => this.setScrollEnabled(enable)}
       />
@@ -55,18 +53,23 @@ class SwipeableList extends Component {
         data={this.props.active}
         backgroundColor={'#e9ebee'}
         renderItem={({item}) => this.renderItem(item)}
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={(item, index) => String(item.id)}
         scrollEnabled={this.state.enable}
       />
     )
   }
 }
 
-export default connect((state) => {
-  return {
-    active: state.order.active,
-  }
-})(SwipeableList)
+const mapStateToProps = state => ({
+  active: state.purchase.active_purchases,
+  token: state.authentication.token,
+})
+
+const mapDispatchToProps = {
+  completePurchase,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SwipeableList)
 
 const styles = StyleSheet.create({
   separatorViewStyle: {

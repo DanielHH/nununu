@@ -103,3 +103,7 @@ run image (silently with -d)
   ```
   docker-compose up -d
   ```
+the python server log can be viewed with
+  ```
+  docker-compose exec -T web cat server.log
+  ```

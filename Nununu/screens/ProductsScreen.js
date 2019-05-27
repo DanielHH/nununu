@@ -7,6 +7,7 @@ import { getCompanyProducts, increaseProductQuantity, decreaseProductQuantity,
 import { connect } from 'react-redux'
 import DropDownHolder from '../components/DropDownHolder'
 import RenderTitle from '../components/RenderTitle'
+import { Permissions, Notifications } from 'expo'
 
 let TitleContainer = connect(state => ({ title: state.store.selectedCompany.name }))(RenderTitle)
 
@@ -22,8 +23,29 @@ class ProductsScreen extends React.Component {
     headerTintColor: '#fff',
   }
 
-  navigateTo(screen) {
-    this.props.navigation.navigate(screen, this.prepareOrder())
+  async retrievePushNotificationTokenAsync() {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    )
+    let finalStatus = existingStatus
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+      finalStatus = status
+    }
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return
+    }
+    // Get the token that uniquely identifies this device
+    return await Notifications.getExpoPushTokenAsync()
+  }
+
+  purchasePaid() {
+    this.props.navigation.replace('Details', {purchaseId: this.props.paidPurchaseId})
   }
 
   prepareOrder() {
@@ -36,7 +58,20 @@ class ProductsScreen extends React.Component {
         }
       }
     }
-    return selectedPurchaseItems
+    this.retrievePushNotificationTokenAsync().then((pushNotificationToken) => {
+      this.props.postPurchase({
+        'products': selectedPurchaseItems,
+        'pushNotificationToken': pushNotificationToken,
+        'purchaserId': this.props.purchaserId,
+      })
+    }).catch((error) => {
+      console.warn(error)
+      this.props.postPurchase({
+        'products': selectedPurchaseItems,
+        'pushNotificationToken': null,
+        'purchaserId': this.props.purchaserId,
+      })
+    })
   }
 
   componentDidMount() {
@@ -75,7 +110,7 @@ class ProductsScreen extends React.Component {
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
-        <Button onPress={() => this.props.postPurchase(this.prepareOrder())}> Checka ut </Button>
+        <Button onPress={() => this.prepareOrder()}> Checka ut </Button>
       </View>
     )
   }
@@ -87,6 +122,9 @@ class ProductsScreen extends React.Component {
     } else if (this.props.swishRequestToken !== prevProps.swishRequestToken && this.props.swishRequestToken !== null) {
       // retrieved a swish request token, open the swish app with it
       Linking.openURL('swish://paymentrequest?token=' + this.props.swishRequestToken)
+    } else if (this.props.paidPurchaseId !== prevProps.paidPurchaseId && this.props.paidPurchaseId !== null) {
+      // purchase paid for
+      this.purchasePaid()
     } else if (this.props.purchaseError !== prevProps.purchaseError) {
       DropDownHolder.getDropDown().alertWithType('error', 'Error', this.props.purchaseError)
     }
@@ -99,6 +137,8 @@ const mapStateToProps = state => ({
   swishRequestToken: state.purchase.swish_request_token,
   unpaidPurchase: state.purchase.unpaid_purchase,
   purchaseError: state.purchase.error,
+  paidPurchaseId: state.purchase.paid_purchase_id,
+  purchaserId: state.purchase.purchaser_id,
 })
 
 const mapDispatchToProps = {

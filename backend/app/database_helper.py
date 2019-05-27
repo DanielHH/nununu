@@ -143,7 +143,7 @@ def get_product_position(category):
 def create_purchase():
     purchase = Purchase()
     save_to_db(purchase)
-    return Purchase()
+    return purchase
 
 
 def get_purchase_by_id(purchase_id):
@@ -190,16 +190,17 @@ def seed_database():
     test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
     test_user_2 = create_user(**{'email': 'test2@test.test', 'password': '1234'})
     test_user_3 = create_user(**{'email': 'test3@test.test', 'password': '1234'})
-    mastega = create_user(**{'email': 'mastega.nu@gmail.com', 'password': '1234'})
     test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
+    mastega_user = create_user(**{'email': 'mastega.nu@gmail.com', 'password': 'abcd1234'})
+    mastega_company = create_company(**{'name': 'Mastega', 'owner': mastega_user, 'swishNumber': 1230450692})
     test_company_2 = create_company(**{'name': 'Feta Burgers', 'owner': test_user_2, 'swishNumber': 1234512345})
     test_company_3 = create_company(**{'name': 'Chok najs', 'owner': test_user_3, 'swishNumber': 6789067891})
-    burgare = create_category(**{'name': 'Burgare', 'position': 0, 'company': test_company})
+    burgare = create_category(**{'name': 'Burgare', 'position': 0, 'company': mastega_company})
     indisk = create_category(**{'name': 'Indiskt', 'position': 0, 'company': test_company_2})
-    dryck = create_category(**{'name': 'Dryck', 'position': 1, 'company': test_company})
+    dryck = create_category(**{'name': 'Dryck', 'position': 1, 'company': mastega_company})
     extra = create_category(**{'name': 'Extra', 'position': 0, 'company': test_company_3})
-    product1 = create_product(**{'name': 'Hamburgare', 'price': 10.99, 'description': 'bla bla bla', 'company': test_company, 'position': 0, 'category': burgare})
-    product2 = create_product(**{'name': 'Sallad', 'price': 8.49, 'description': 'bla bla bla', 'company': test_company, 'position': 1, 'category': burgare})
-    product3 = create_product(**{'name': 'Falafel', 'price': 5.49, 'description': 'bla bla bla', 'company': test_company, 'position': 2, 'category': burgare})
-    product4 = create_product(**{'name': 'Vatten', 'price': 2, 'description': 'bla bla bla', 'company': test_company, 'position': 0, 'category': dryck})
-    product5 = create_product(**{'name': 'Cola', 'price': 2.5, 'description': 'bla bla bla', 'company': test_company, 'position': 1, 'category': dryck})
+    product1 = create_product(**{'name': 'Hamburgare', 'price': 0.30, 'description': 'vanlig burgare', 'company': mastega_company, 'position': 0, 'category': burgare})
+    product2 = create_product(**{'name': 'Cheeseburgare', 'price': 0.25, 'description': 'ostig burgare', 'company': mastega_company, 'position': 1, 'category': burgare})
+    product3 = create_product(**{'name': 'Vegoburgare', 'price': 0.25, 'description': 'vegetarisk burgare', 'company': mastega_company, 'position': 2, 'category': burgare})
+    product4 = create_product(**{'name': 'Vatten', 'price': 0.10, 'description': 'H2O', 'company': mastega_company, 'position': 0, 'category': dryck})
+    product5 = create_product(**{'name': 'Cola', 'price': 0.20, 'description': 'Not Pepsi', 'company': mastega_company, 'position': 1, 'category': dryck})
