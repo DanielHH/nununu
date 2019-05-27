@@ -61,7 +61,7 @@ class SwipeableList extends Component {
 }
 
 const mapStateToProps = state => ({
-  active: state.websocket.active_purchases,
+  active: state.purchase.active_purchases,
   token: state.authentication.token,
 })
 

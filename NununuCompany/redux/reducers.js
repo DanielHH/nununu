@@ -28,13 +28,13 @@ function authentication(state = initialAuthState, action) {
   }
 }
 
-const initialWsState = {
+const initialPurchaseState = {
   open: false,
   active_purchases: [],
   completed_purchases: [],
 }
 
-function websocket(state = initialWsState, action) {
+function purchase(state = initialPurchaseState, action) {
   switch (action.type) {
   case 'REDUX_WEBSOCKET::OPEN': {
     return {...state, open: action.meta.timestamp}

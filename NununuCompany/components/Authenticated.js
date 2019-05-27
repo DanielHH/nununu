@@ -26,7 +26,7 @@ class Authenticated extends Component {
 }
 
 const mapStateToProps = state => ({
-  open: state.websocket.open,
+  open: state.purchase.open,
   token: state.authentication.token,
 })
 

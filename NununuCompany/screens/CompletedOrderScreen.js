@@ -28,7 +28,7 @@ class CompletedOrderScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  completed: state.websocket.completed_purchases,
+  completed: state.purchase.completed_purchases,
 })
 
 export default connect(mapStateToProps)(CompletedOrderScreen)
