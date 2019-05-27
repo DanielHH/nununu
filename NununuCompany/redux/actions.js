@@ -61,11 +61,11 @@ export const REORDER_CATEGORIES_SUCCESS = 'REORDER_CATEGORIES_SUCCESS'
 
 export const REORDER_CATEGORIES_FAILURE = 'REORDER_CATEGORIES_FAILURE'
 
+export const RESET_PASSWORD_EMAIL_SENT = 'RESET_PASSWORD_EMAIL_SENT'
 
+export const RESET_PASSWORD_EMAIL_FAILURE = 'RESET_PASSWORD_EMAIL_FAILURE'
 
-
-
-
+export const START_RECOVER_PASSWORD = 'START_RECOVER_PASSWORD'
 
 /*
  * other constants
@@ -96,14 +96,29 @@ export function startNewSignUp() {
   return { type: START_NEW_SIGNUP }
 }
 
-export function signInUser(email, password) {
+export function recoverPassword() {
+  return { type: START_RECOVER_PASSWORD }
+}
+
+export function resetPassword(email){
+  return function (dispatch) {
+    apiClient.post('/user/reset-password-request', {'email': email})
+    .then(() => dispatch({
+      type: RESET_PASSWORD_EMAIL_SENT,
+    })).catch(res => dispatch({
+      type: RESET_PASSWORD_EMAIL_FAILURE,
+      error: res,
+    }))
+  }
+}
+
+export function signInUser(email, password){
   let credentials = {'email': email, 'password': password}
   return function (dispatch) {
     apiClient.post('/user/sign-in', credentials)
     .then(res => dispatch({
       type: SIGN_IN_USER_SUCCESS,
       token: res.data.token,
-      showSuccessfulSignUp: false,
     })).catch(res => dispatch({
       type: SIGN_IN_USER_FAILURE,
       error: res,

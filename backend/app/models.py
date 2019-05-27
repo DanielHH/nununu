@@ -171,9 +171,9 @@ class User(db.Model):
     def __hash__(self):
         return hash(str(self))
 
-    def generate_token(self):
+    def generate_token(self, exp=604800):
         token = jwt.encode({
-            'exp': datetime.utcnow() + timedelta(days=7),
+            'exp': datetime.utcnow() + timedelta(seconds=exp),
             'iat': datetime.utcnow(),
             'email': self.email,
             }, app.config["SECRET_KEY"], algorithm='HS256').decode('utf-8')

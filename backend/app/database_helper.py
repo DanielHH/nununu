@@ -24,6 +24,11 @@ def change_password(user, password, new_password):
         return False
 
 
+def reset_password(user, password):
+    user.password = password
+    save_to_db(user)
+
+
 #################################
 ### Company related functions ###
 #################################
@@ -76,7 +81,10 @@ def reorder_categories(categories):
 
 
 def get_category_position(company):
-    return company.categories[-1].position + 1
+    position = 0
+    if company.categories:
+        position = company.categories[-1].position + 1
+    return position
 
 
 #################################
@@ -182,6 +190,7 @@ def seed_database():
     test_user = create_user(**{'email': 'test@test.test', 'password': '1234'})
     test_user_2 = create_user(**{'email': 'test2@test.test', 'password': '1234'})
     test_user_3 = create_user(**{'email': 'test3@test.test', 'password': '1234'})
+    mastega = create_user(**{'email': 'mastega.nu@gmail.com', 'password': '1234'})
     test_company = create_company(**{'name': 'test', 'owner': test_user, 'swishNumber': 1231181189})
     test_company_2 = create_company(**{'name': 'Feta Burgers', 'owner': test_user_2, 'swishNumber': 1234512345})
     test_company_3 = create_company(**{'name': 'Chok najs', 'owner': test_user_3, 'swishNumber': 6789067891})

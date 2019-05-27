@@ -1,14 +1,15 @@
-import { COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
-  SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN
-  , SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, START_NEW_SIGNUP,
+import {
+  COMPLETE_ORDER, SET_ACTIVE_ORDERS, SET_COMPLETED_ORDERS,
+  SIGN_IN_USER_SUCCESS, SIGN_IN_USER_FAILURE, REMOVE_TOKEN, 
+  SIGN_UP_USER_SUCCESS, SIGN_UP_USER_FAILURE, START_NEW_SIGNUP,
   ADD_PRODUCT_SUCCESS, ADD_PRODUCT_FAILURE, REMOVE_PRODUCT, 
   EDIT_PRODUCT_SUCCESS, EDIT_PRODUCT_FAILURE, CHANGE_PRODUCT_ORDER, 
   ADD_CATEGORY_SUCCESS, ADD_CATEGORY_FAILURE, GET_COMPANY_PRODUCTS_SUCCESS, 
   GET_COMPANY_PRODUCTS_FAILURE, CREATE_COMPANY_SUCCESS, CREATE_COMPANY_FAILURE, 
   REMOVE_MENU, GO_TO_CATEGORY, START_EDIT_PRODUCT, START_ADD_PRODUCT, 
   REORDER_PRODUCTS_SUCCESS, REORDER_PRODUCTS_FAILURE, 
-  REORDER_CATEGORIES_SUCCESS, REORDER_CATEGORIES_FAILURE} from './actions'
-import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack'
+  REORDER_CATEGORIES_SUCCESS, REORDER_CATEGORIES_FAILURE, RESET_PASSWORD_EMAIL_SENT,
+  RESET_PASSWORD_EMAIL_FAILURE, START_RECOVER_PASSWORD} from './actions'
 import produce from 'immer'
 
 
@@ -44,13 +45,14 @@ const initialAuthState = {
   token: null,
   signUpUserSuccess: false,
   showSuccessfulSignUp: false,
+  resetPasswordEmailSent: false,
   error: {},
 }
 
 function authentication(state = initialAuthState, action) {
   switch (action.type) {
   case SIGN_IN_USER_SUCCESS:
-    return {...state, token: action.token, showSuccessfulSignUp: action.showSuccessfulSignUp}
+    return {...state, token: action.token, showSuccessfulSignUp: false, resetPasswordEmailSent: false}
   case SIGN_IN_USER_FAILURE:
     return {...state, error: action.error}
   case REMOVE_TOKEN:
@@ -65,6 +67,12 @@ function authentication(state = initialAuthState, action) {
     return {...state, showSuccessfulSignUp: action.showSuccessfulSignUp, error: {}}
   case CREATE_COMPANY_FAILURE:
     return {...state, error: {createCompanyError: action.error}}
+  case RESET_PASSWORD_EMAIL_SENT:
+    return {...state, resetPasswordEmailSent: true}
+  case RESET_PASSWORD_EMAIL_FAILURE:
+    return {...state, error: {resetPasswordError: action.error}}
+  case START_RECOVER_PASSWORD:
+    return {...state, resetPasswordEmailSent: false, error: {}}
   default:
     return state
   }

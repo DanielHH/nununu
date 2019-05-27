@@ -27,7 +27,7 @@ class EditMenuScreen extends React.Component {
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
-            <Paragraph> {item.price} kr</Paragraph>
+            <Paragraph> {Math.round(item.price * 100) / 100} kr</Paragraph>
             <Paragraph> {item.description}</Paragraph>
           </Card.Content>
         </Card>
