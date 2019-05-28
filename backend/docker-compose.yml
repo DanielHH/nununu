@@ -4,6 +4,8 @@ services:
     build: ./app
     environment:
       - DOCKER=True
+      - EMAIL_USER=mastega.nu@gmail.com
+      - EMAIL_PASS=mastega2019
       - WAIT_BEFORE_HOSTS=5
       - WAIT_HOSTS=db:5432
     depends_on:
