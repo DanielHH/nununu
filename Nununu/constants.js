@@ -7,4 +7,5 @@ const ADDRESSES = {
 
 export default {
   SERVER_ADDRESS: ADDRESSES.DanielIpV4,
+  TRANSPORT_LAYER_SECURITY: false,
 }

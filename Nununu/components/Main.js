@@ -22,7 +22,7 @@ class Main extends Component {
   }
 
   connectWs = () => {
-    this.props.wsConnect('ws://' + constants.SERVER_ADDRESS + '/ws/connect/purchaser')
+    this.props.wsConnect('ws' + (constants.TRANSPORT_LAYER_SECURITY ? 's' : '') + '://' + constants.SERVER_ADDRESS + '/ws/connect/purchaser')
   }
 
   render() {
