@@ -45,7 +45,7 @@ def connect_company():
                 active_purchases = db_helper.get_active_purchases(g.user.company)
                 purchases = [purchase.serialize() for purchase in active_purchases]
                 result['active_purchases'] = purchases
-                connected_companys[g.user.id] = ws
+                connected_companys[g.user.company.id] = ws
             ws.send(json.dumps(result))
         return ''
 
