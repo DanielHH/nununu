@@ -6,6 +6,6 @@ const ADDRESSES = {
 }
 
 export default {
-  SERVER_ADDRESS: ADDRESSES.TjelvarIpV4,
-  TRANSPORT_LAYER_SECURITY: false,
+  SERVER_ADDRESS: ADDRESSES.Website,
+  TRANSPORT_LAYER_SECURITY: true,
 }
