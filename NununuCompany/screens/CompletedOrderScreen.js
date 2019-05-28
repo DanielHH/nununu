@@ -20,6 +20,7 @@ class CompletedOrderScreen extends React.Component {
     return (
       <FlatList
         data={this.props.completed}
+        backgroundColor={'#e9ebee'}
         renderItem={({item}) => this.renderItem(item)}
         keyExtractor={(item, index) => String(item.id)}
       />
