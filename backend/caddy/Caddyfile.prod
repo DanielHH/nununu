@@ -3,4 +3,6 @@ tls richard.friberg@gmail.com
 proxy /ws web:5000 {
     websocket
 }
-proxy / web:5000
+proxy / web:5000 {
+    transparent
+}
