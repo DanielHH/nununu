@@ -44,7 +44,7 @@ def get_company_by_id(company_id):
 
 
 def get_company_by_user(user):
-    return Company.query.filter_by(owner_id=user.id).first()  
+    return Company.query.filter_by(owner_id=user.id).first()
 
 
 def get_all_companies():
@@ -66,7 +66,7 @@ def get_category_by_id(category_id):
 
 
 def get_category_by_name_and_company(category_name, company_id):
-    return Category.query.filter(Category.name == category_name, 
+    return Category.query.filter(Category.name == category_name,
             Category.company_id == company_id).first()
 
 
@@ -75,7 +75,7 @@ def reorder_categories(categories):
         category_in_db = get_category_by_id(category['id'])
         if category_in_db == None:
             return "product id does not map to product in db", 400
-        category_in_db.position = category['position']           
+        category_in_db.position = category['position']
     db.session.commit()
     return "categories reordered", 200
 
@@ -119,7 +119,7 @@ def reorder_products(products):
         product_in_db = get_product_by_id(product['id'])
         if product_in_db == None:
             return "product id does not map to product in db", 400
-        product_in_db.position = product['position']           
+        product_in_db.position = product['position']
     db.session.commit()
     return "products reordered", 200
 
@@ -194,7 +194,7 @@ def seed_database():
     mastega_user = create_user(**{'email': 'mastega.nu@gmail.com', 'password': '1234'})
     mastega_company = create_company(**{'name': 'Mastega', 'owner': mastega_user, 'swishNumber': 1230450692})
     test_company_2 = create_company(**{'name': 'Feta Burgers', 'owner': test_user_2, 'swishNumber': 1234512345})
-    test_company_3 = create_company(**{'name': 'Chok najs', 'owner': test_user_3, 'swishNumber': 6789067891})
+    test_company_3 = create_company(**{'name': 'Chok najs', 'owner': test_user_3, 'swishNumber': 1239067891})
     burgare = create_category(**{'name': 'Burgare', 'position': 0, 'company': mastega_company})
     indisk = create_category(**{'name': 'Indiskt', 'position': 0, 'company': test_company_2})
     dryck = create_category(**{'name': 'Dryck', 'position': 1, 'company': mastega_company})
