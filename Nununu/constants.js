@@ -6,5 +6,5 @@ const ADDRESSES = {
 }
 
 export default {
-  SERVER_ADDRESS: ADDRESSES.DanielIpV4,
+  SERVER_ADDRESS: ADDRESSES.TjelvarIpV4,
 }
