@@ -145,7 +145,7 @@ def send_reset_password_email(user, token):
                   sender='noreply@mastega.nu',
                   recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_password', token=token, _external=True)}
+{url_for('reset_password', token=token, _external=True, _scheme=app.config['HTTP_SCHEME'] )}
 
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
