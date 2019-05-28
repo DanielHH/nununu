@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.orderinglist import ordering_list
 from datetime import datetime, timedelta
 from decimal import Decimal
 import jwt, logging
@@ -17,12 +18,16 @@ class Company(db.Model):
     products = db.relationship("Product", back_populates="company")
     # a company has many purchases
     purchases = db.relationship("Purchase", back_populates="company")
+    # a company has many categories
+    categories = db.relationship("Category", back_populates="company", order_by="Category.position", 
+                                collection_class=ordering_list('position'))
+
 
     def __init__(self, name, owner, swishNumber=None):
         self.name = name
         self.owner = owner
         self.reg_date = datetime.utcnow()
-        if swishNumber and name == "test":
+        if swishNumber:
             # TODO: Change,should NOT be done like this. This is ONLY for testing/dev purpose.
             # Certificates and swish number should be installed by us in contact with the company.
             self.swish_number = swishNumber
@@ -31,26 +36,49 @@ class Company(db.Model):
         return {'id': self.id, 'name': self.name}
 
 
+class Category(db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    position = db.Column(db.Integer, nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
+    company = db.relationship("Company", back_populates="categories")
+    products = db.relationship("Product", back_populates="category", order_by="Product.position", 
+                                collection_class=ordering_list('position'))
+
+    def __init__(self, name, position, company):
+        self.name = name
+        self.position = position
+        self.company = company
+
+    def serialize(self):
+        return {'id': self.id, 'name': self.name, 'position': self.position}
+
+
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.DECIMAL, nullable=False) # important must be able to store decimals!
-    category = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.String, nullable=False)
     create_date = db.Column(db.DateTime)
+    position = db.Column(db.Integer, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category = db.relationship("Category", back_populates="products")
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'))
     company = db.relationship("Company", back_populates="products")
 
-    def __init__(self, name, price, company, category=None):
+    def __init__(self, name, price, description, company, position, category):
         self.name = name
         self.price = price
+        self.description = description
         self.company = company
-        if category:
-            self.category = category
+        self.position = position
+        self.category = category
         self.create_date = datetime.utcnow()
 
     def serialize(self):
-        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'category': self.category}
+        return {'id': self.id, 'name': self.name, 'price': str(self.price), 'description': self.description, 'position': self.position, 'categoryId': self.category.id}
 
 
 class Purchase(db.Model):
@@ -68,8 +96,9 @@ class Purchase(db.Model):
     payment_date = db.Column(db.DateTime)
     error_code = db.Column(db.String(255))
     error_message = db.Column(db.String(255))
-    additional_information = db.Column(db.String(255)) # Only on error. Contains more info about the error
-    completed = db.Column(db.Boolean)
+    completed = db.Column(db.Boolean, default=False)
+    pushNotificationToken = db.Column(db.String(255))
+    purchaser_id = db.Column(db.String(255))
 
     def __init__(self):
         self.purchase_date = datetime.utcnow()
@@ -85,8 +114,8 @@ class Purchase(db.Model):
     def createPurchaseMessage(self):
         result = ""
         for item in self.purchase_items:
-            str(item.quantity) + " " + item.product.name + ","
-        return result[:-1] # remove trailing comma
+            result += str(item.quantity) + " " + item.product.name + ", "
+        return result[:-2] # remove trailing comma
 
     def serialize(self):
         return {'id': self.id,
@@ -96,9 +125,9 @@ class Purchase(db.Model):
                 'totalPrice': str(self.total_price),
                 'errorCode': self.error_code,
                 'errorMessage': self.error_message,
-                'additionalInformation': self.additional_information,
                 'company': self.company.serialize(),
-                'items': [item.serialize() for item in self.purchase_items]}
+                'items': [item.serialize() for item in self.purchase_items],
+                'purchaseMessage': self.createPurchaseMessage()}
 
 
 class PurchaseItem(db.Model):
@@ -143,9 +172,9 @@ class User(db.Model):
     def __hash__(self):
         return hash(str(self))
 
-    def generate_token(self):
+    def generate_token(self, exp=604800):
         token = jwt.encode({
-            'exp': datetime.utcnow() + timedelta(days=7),
+            'exp': datetime.utcnow() + timedelta(seconds=exp),
             'iat': datetime.utcnow(),
             'email': self.email,
             }, app.config["SECRET_KEY"], algorithm='HS256').decode('utf-8')

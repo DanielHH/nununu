@@ -10,8 +10,10 @@ import {
   createAppContainer} from 'react-navigation'
 import ActiveOrderScreen from './screens/ActiveOrderScreen'
 import CompletedOrderScreen from './screens/CompletedOrderScreen'
+import CategoriesScreen from './screens/CategoriesScreen'
+import AddCategoryScreen from './screens/AddCategoryScreen'
 import EditMenuScreen from './screens/EditMenuScreen'
-import ArticleScreen from './screens/ArticleScreen'
+import ProductScreen from './screens/ProductScreen'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LogInScreen from './screens/LogInScreen'
 import SignUpUserScreen from './screens/SignUpUserScreen'
@@ -63,25 +65,37 @@ const OrderStackNav = createStackNavigator({
 })
 
 export const EditMenuStackNav = createStackNavigator({
-  EditMenu: {
-    screen: EditMenuScreen,
+  Categories: {
+    screen: CategoriesScreen,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Redigera meny',
+      headerTitle: 'Kategorier',
       headerLeft: (
         <MaterialCommunityIcons name="menu" size={24} onPress = {() => navigation.toggleDrawer()}/>
       ),
     }),
   },
-  EditArticle: {
-    screen: ArticleScreen,
+  EditMenu: {
+    screen: EditMenuScreen,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Redigera artikel',
+      headerTitle: 'Redigera meny',
     }),
   },
-  AddArticle: {
-    screen: ArticleScreen,
+  AddCategory: {
+    screen: AddCategoryScreen,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Lägg till artikel',
+      headerTitle: 'Lägg till kategori',
+    }),
+  },
+  EditProduct: {
+    screen: ProductScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Redigera produkt',
+    }),
+  },
+  AddProduct: {
+    screen: ProductScreen,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Lägg till produkt',
     }),
   },
 })

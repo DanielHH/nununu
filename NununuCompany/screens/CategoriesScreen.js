@@ -4,9 +4,9 @@ import DraggableFlatList from 'react-native-draggable-flatlist'
 import ActionButton from 'react-native-action-button'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { goToEditProduct, goToAddProduct, reorderProducts } from '../redux/actions'
+import { getCompanyProductsWithToken, showCategoryProducts, reorderCategories } from '../redux/actions'
 
-class EditMenuScreen extends React.Component {
+class CategoriesScreen extends React.Component {
 
   constructor(props) {
     super(props)
@@ -23,12 +23,10 @@ class EditMenuScreen extends React.Component {
         }}
         onLongPress={move}
         onPressOut={moveEnd}
-        onPress={() => {this.props.goToEditProduct(item), this.props.navigation.navigate('EditProduct')}}>
+        onPress={() => {this.props.showCategoryProducts(item.id), this.props.navigation.navigate('EditMenu')}}>
         <Card style={{flex:1 ,margin:5, marginBottom:5}}>
           <Card.Content>
             <Title>{item.name}</Title>
-            <Paragraph> {Math.round(item.price * 100) / 100} kr</Paragraph>
-            <Paragraph> {item.description}</Paragraph>
           </Card.Content>
         </Card>
       </TouchableOpacity>
@@ -39,18 +37,19 @@ class EditMenuScreen extends React.Component {
     return (
       <View style={{ flex: 1 }}>
         <DraggableFlatList
-          data={this.props.categories[this.props.categoryId]}
+          data={this.props.categories}
+          extraData={this.props}
           renderItem={this.renderItem}
           keyExtractor={(item, index) => item.id}
           scrollPercent={5}
           backgroundColor={'#e9ebee'}
-          onMoveEnd={({ data }) => this.props.reorderProducts(this.props.categoryId, data, this.props.token)}
+          onMoveEnd={({ data }) => this.props.reorderCategories(data, this.props.token)}
         />
         {/* Rest of the app comes ABOVE the action button component !*/}
         <ActionButton
           buttonColor="rgba(231,76,60,0.9)"
           position="center"
-          onPress={() => {this.props.goToAddProduct(), this.props.navigation.navigate('AddProduct')}}
+          onPress={() => this.props.navigation.navigate('AddCategory')}
         />
       </View>
     )
@@ -58,18 +57,17 @@ class EditMenuScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  categories: state.menu.categories,
-  categoryId: state.menu.currentCategoryId,
+  categories: state.menu.categoriesOrder,
   token: state.authentication.token,
 })
 
 const mapDispatchToProps = dispatch => ({
-  goToEditProduct: (product) => dispatch(goToEditProduct(product)),
-  goToAddProduct: () => dispatch(goToAddProduct()),
-  reorderProducts: (categoryId, products, token) => dispatch(reorderProducts(categoryId, products, token)),
+  getCompanyProductsWithToken: (token) => dispatch(getCompanyProductsWithToken(token)),
+  showCategoryProducts: (categoryId) => dispatch(showCategoryProducts(categoryId)),
+  reorderCategories: (categories, token) => dispatch(reorderCategories(categories, token)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMenuScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(CategoriesScreen)
 
 const styles = StyleSheet.create({
   actionButtonIcon: {

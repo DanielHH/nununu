@@ -2,46 +2,32 @@ import React from 'react'
 import { View, FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { connect } from 'react-redux'
-import { getCompanies, setSelectedCompany } from '../redux/actions'
-import { MaterialCommunityIcons} from '@expo/vector-icons'
+import { setSelectedPurchase } from '../redux/actions'
+import moment from 'moment'
 
-class CompaniesScreen extends React.Component {
+class PurchasesScreen extends React.Component {
 
-  static navigationOptions = {
-    title: 'Restaurants',
-    headerRight: (
-      <MaterialCommunityIcons name="silverware-variant" size={24} style={{marginRight: 15}}/>
-    ),
-    headerStyle: {
-      backgroundColor: '#f4511e',
-    },
-    headerTintColor: '#fff',
-  };
-
-  componentDidMount() {
-    this.props.getCompanies()
-  }
-
-  displayCompany = (company) => {
-    this.props.setSelectedCompany(company)
-    this.props.navigation.navigate('Products')
+  displayPurchase = (purchase) => {
+    this.props.navigation.navigate('Details', {purchaseId: purchase.id})
   }
 
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={this.props.companies}
+          data={this.props.purchases}
           renderItem={({item}) => (
             <Card
-              onPress={() => this.displayCompany(item)}
+              onPress={() => this.displayPurchase(item)}
               style={styles.item}
               flexDirection='row'>
               <Card.Content style={styles.cardContentContainer}>
                 <View style={{flex:1, flexDirection: 'row'}}>
                   <View style={styles.foodInfo}>
-                    <Title>{item.name}</Title>
-                    <Paragraph>{item.distance}</Paragraph>
+                    <Title>{item.company.name}</Title>
+                    <Paragraph>{item.purchaseMessage}</Paragraph>
+                    <Paragraph>Totalpris: {item.totalPrice}</Paragraph>
+                    <Paragraph>Betald: {moment(item.purchase_date).format('YYYY-MM-DD HH:mm')}</Paragraph>
                   </View>
                 </View>
               </Card.Content>
@@ -54,15 +40,14 @@ class CompaniesScreen extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  companies: state.store.companies,
+  purchases: state.purchase.purchases,
 })
 
 const mapDispatchToProps = {
-  getCompanies,
-  setSelectedCompany,
+  setSelectedPurchase,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompaniesScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(PurchasesScreen)
 
 const styles = StyleSheet.create({
   container: {

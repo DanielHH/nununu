@@ -1,7 +1,9 @@
 import { GET_COMPANIES_SUCCESS, GET_COMPANIES_FAILURE, SET_SELECTED_COMPANY,
   GET_COMPANY_PRODUCTS_SUCCESS, GET_COMPANY_PRODUCTS_FAILURE, INCREASE_PRODUCT_QUANTITY,
   DECREASE_PRODUCT_QUANTITY, POST_PURCHASE_SUCCESS, POST_PURCHASE_FAILURE,
-  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE } from './actions'
+  START_PAY_SWISH_SUCCESS, START_PAY_SWISH_FAILURE, MAKE_PURCHASE_COMPLETED,
+  SET_PURCHASER_ID } from './actions'
+import produce from 'immer'
 
 const initialStoreState = {
   companies: [],
@@ -15,27 +17,29 @@ function store(state = initialStoreState, action) {
   case GET_COMPANIES_SUCCESS:
     return {...state, companies: action.data}
   case GET_COMPANIES_FAILURE:
-    return {...state, companies: action.error}
+    return {...state, error: action.error}
   case SET_SELECTED_COMPANY:
     return {...state, selectedCompany: action.company}
-  case GET_COMPANY_PRODUCTS_SUCCESS: {
-    let products_copy = [...action.data]
-    let new_sections = []
-    for (let i = 0; i<products_copy.length; i++) {
-      products_copy[i].quantity = 0
-      let added_to_section = false
-      for (let j = 0; j<new_sections.length; j++) {
-        if (new_sections[j].title == products_copy[i].category) {
-          new_sections[j].data.push(products_copy[i])
-          added_to_section = true
+  case GET_COMPANY_PRODUCTS_SUCCESS:
+    return produce(state, draft => {
+      draft.sections = []
+      let category
+      let categoryObj
+      let productObj
+      for (let i = 0; i < action.categories.length; i++) {
+        category = {'title': '', 'data': []}
+        categoryObj = action.categories.find(category => category.position == i)
+        category.title = categoryObj.name
+        for (let k = 0; k < action.products.length; k++) { // TODO: This loop could be done more effectively, by specifying how many products there are of a certain category
+          productObj = action.products.find(product => ((product.position == k) && (product.categoryId == categoryObj.id)))
+          if (productObj) {
+            productObj.quantity = 0
+            category.data.push(productObj)
+          }
         }
+        draft.sections.push(category)
       }
-      if (!added_to_section) {
-        new_sections.push({'title': products_copy[i].category, 'data': [products_copy[i]]})
-      }
-    }
-    return {...state, sections: new_sections}
-  }
+    })
   case GET_COMPANY_PRODUCTS_FAILURE:
     return {...state, error: action.error}
   case INCREASE_PRODUCT_QUANTITY: {
@@ -64,11 +68,14 @@ function store(state = initialStoreState, action) {
 }
 
 const initialPurchaseState = {
+  ws_open: false,
+  ws_connected: false,
   unpaid_purchase: null,
-  paid_purchases: [],
-  done_purchases: [],
+  paid_purchase_id: null,
+  purchases: [],
   swish_request_token: null,
   error: '',
+  purchaser_id: null,
 }
 
 function purchase(state = initialPurchaseState, action) {
@@ -82,6 +89,49 @@ function purchase(state = initialPurchaseState, action) {
     return {...state, swish_request_token: action.requestToken}
   case START_PAY_SWISH_FAILURE:
     return {...state, error: action.error}
+  case MAKE_PURCHASE_COMPLETED: {
+    let new_purchases = [...state.purchases]
+    for (let i = 0; i < new_purchases.length; i++) {
+      if (new_purchases[i].id === action.purchaseId) {
+        new_purchases[i].completed = true
+        break
+      }
+    }
+    return {...state, purchases: new_purchases}
+  }
+  case SET_PURCHASER_ID:
+    return {...state, purchaser_id: action.purchaserId}
+  case 'REDUX_WEBSOCKET::OPEN': {
+    return {...state, ws_open: action.meta.timestamp}
+  }
+  case 'REDUX_WEBSOCKET::MESSAGE': {
+    let message = JSON.parse(action.payload.message)
+    switch (message.type) {
+    case 'connect':
+      if (message.status === 200) {
+        return {...state, ws_connected: true}
+      }
+      else {
+        // invalid, not connected
+        break
+      }
+    case 'purchase_paid': {
+      let new_purchases = [...state.purchases]
+      // add payed purchase to start of purchases
+      let new_paid_purchase_id = state.paid_purchase_id
+      if (message['purchase_id'] === state.unpaid_purchase.id) {
+        new_purchases.unshift(state.unpaid_purchase)
+        new_paid_purchase_id = message['purchase_id']
+      }
+      return {...state, purchases: new_purchases, unpaid_purchase: null, paid_purchase_id: new_paid_purchase_id}
+    }
+    default:
+      break
+    }
+    break
+  }
+  case 'REDUX_WEBSOCKET::ERROR':
+    return {...state, error: [action.meta, action.payload]}
   default:
     return state
   }

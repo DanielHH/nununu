@@ -1,31 +1,14 @@
-// In App.js in a new project
-
 import React from 'react'
-import { View, StatusBar } from 'react-native'
-import { createStackNavigator, createAppContainer} from 'react-navigation'
+import { View, StatusBar, Platform } from 'react-native'
 import { Provider as PaperProvider } from 'react-native-paper'
-import ProductsScreen from './screens/ProductsScreen'
-import DetailsScreen from './screens/DetailsScreen'
-import CompaniesScreen from './screens/CompaniesScreen'
-import { AppLoading, Asset, Font, Icon } from 'expo'
+import { AppLoading, Asset, Font, Icon, Linking, Notifications } from 'expo'
 import { PersistGate } from 'redux-persist/integration/react'
 import createPersistStore from './configureStore'
 import { Provider } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
 import DropDownHolder from './components/DropDownHolder'
-
-const RootStack = createStackNavigator(
-  {
-    Companies: CompaniesScreen,
-    Products: ProductsScreen,
-    Details: DetailsScreen,
-  },
-  {
-    initialRouteName: 'Companies',
-  }
-)
-
-const AppContainer = createAppContainer(RootStack)
+import { makePurchaseCompleted } from './redux/actions'
+import Main from './components/Main'
 
 export default class App extends React.Component {
   state = {
@@ -35,6 +18,37 @@ export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.conf = createPersistStore()
+  }
+
+  componentDidMount() {
+    // Handle notifications that are received or selected while the app
+    // is open. If the app was closed and then opened by tapping the
+    // notification (rather than just tapping the app icon to open it),
+    // this function will fire on the next tick after the app starts
+    // with the notification data.
+    this._notificationSubscription = Notifications.addListener(this._handleNotification)
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('purchase', {
+        name: 'Purchase',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      })
+    }
+  }
+
+  _handleNotification = (notification) => {
+    if (notification.data.type === 'purchase_completed') {
+      if (notification.origin === 'received') {
+        // change purchase to completed
+        this.conf.store.dispatch(makePurchaseCompleted(parseInt(notification.data.purchaseId)))
+      }
+      else if (notification.origin === 'selected') {
+      // push notification selected, display purchase
+        let url = Linking.makeUrl('details', {purchaseId: notification.data.purchaseId})
+        Linking.openURL(url)
+      }
+    }
   }
 
   render(){
@@ -52,7 +66,7 @@ export default class App extends React.Component {
         <Provider store={this.conf.store}>
           <PersistGate loading={null} persistor={this.conf.persistor}>
             <PaperProvider>
-              <AppContainer />
+              <Main />
             </PaperProvider>
           </PersistGate>
         </Provider>

@@ -1,11 +1,81 @@
-from flask import request, g, abort
+from flask import request, g, abort, render_template, url_for, flash
 from functools import wraps
 from datetime import datetime
 from pathlib import Path
 import jwt, logging, json, os, swish, dateutil.parser
-from app_config import app
+from app_config import app, mail
 import database_helper as db_helper
+from flask_mail import Message
+from push_notification import push_notification_worker
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
 
+logging.basicConfig(filename='server.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+
+
+connected_companys = {}
+connected_purchasers = {}
+
+
+@app.route("/ws/connect/company")
+def connect_company():
+    """
+    Connect a company to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 401, 'statusText': 'Unauthorized', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_companys.items():
+                    if ws == socket:
+                        connected_companys.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            g.user = verify_user_token(message['token'])
+            if g.user:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                completed_purchases = db_helper.get_completed_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in completed_purchases]
+                result['completed_purchases'] = purchases
+                active_purchases = db_helper.get_active_purchases(g.user.company)
+                purchases = [purchase.serialize() for purchase in active_purchases]
+                result['active_purchases'] = purchases
+                connected_companys[g.user.company.id] = ws
+            ws.send(json.dumps(result))
+        return ''
+
+
+@app.route("/ws/connect/purchaser")
+def connect_purchaser():
+    """
+    Connect a purchaser to the server via a websocket.
+    """
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            result = {'status': 400, 'statusText': 'not connected', 'type': 'connect'}
+            message = ws.receive()
+            if not message: # connection closed
+                ws.close()
+                for id, socket in connected_purchasers.items():
+                    if ws == socket:
+                        connected_purchasers.pop(id, None)
+                        break
+                break
+            message = json.loads(message)
+            if 'purchaser_id' in message:
+                result['status'] = 200
+                result['statusText'] = 'OK'
+                connected_purchasers[message['purchaser_id']] = ws
+            ws.send(json.dumps(result))
+        return ''
+
+from forms import ResetPasswordForm
 
 def verify_token(func):
     """
@@ -27,6 +97,10 @@ def verify_token(func):
 def hello():
     return "helooo", 200
 
+
+#############################
+### User related requests ###
+#############################
 
 @app.route("/user/sign-up", methods=['POST'])
 def sign_up():
@@ -66,6 +140,47 @@ def change_password():
     return result
 
 
+def send_reset_password_email(user, token):
+    msg = Message('Password Reset Request',
+                  sender='noreply@mastega.nu',
+                  recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('reset_password', token=token, _external=True)}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
+
+@app.route("/user/reset-password-request", methods=['POST'])
+def reset_password_request():
+    result = "email is not registered", 400
+    json_data = request.get_json()
+    user = db_helper.get_user_by_email(json_data['email'])
+    if user:
+        token = user.generate_token(1800)
+        send_reset_password_email(user, token)
+        result = "reset email has been sent", 200
+    return result
+
+
+@app.route("/user/reset-password/<token>", methods=['GET', 'POST'])
+def reset_password(token):
+    form = ResetPasswordForm()
+    user = verify_user_token(token)
+    if not user:
+        flash('Token has expired or is otherwise invalid', 'danger' )
+        return render_template('reset_password.html', invalid=True, form=form)
+    if form.validate_on_submit() and user:
+        flash('Password has been reset!', 'success')
+        db_helper.reset_password(user, form.password.data)
+    return render_template('reset_password.html', invalid=False, form=form)
+
+
+################################
+### Company related requests ###
+################################
+
 @app.route("/company/create", methods=['POST'])
 @verify_token
 def create_company():
@@ -98,13 +213,57 @@ def get_companies():
     return json.dumps({'companies': serialized_companies}), 200
 
 
+#################################
+### Category related requests ###
+#################################
+
+@app.route("/category/create", methods=['POST'])
+@verify_token
+def create_category():
+    result = "category not created", 400
+    json_data = request.get_json()
+    company = g.user.company
+    if (company):
+        position = db_helper.get_category_position(company)
+        new_category = db_helper.create_category(json_data['name'], position, company)
+        result = json.dumps(new_category.serialize()), 200
+    return result
+
+
+@app.route("/category/reorder", methods=['POST'])
+@verify_token
+def reorder_categories():
+    result = "categories not reordered", 400
+    json_data = request.get_json()
+    categories = json_data['categories']
+    if categories:
+        result = db_helper.reorder_categories(categories)
+    return result
+
+################################
+### Product related requests ###
+################################
+
 @app.route("/company/<company_id>/products", methods=['GET'])
 def get_products(company_id):
     result = "company not found", 404
     company = db_helper.get_company_by_id(company_id)
     if company:
+        category_json = [category.serialize() for category in company.categories]
         product_json = [product.serialize() for product in company.products]
-        result = json.dumps({'products': product_json}), 200
+        result = json.dumps({'categories': category_json, 'products': product_json}), 200
+    return result
+
+
+@app.route("/company/products", methods=['GET'])
+@verify_token
+def get_products_with_token():
+    result = "company not found", 404
+    company = db_helper.get_company_by_user(g.user)
+    if company:
+        category_json = [category.serialize() for category in company.categories]
+        product_json = [product.serialize() for product in company.products]
+        result = json.dumps({'categories': category_json, 'products': product_json}), 200
     return result
 
 
@@ -113,12 +272,12 @@ def get_products(company_id):
 def create_product():
     result = "product not created", 400
     json_data = request.get_json()
-    category = None
-    if 'category' in json_data: # category is optional
-        category = json_data['category']
+    category_id = json_data['category']
     company = g.user.company
-    if company:
-        new_product = db_helper.create_product(json_data['name'], json_data['price'], company, category)
+    category = db_helper.get_category_by_id(category_id)
+    if (company and category):
+        position = db_helper.get_product_position(category)
+        new_product = db_helper.create_product(json_data['name'], json_data['price'], json_data['description'], company, position, category)
         result = json.dumps(new_product.serialize()), 200
     return result
 
@@ -132,6 +291,16 @@ def edit_product(product_id):
         result = json.dumps(edited_product.serialize()), 200
     return result
 
+@app.route("/product/reorder", methods=['POST'])
+@verify_token
+def reorder_products():
+    result = "products not reordered", 400
+    json_data = request.get_json()
+    products = json_data['products']
+    if products:
+        result = db_helper.reorder_products(products)
+    return result
+
 
 @app.route("/product/delete/<product_id>", methods=['POST'])
 @verify_token
@@ -141,6 +310,10 @@ def delete_product(product_id):
         result = "product deleted", 200
     return result
 
+
+#################################
+### Purchase related requests ###
+#################################
 
 @app.route("/purchases/active", methods=['GET'])
 @verify_token
@@ -157,7 +330,12 @@ def make_purchase_completed(purchase_id):
     purchase = db_helper.get_purchase_by_id(purchase_id)
     if purchase:
         purchase.completed = True
-        save_to_db(purchase)
+        db_helper.save_to_db(purchase)
+        # try to notify the person who purchased it
+        extradata = {'type': 'purchase_completed', 'purchaseId': purchase_id}
+        push_notification_worker.queue_task(
+            push_notification_worker.send_push_notification,
+            (purchase.pushNotificationToken, 'Your purchase is done!', 'purchase', extradata))
         result = json.dumps(purchase.serialize()), 200
     return result
 
@@ -193,6 +371,8 @@ def purchase():
                 abort(404) # a product was not found
         new_purchase.company = company
         new_purchase.setPrice()
+        new_purchase.pushNotificationToken = json_data['pushNotificationToken']
+        new_purchase.purchaser_id = json_data['purchaserId']
         db_helper.save_to_db(new_purchase)
         result = json.dumps(new_purchase.serialize()), 200
     return result
@@ -200,14 +380,25 @@ def purchase():
 
 @app.route("/pay/<string:payment_method>/<int:purchase_id>", methods=['POST'])
 def pay(payment_method, purchase_id):
-    result = "not a valid payment method", 400
-    if payment_method == "swish":
-        result = "purchase not found", 404
-        found_purchase = db_helper.get_purchase_by_id(purchase_id)
-        if found_purchase:
+    result = "purchase not found", 404
+    purchase = db_helper.get_purchase_by_id(purchase_id)
+    if purchase:
+        result = "not a valid payment method", 400
+        if app.config['SKIP_PAY'] or purchase.company.name == "test":
+            purchase.payment_status = 'PAID'
+            purchase.payment_date = datetime.utcnow()
+            db_helper.save_to_db(purchase)
+            result = json.dumps({'payment_skipped': True}), 200
+            if purchase.company.id in connected_companys:
+                websocket = connected_companys[purchase.company.id]
+                websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
+            if purchase.purchaser_id in connected_purchasers:
+                websocket = connected_purchasers[purchase.purchaser_id]
+                websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
+        elif payment_method == "swish":
             result = "purchase already paid for", 409
-            if found_purchase.payment_status != "PAID":
-                result = start_pay_swish(found_purchase)
+            if purchase.payment_status != "PAID":
+                result = start_pay_swish(purchase)
     return result
 
 
@@ -227,15 +418,20 @@ def swish_callback_payment_request():
                 purchase.payment_status = 'PAID'
                 purchase.payment_date = dateutil.parser.parse(json_data['datePaid'])
                 db_helper.save_to_db(purchase)
-                # (1) notify foodtruck they have a new order
-                # (2) notify the one that purchased it that the payment has gone through
+                if purchase.company.id in connected_companys:
+                    # notify company they have a new order
+                    websocket = connected_companys[purchase.company.id]
+                    websocket.send(json.dumps({'type': 'new_purchase', 'purchase': purchase.serialize()}))
+                if purchase.purchaser_id in connected_purchasers:
+                    # notify the purchaser that the payment has gone through
+                    websocket = connected_purchasers[purchase.purchaser_id]
+                    websocket.send(json.dumps({'type': 'purchase_paid', 'purchase_id': purchase.id}))
             elif json_data['status'] == 'DECLINED':
                 # The payer declined to make the payment
                 pass
             elif json_data['status'] == 'ERROR':
                 handle_swish_payment_request_error(
-                    json_data['errorCode'], json_data['errorMessage'],
-                    json_data['additionalInformation'], purchase)
+                    json_data['errorCode'], json_data['errorMessage'], purchase)
     return result
 
 
@@ -249,8 +445,11 @@ def start_pay_swish(purchase):
         # check if files exist
         result = "certificates not found for the company", 404
         if Path(path_cert_pem).is_file() and Path(path_key_pem).is_file() and Path(path_swish_pem).is_file():
+            environment = swish.Environment.Production
+            if purchase.company.name == "test":
+                environment = swish.Environment.Test
             swish_client = swish.SwishClient(
-                environment=swish.Environment.Test,
+                environment=environment,
                 merchant_swish_number=purchase.company.swish_number,
                 cert=(path_cert_pem, path_key_pem),
                 verify=path_swish_pem
@@ -269,12 +468,11 @@ def start_pay_swish(purchase):
     return result
 
 
-def handle_swish_payment_request_error(error_code, error_message, additional_information, purchase):
+def handle_swish_payment_request_error(error_code, error_message, purchase):
     # save info about the error
     purchase.payment_status = 'ERROR'
     purchase.error_code = 'ERROR'
     purchase.error_message = error_message
-    purchase.additional_information = additional_information
     db_helper.save_to_db(purchase)
     if error_code == 'ACMT03':
         # Payer not enrolled.
@@ -335,7 +533,14 @@ def verify_user_token(token):
         logging.warning("Faulty token: " + repr(e))
 
 
-if __name__ == "__main__": # pragma: no cover
+def start_server(): # pragma: no cover
     db_helper.db_reset()
     db_helper.seed_database()
-    app.run(host='0.0.0.0')
+    """Start the server."""
+    print('STARTING SERVER...')
+    http_server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler)
+    print("SERVER STARTED")
+    http_server.serve_forever()
+
+if __name__ == '__main__':
+    start_server()
