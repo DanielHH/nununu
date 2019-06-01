@@ -31,3 +31,8 @@ following fashion.
 ##### A: We like python and we have some prior experience using Flask
 ##### Q: But wait... Flask is synchronous?
 ##### A: Yes, but there are ways to make it asynchronous using third party libraries.
+
+## Screencasts
+Demonstration of apps: https://youtu.be/YUqSnBlcv0o
+
+Code: https://youtu.be/XVho5d8Yo9Q
